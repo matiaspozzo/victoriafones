@@ -133,10 +133,12 @@ sudo apt install -y git
 
 ## 5. Get the code
 
+The repo is public, so clone over HTTPS — no SSH key setup needed on the droplet:
+
 ```bash
 sudo mkdir -p /var/www/victoriafones
 sudo chown deploy:deploy /var/www/victoriafones
-git clone <YOUR_REPO_URL> /var/www/victoriafones
+git clone https://github.com/matiaspozzo/victoriafones.git /var/www/victoriafones
 cd /var/www/victoriafones
 ```
 
