@@ -68,6 +68,10 @@ ssh root@IP
 adduser deploy
 usermod -aG sudo deploy
 
+# Let `deploy` log in with the same SSH key as root — needed later to rsync
+# the local database/media straight to the server as `deploy`.
+rsync --archive --chown=deploy:deploy ~/.ssh /home/deploy
+
 # Basic firewall
 ufw allow OpenSSH
 ufw allow 'Nginx Full'
@@ -161,17 +165,35 @@ QUEUE_CONNECTION=sync
 REVALIDATE_SECRET=<generate one: `openssl rand -hex 32`>
 ```
 
-Then:
+```bash
+php artisan key:generate
+```
+
+### Bring your local data over as the starting point
+
+The client demo should start from what's already in your **local** database (all the
+imported/translated properties, neighborhoods, amenities) — not a fresh `--seed` run,
+which would only create the handful of seeder rows and none of the real property data.
+The SQLite file and the property images are both gitignored (never went through git),
+so copy them straight from your machine to the server instead.
+
+Run this **from your local machine**, from the repo root (not on the server):
 
 ```bash
-touch database/database.sqlite
+rsync -avz backend/database/database.sqlite deploy@IP:/var/www/victoriafones/backend/database/database.sqlite
+rsync -avz backend/storage/app/public/ deploy@IP:/var/www/victoriafones/backend/storage/app/public/
+```
 
-php artisan key:generate
-php artisan migrate --force --seed
+Back on the server:
+
+```bash
+cd /var/www/victoriafones/backend
+
+# Only applies schema migrations the transferred DB doesn't have yet — no --seed,
+# the real data (and the seeders' rows) is already inside database.sqlite.
+php artisan migrate --force
+
 php artisan storage:link
-
-# Filament admin user (don't rely on the seeder's "password" default in prod)
-php artisan make:filament-user
 
 # Perf caches
 php artisan config:cache
@@ -184,10 +206,17 @@ sudo chown -R deploy:www-data storage bootstrap/cache database/database.sqlite
 sudo chmod -R 775 storage bootstrap/cache
 ```
 
-> **Security:** the seeded demo admin (`admin@victoriafones.com` / `password`) still
-> exists from `NeighborhoodSeeder`/`DatabaseSeeder`'s `User::factory()` call — either
-> delete that user (`php artisan tinker` → `User::where('email','admin@victoriafones.com')->delete()`)
-> or change its password, since you just created a proper one with `make:filament-user`.
+> **Security:** the transferred database brings your local admin user along with it —
+> `admin@victoriafones.com` / `password` (the `UserFactory` default). Change that
+> password before showing this to the client:
+> ```bash
+> php artisan tinker
+> >>> $u = \App\Models\User::where('email', 'admin@victoriafones.com')->first();
+> >>> $u->password = \Illuminate\Support\Facades\Hash::make('a-real-password-here');
+> >>> $u->save();
+> ```
+> (Or use `php artisan make:filament-user` to add a second admin instead, and delete
+> the old one.)
 
 ---
 
@@ -302,8 +331,8 @@ timer it installs — nothing else to do.
 ## 11. Verify
 
 - `https://app.IP-WITH-DASHES.sslip.io` → the public site.
-- `https://api.IP-WITH-DASHES.sslip.io/admin` → Filament login (use the
-  `make:filament-user` credentials).
+- `https://api.IP-WITH-DASHES.sslip.io/admin` → Filament login (`admin@victoriafones.com`
+  + the password you just set).
 - In Filament, edit a property and save — confirm it doesn't error (that's the
   Observer calling the frontend's `/api/revalidate` with `REVALIDATE_SECRET`; if the
   two values don't match on both `.env`s, saves will still succeed but the public page
