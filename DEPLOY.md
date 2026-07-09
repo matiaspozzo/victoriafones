@@ -173,7 +173,7 @@ DB_CONNECTION=sqlite
 FILESYSTEM_DISK=local
 QUEUE_CONNECTION=sync
 
-REVALIDATE_SECRET=<generate one: `openssl rand -hex 32`>
+REVALIDATE_SECRET=<generate one: `openssl rand -hex 32`> // 7570c5026541ef5b93e56055e3479458181b2ba8fb04e1e7af29bed2847446f4
 ```
 
 ```bash
@@ -191,8 +191,8 @@ so copy them straight from your machine to the server instead.
 Run this **from your local machine**, from the repo root (not on the server):
 
 ```bash
-rsync -avz backend/database/database.sqlite deploy@IP:/var/www/victoriafones/backend/database/database.sqlite
-rsync -avz backend/storage/app/public/ deploy@IP:/var/www/victoriafones/backend/storage/app/public/
+rsync -avz backend/database/database.sqlite deploy@143.198.191.68:/var/www/victoriafones/backend/database/database.sqlite
+rsync -avz backend/storage/app/public/ deploy@143.198.191.68:/var/www/victoriafones/backend/storage/app/public/
 ```
 
 Back on the server:
@@ -213,8 +213,15 @@ php artisan view:cache
 php artisan filament:optimize
 
 # Permissions
-sudo chown -R deploy:www-data storage bootstrap/cache database/database.sqlite
+sudo chown -R deploy:www-data storage bootstrap/cache
 sudo chmod -R 775 storage bootstrap/cache
+
+# SQLite needs the *directory* writable too (it creates a journal/WAL file
+# alongside database.sqlite on every write) — chowning just the file isn't
+# enough and fails with "attempt to write a readonly database".
+sudo chown deploy:www-data database database/database.sqlite
+sudo chmod 775 database
+sudo chmod 664 database/database.sqlite
 ```
 
 > **Security:** the transferred database brings your local admin user along with it —
