@@ -1,0 +1,4 @@
+.DS_Store
+
+# Claude Code local settings (personal permission history, not shared config)
+.claude/settings.local.json

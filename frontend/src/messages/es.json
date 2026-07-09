@@ -1,0 +1,131 @@
+{
+  "Nav": {
+    "home": "Home",
+    "sales": "Ventas",
+    "rentals": "Alquileres",
+    "about": "Quiénes Somos",
+    "contact": "Contacto",
+    "map": "Buscador",
+    "language": "Español",
+    "viewAll": "Ver todas"
+  },
+  "Zones": {
+    "pueblo-jose-ignacio": "Pueblo José Ignacio",
+    "club-de-mar": "Club de Mar",
+    "pinar-del-faro": "Pinar del Faro",
+    "laguna-escondida": "Laguna Escondida",
+    "alrededores": "Alrededores",
+    "otras-zonas": "Otras Zonas"
+  },
+  "Home": {
+    "heroTitle": "Venta, Alquiler y Administracion de propiedades.",
+    "heroSubtitle": "José Ignacio. Uruguay.",
+    "heroCta": "Ver Propiedades",
+    "aboutTitle": "Somos una inmobiliaria dedicada a la <b>venta</b>, <b>alquiler</b> y <b>administración de propiedades</b> en <b>José Ignacio</b>, <b>Uruguay.</b>",
+    "aboutTag": "Punta del Este · José Ignacio · Otras Zonas",
+    "aboutBody": "Somos una inmobiliaria boutique especializada en el mercado de José Ignacio y alrededores, ofreciendo asesoramiento inmobiliario de alto nivel.\n\nCombinamos atención personalizada y profundo conocimiento del lugar para entender tus necesidades y encontrar la propiedad ideal.\n\nNos destacamos por nuestro compromiso, profesionalismo y ejecución ágil en la venta, compra o alquiler de casas, chacras, lotes y departamentos.\n\nAcompañamos cada etapa del proceso con servicios llave en mano que incluyen asesoría legal, financiera y administración de propiedades, cuidándolas como propias.\n\nGarantizamos confianza y seriedad al representarte en la venta, alquiler o búsqueda de tu próxima propiedad.",
+    "salesTitle": "Propiedades en Venta en José Ignacio",
+    "featuredTitle": "Propiedades destacadas",
+    "featuredSubtitle": "Seleccionamos las mejores propiedades para vos",
+    "featuredViewAll": "Ver todas"
+  },
+  "Footer": {
+    "addressLine": "Galería Los Caracoles. Sainz Martinez y Los Biguá.",
+    "addressCity": "José Ignacio, Uruguay",
+    "phoneLabel": "Phone & Whatsapp",
+    "instagramLabel": "Visit our Instagram",
+    "rights": "Copyright ©{year} Victoria Fones Real Estate. Todos los derechos reservados. Prohibida su reproducción total o parcial."
+  },
+  "Contact": {
+    "title": "Estamos aquí para escuchar sus necesidades.",
+    "subtitle": "No deje de consultarnos sobre cualquier inquietud",
+    "name": "Nombre",
+    "email": "Email",
+    "subject": "Asunto",
+    "message": "Mensaje",
+    "submit": "Enviar"
+  },
+  "Listing": {
+    "allTitle": "Nuestras Propiedades",
+    "saleTitle": "Propiedades en Venta",
+    "rentTitle": "Propiedades en Alquiler",
+    "allTypes": "Todos los tipos",
+    "allZones": "Todas las zonas",
+    "house": "Casa",
+    "apartment": "Apartamento",
+    "land": "Terreno",
+    "chacra": "Chacra",
+    "commercial": "Comercial",
+    "bedrooms": "Dormitorios",
+    "filter": "Filtrar",
+    "noResults": "No se encontraron propiedades con estos filtros.",
+    "sortNewest": "Más recientes",
+    "sortPriceDesc": "Precio: mayor a menor",
+    "sortPriceAsc": "Precio: menor a mayor",
+    "viewCards": "Tarjetas",
+    "viewList": "Lista",
+    "viewMap": "Mapa",
+    "priceRange": "Rango de precio",
+    "any": "Cualquiera",
+    "results": "propiedades",
+    "bathrooms": "Baños",
+    "labelZone": "Zona",
+    "labelType": "Tipo",
+    "labelSort": "Ordenar por"
+  },
+  "About": {
+    "title": "Acerca de Victoria Fones Real Estate",
+    "intro": "Soy Victoria Fones, socia fundadora de VF Real Estate, una empresa boutique que se especializa en el mercado de José Ignacio y alrededores, dentro de la exclusiva ciudad de Punta del Este, ofreciendo servicios de asesoramiento inmobiliario de alto nivel.",
+    "personName": "Victoria Fones",
+    "personRole": "CEO & Founder. Sales",
+    "missionTitle": "Misión",
+    "mission": "Brindar un servicio de excelencia basado en profesionalismo, transparencia y eficacia, construyendo relaciones de confianza con nuestros clientes y superando los estándares de calidad.",
+    "visionTitle": "Visión",
+    "vision": "Ser referentes en el mercado inmobiliario de José Ignacio, destacándonos por la ética, calidad y una experiencia confiable en cada operación.",
+    "valuesTitle": "Valores",
+    "values": [
+      {
+        "term": "Confianza",
+        "desc": "Relaciones sólidas basadas en la verdad y el compromiso."
+      },
+      {
+        "term": "Integridad",
+        "desc": "Honestidad y coherencia en todas nuestras acciones."
+      },
+      {
+        "term": "Transparencia",
+        "desc": "Claridad y sinceridad en cada comunicación."
+      },
+      {
+        "term": "Excelencia",
+        "desc": "Altos estándares, profesionalismo y uso de tecnología."
+      },
+      {
+        "term": "Eficacia",
+        "desc": "Resultados óptimos y cumplimiento de objetivos."
+      }
+    ]
+  },
+  "Property": {
+    "bedrooms": "Dormitorios",
+    "bathrooms": "Baños",
+    "builtArea": "m² construidos",
+    "lotArea": "m² de lote",
+    "yearBuilt": "Año",
+    "amenities": "Amenities",
+    "rentalPrices": "Precios de alquiler por temporada",
+    "gallery": "Galería de Fotos",
+    "location": "Ubicación",
+    "contactAgent": "Consultar por esta propiedad",
+    "agent": "Agente",
+    "contactHeading": "Contacto",
+    "labelName": "Nombre",
+    "labelPhone": "Teléfono",
+    "labelAddress": "Dirección",
+    "relatedProperties": "Propiedades Relacionadas"
+  },
+  "SearchCta": {
+    "title": "¿No encontraste lo que buscabas?",
+    "text": "Podemos ayudarte a encontrar la propiedad que necesitás. Realizamos búsquedas personalizadas en Uruguay."
+  }
+}

@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+/*
+  Design tokens extracted from the live WordPress site (JupiterX + Elementor
+  global kit, elementor-kit-7). Source: combined/minified CSS served at
+  /wp-content/litespeed/css/*.css on www.victoriafones.com (2026-07-04).
+  Colors and font families are exact matches; heading sizes/spacing are not
+  yet verified pixel-for-pixel against screenshots — see design-reference/.
+*/
+:root {
+  --color-brand-primary: #03071c; /* elementor --e-global-color-primary */
+  --color-brand-secondary: #eecab3; /* elementor --e-global-color-secondary */
+  --color-brand-text: #454444; /* elementor --e-global-color-text */
+  --color-brand-accent: #e5e7e5; /* elementor --e-global-color-accent */
+  --color-brand-tan: #d8c5ba;
+  --color-brand-gray: #cccccc;
+
+  --background: #ffffff;
+  --foreground: var(--color-brand-text);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-brand-primary: var(--color-brand-primary);
+  --color-brand-secondary: var(--color-brand-secondary);
+  --color-brand-text: var(--color-brand-text);
+  --color-brand-accent: var(--color-brand-accent);
+  --color-brand-tan: var(--color-brand-tan);
+  --color-brand-gray: var(--color-brand-gray);
+
+  /* Theme default assigns Montserrat to headings, but every heading widget on
+     the live site explicitly overrides to Raleway (confirmed via the site's
+     own combined CSS: .raven-heading font-family:"Raleway" on every section
+     heading — hero, about, listings). Raleway is the real heading font.
+     Montserrat is still used in a few specific spots (e.g. the neighborhood
+     grid labels: `.elementor-widget-heading` = Montserrat 300 uppercase). */
+  --font-heading: var(--font-raleway), sans-serif;
+  --font-body: var(--font-raleway), sans-serif;
+  --font-label: var(--font-montserrat), sans-serif;
+  --font-price: var(--font-anaheim), sans-serif;
+}
+
+/*
+  Note: `@theme inline` inlines these values into generated utility classes
+  (e.g. `.font-heading`) at build time rather than emitting a real, inheritable
+  `--font-heading` custom property. Referencing var(--font-heading) here — in
+  plain, unlayered CSS that otherwise wins the cascade over Tailwind's layered
+  utilities — resolves to nothing and silently falls back to the browser
+  default. Reference the real next/font variable directly instead.
+*/
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-raleway), sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-raleway), sans-serif;
+}
+
+/* Hover card popup on the property map — flush card, no default padding. */
+.vf-card-popup .maplibregl-popup-content {
+  padding: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(3, 7, 28, 0.22);
+}
+.vf-card-popup .maplibregl-popup-tip {
+  border-top-color: #fff;
+  border-bottom-color: #fff;
+}

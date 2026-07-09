@@ -1,0 +1,131 @@
+{
+  "Nav": {
+    "home": "Home",
+    "sales": "Sales",
+    "rentals": "Rentals",
+    "about": "About Us",
+    "contact": "Contact",
+    "map": "Search",
+    "language": "English",
+    "viewAll": "View all"
+  },
+  "Zones": {
+    "pueblo-jose-ignacio": "Pueblo José Ignacio",
+    "club-de-mar": "Club de Mar",
+    "pinar-del-faro": "Pinar del Faro",
+    "laguna-escondida": "Laguna Escondida",
+    "alrededores": "Surroundings",
+    "otras-zonas": "Other Areas"
+  },
+  "Home": {
+    "heroTitle": "Sale, Rental and Property Management.",
+    "heroSubtitle": "José Ignacio. Uruguay.",
+    "heroCta": "View Properties",
+    "aboutTitle": "We are a real estate agency dedicated to the <b>sale, rental and management of properties</b> in <b>José Ignacio, Uruguay.</b>",
+    "aboutTag": "Punta del Este · José Ignacio · Other Areas",
+    "aboutBody": "We are a boutique real estate agency specialized in the José Ignacio market and surrounding areas, offering high-level real estate advice.\n\nWe combine personalized attention with deep local knowledge to understand your needs and find the ideal property.\n\nWe stand out for our commitment, professionalism and agile execution in the sale, purchase or rental of houses, farms, lots and apartments.\n\nWe accompany every stage of the process with turnkey services that include legal and financial advice and property management, caring for them as our own.\n\nWe guarantee trust and seriousness in representing you in the sale, rental or search for your next property.",
+    "salesTitle": "Properties for Sale in José Ignacio",
+    "featuredTitle": "Featured properties",
+    "featuredSubtitle": "We selected the best properties for you",
+    "featuredViewAll": "View all"
+  },
+  "Footer": {
+    "addressLine": "Galería Los Caracoles. Sainz Martinez y Los Biguá.",
+    "addressCity": "José Ignacio, Uruguay",
+    "phoneLabel": "Phone & Whatsapp",
+    "instagramLabel": "Visit our Instagram",
+    "rights": "Copyright ©{year} Victoria Fones Real Estate. All rights reserved. Total or partial reproduction is prohibited."
+  },
+  "Contact": {
+    "title": "We are here to listen to your needs.",
+    "subtitle": "Feel free to reach out with any questions",
+    "name": "Name",
+    "email": "Email",
+    "subject": "Subject",
+    "message": "Message",
+    "submit": "Send"
+  },
+  "Listing": {
+    "allTitle": "Our Properties",
+    "saleTitle": "Properties for Sale",
+    "rentTitle": "Properties for Rent",
+    "allTypes": "All types",
+    "house": "House",
+    "apartment": "Apartment",
+    "land": "Land",
+    "chacra": "Farm",
+    "commercial": "Commercial",
+    "bedrooms": "Bedrooms",
+    "filter": "Filter",
+    "noResults": "No properties found matching these filters.",
+    "allZones": "All zones",
+    "sortNewest": "Newest",
+    "sortPriceDesc": "Price: high to low",
+    "sortPriceAsc": "Price: low to high",
+    "viewCards": "Cards",
+    "viewList": "List",
+    "viewMap": "Map",
+    "priceRange": "Price range",
+    "any": "Any",
+    "results": "properties",
+    "bathrooms": "Bathrooms",
+    "labelZone": "Zone",
+    "labelType": "Type",
+    "labelSort": "Sort by"
+  },
+  "About": {
+    "title": "About Victoria Fones Real Estate",
+    "intro": "I am Victoria Fones, founding partner of VF Real Estate, a boutique firm specialized in the José Ignacio market and its surroundings, within the exclusive city of Punta del Este, offering high-level real estate advisory services.",
+    "personName": "Victoria Fones",
+    "personRole": "CEO & Founder. Sales",
+    "missionTitle": "Mission",
+    "mission": "To provide an excellent service based on professionalism, transparency and efficiency, building trusting relationships with our clients and exceeding quality standards.",
+    "visionTitle": "Vision",
+    "vision": "To be a benchmark in the José Ignacio real estate market, standing out for our ethics, quality and a reliable experience in every transaction.",
+    "valuesTitle": "Values",
+    "values": [
+      {
+        "term": "Trust",
+        "desc": "Solid relationships based on truth and commitment."
+      },
+      {
+        "term": "Integrity",
+        "desc": "Honesty and consistency in everything we do."
+      },
+      {
+        "term": "Transparency",
+        "desc": "Clarity and sincerity in every communication."
+      },
+      {
+        "term": "Excellence",
+        "desc": "High standards, professionalism and use of technology."
+      },
+      {
+        "term": "Efficiency",
+        "desc": "Optimal results and fulfillment of objectives."
+      }
+    ]
+  },
+  "Property": {
+    "bedrooms": "Bedrooms",
+    "bathrooms": "Bathrooms",
+    "builtArea": "m² built",
+    "lotArea": "m² lot",
+    "yearBuilt": "Year",
+    "amenities": "Amenities",
+    "rentalPrices": "Seasonal rental prices",
+    "gallery": "Photo Gallery",
+    "location": "Location",
+    "contactAgent": "Inquire about this property",
+    "agent": "Agent",
+    "contactHeading": "Contact",
+    "labelName": "Name",
+    "labelPhone": "Phone #",
+    "labelAddress": "Address",
+    "relatedProperties": "Related Properties"
+  },
+  "SearchCta": {
+    "title": "Didn't find what you were looking for?",
+    "text": "We can help you find the property you need. We carry out personalized searches in Uruguay."
+  }
+}
