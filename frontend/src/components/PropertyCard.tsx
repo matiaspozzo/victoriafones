@@ -13,7 +13,7 @@ export default function PropertyCard({ property }: { property: PropertySummary }
   const code = [property.code, property.neighborhood?.name].filter(Boolean).join(" - ").toUpperCase();
 
   return (
-    <Link href={`/propiedades/${property.slug}`} className="group block bg-white">
+    <Link href={`/propiedades/${property.slug}`} className="group block min-w-0 bg-white">
       <div className="relative h-[360px] w-full overflow-hidden bg-brand-gray">
         {property.cover_image ? (
           <Image
@@ -45,7 +45,7 @@ export default function PropertyCard({ property }: { property: PropertySummary }
         </p>
 
         {/* Stats + code on a single line; the code truncates if it runs long. */}
-        <div className="mt-3 flex items-center gap-x-3 overflow-hidden whitespace-nowrap text-sm text-brand-text/80">
+        <div className="mt-3 flex min-w-0 items-center gap-x-3 overflow-hidden whitespace-nowrap text-sm text-brand-text/80">
           {property.bedrooms ? (
             <span className="inline-flex shrink-0 items-center gap-1.5">{iconBed}{property.bedrooms}</span>
           ) : null}

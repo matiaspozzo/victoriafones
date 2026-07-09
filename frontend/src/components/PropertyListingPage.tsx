@@ -77,7 +77,7 @@ export default async function PropertyListingPage({
         <Image src={heroImage} alt="" fill priority className="object-cover" sizes="100vw" />
       </div>
 
-      <div className="w-full px-6 py-12 lg:px-12">
+      <div className={`w-full px-6 pt-12 lg:px-12 ${view === "map" ? "pb-4" : "pb-12"}`}>
         <PropertyFilters
           currentType={params.type}
           currentBedrooms={params.bedrooms}
@@ -142,7 +142,7 @@ export default async function PropertyListingPage({
             })}
           </ul>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {properties.map((property) => (
               <PropertyCard key={property.id} property={property} />
             ))}
