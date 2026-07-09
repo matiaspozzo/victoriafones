@@ -119,16 +119,16 @@ export default function PropertyFilters({
   }
 
   const labelClass = "pb-1 text-[11px] font-medium uppercase tracking-wide text-brand-text/60";
-  const fieldClass = "flex w-full flex-col gap-1 sm:w-auto sm:min-w-[130px] sm:flex-1";
+  const fieldClass = "flex w-full min-w-0 flex-col gap-1 sm:w-auto sm:min-w-[130px] sm:flex-1";
   const selectClass =
-    "w-full border border-brand-text/30 bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-primary focus:outline-none";
+    "w-full min-w-0 border border-brand-text/30 bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-primary focus:outline-none";
 
   return (
     <div className={`relative ${compact ? "" : "mb-10 border-b border-brand-text/10 pb-8 sm:pb-14"}`}>
       <form onSubmit={applyFilters} className="flex w-full flex-wrap items-end gap-2.5">
         {/* On mobile the selects sit in an even 2-col grid; on desktop `contents`
             dissolves the wrapper so they flow inline in the filter row. */}
-        <div className="grid w-full grid-cols-2 gap-2.5 sm:contents">
+        <div className="grid w-full min-w-0 grid-cols-2 gap-2.5 sm:contents">
           {showZone ? (
             <label className={fieldClass}>
               <span className={labelClass}>{t("labelZone")}</span>
@@ -181,7 +181,7 @@ export default function PropertyFilters({
         </div>
 
         {showPrice ? (
-          <div className="flex w-full flex-col gap-1 sm:w-auto sm:min-w-[170px] sm:flex-[1.5]">
+          <div className="flex w-full min-w-0 flex-col gap-1 sm:w-auto sm:min-w-[170px] sm:flex-[1.5]">
             <span className={labelClass}>{t("priceRange")}</span>
             <div className="flex items-center justify-between text-xs text-brand-text/70">
               <span>{formatUsd(minPrice, "es")}</span>
