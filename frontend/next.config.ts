@@ -90,6 +90,12 @@ const legacyRedirects: Array<{ source: string; destination: string }> = [
   { source: "/br/contato", destination: "/br/contacto" },
 ];
 
+// Property photos are served by the Laravel backend (Spatie Media Library),
+// at whatever host NEXT_PUBLIC_API_URL points to — next/image refuses to
+// load images from hosts not explicitly whitelisted here, so derive the
+// production pattern from the same env var instead of hardcoding a domain.
+const apiUrl = process.env.NEXT_PUBLIC_API_URL ? new URL(process.env.NEXT_PUBLIC_API_URL) : null;
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -97,6 +103,14 @@ const nextConfig: NextConfig = {
         protocol: "http",
         hostname: "localhost",
       },
+      ...(apiUrl && apiUrl.hostname !== "localhost"
+        ? [
+            {
+              protocol: apiUrl.protocol.replace(":", "") as "http" | "https",
+              hostname: apiUrl.hostname,
+            },
+          ]
+        : []),
     ],
   },
   async redirects() {
