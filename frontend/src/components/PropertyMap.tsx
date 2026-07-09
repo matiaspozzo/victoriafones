@@ -205,10 +205,14 @@ export default function PropertyMap({ locale, query = "" }: { locale: string; qu
         : "No hay propiedades en el área visible. Alejá el mapa o movételo.";
 
   return (
-    <div className="grid h-[calc(100vh-80px)] min-h-[600px] lg:grid-cols-[1fr_440px]">
-      <div ref={containerRef} className="relative h-full w-full bg-brand-accent" />
+    // Mobile: plain stack, map gets an explicit height (a "grid row" here would
+    // be auto-sized, and the map container has no intrinsic content of its own
+    // until MapLibre mounts into it, so h-full on an auto row resolves to 0 —
+    // the map was invisible). Desktop: side-by-side split filling the viewport.
+    <div className="flex flex-col lg:grid lg:h-[calc(100vh-80px)] lg:min-h-[600px] lg:grid-cols-[1fr_440px]">
+      <div ref={containerRef} className="relative h-[400px] w-full bg-brand-accent lg:h-full" />
 
-      <div className="h-full overflow-y-auto border-brand-text/10 bg-white lg:border-l">
+      <div className="max-h-[70vh] overflow-y-auto border-brand-text/10 bg-white lg:h-full lg:max-h-none lg:border-l">
         <div className="sticky top-0 z-10 border-b border-brand-text/10 bg-white px-4 py-3">
           <p className="text-sm text-brand-text/70">
             <span className="font-semibold text-brand-primary">{visible.length}</span> {unit}

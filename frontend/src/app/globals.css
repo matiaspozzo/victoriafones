@@ -50,6 +50,14 @@
   utilities — resolves to nothing and silently falls back to the browser
   default. Reference the real next/font variable directly instead.
 */
+html {
+  /* Safety net: clip any element that overflows the viewport horizontally
+     instead of letting it stretch the page and force a horizontal scrollbar.
+     Component-level width fixes are the real solution, but this guarantees
+     a bug in one never breaks layout site-wide while it's tracked down. */
+  overflow-x: hidden;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
