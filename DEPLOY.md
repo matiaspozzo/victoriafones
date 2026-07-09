@@ -69,8 +69,11 @@ adduser deploy
 usermod -aG sudo deploy
 
 # Let `deploy` log in with the same SSH key as root — needed later to rsync
-# the local database/media straight to the server as `deploy`.
-rsync --archive --chown=deploy:deploy ~/.ssh /home/deploy
+# the local database/media straight to the server as `deploy`. Uses the
+# explicit /root/.ssh path (not ~/.ssh) so it's correct even if you run this
+# after already `su - deploy`-ing — as deploy, `~` means /home/deploy, which
+# is exactly the (empty) folder we're trying to create.
+sudo rsync --archive --chown=deploy:deploy /root/.ssh /home/deploy
 
 # Basic firewall
 ufw allow OpenSSH
