@@ -358,21 +358,6 @@ timer it installs — nothing else to do.
 
 ---
 
-## Redeploying after changes
-
-```bash
-cd /var/www/victoriafones && git pull
-
-cd backend && composer install --no-dev --optimize-autoloader
-php artisan migrate --force
-php artisan config:cache && php artisan route:cache && php artisan view:cache
-
-cd ../frontend && npm install && npm run build
-pm2 restart vf-frontend
-```
-
----
-
 ## Known limits of this setup (fine for a demo, not for production)
 
 - **SQLite + local disk media are not backed up.** If you need a safety net for
@@ -383,3 +368,37 @@ pm2 restart vf-frontend
 - **`MAIL_MAILER=log`** — lead form emails aren't actually sent, they just log. Point
   it at a real SMTP (or a free-tier provider like Resend/Mailgun) if the client needs
   to receive lead notifications during the demo.
+
+---
+
+## Redeploying after changes
+
+Whenever new commits land on `main` (like the fixes made while setting this demo up),
+pull and rebuild both apps on the droplet:
+
+```bash
+cd /var/www/victoriafones && git pull
+
+# Backend
+cd backend
+composer install --no-dev --optimize-autoloader
+php artisan migrate --force
+php artisan config:cache && php artisan route:cache && php artisan view:cache
+php artisan filament:optimize
+
+# Frontend — npm run build is required even for CSS/JSX-only changes; NEXT_PUBLIC_*
+# env vars and next.config.ts are baked in at build time, not read at runtime.
+cd ../frontend
+npm install
+npm run build
+pm2 restart vf-frontend
+```
+
+Nothing here touches `database/database.sqlite`, `storage/app/public/`, or their
+permissions (set up back in step 6) — `git pull` only updates tracked source files,
+so there's no need to redo the SQLite directory-permissions fix after every deploy.
+
+If only the backend changed, you can skip the `frontend` block (and vice versa). If
+only translation/content JSON or a Blade/PHP view changed with no new migration, you
+can usually skip `migrate --force` too — it's a no-op when there's nothing pending,
+so it's safe to always include if unsure.
