@@ -1,8 +1,9 @@
 # Deploy to DigitalOcean (cheapest setup — client demo)
 
 **Target cost: ~US$6/month, $0 extra.** Everything (Laravel/Filament + Next.js) runs on a
-single small Droplet. No managed database, no Spaces bucket, no load balancer, no
-custom domain purchase required.
+single small Droplet. No managed database, no Spaces bucket, no load balancer — and since
+the client already owns `victoriafones.com`, no domain purchase either: the demo lives on
+`demo.victoriafones.com`, a subdomain of it.
 
 How this keeps the bill down:
 
@@ -11,12 +12,11 @@ How this keeps the bill down:
 | Managed Postgres/MySQL (~$15/mo) | Keep **SQLite** (already the local `.env` default) — plenty for a demo |
 | Spaces/S3 bucket for media (~$5/mo) | Store property images on the droplet's **local disk** |
 | A second droplet or App Platform service for the frontend | Run **Next.js via PM2** on the same box, reverse-proxied by Nginx |
-| A purchased domain (~$12/yr) for HTTPS | Use a **free [sslip.io](https://sslip.io) hostname** — real DNS, works with Let's Encrypt |
 | A background queue worker process | Set `QUEUE_CONNECTION=sync` — the only jobs are the revalidate call + lead emails, both cheap |
 
 If the client wants to keep this beyond the demo, the easy upgrades later are (in order of
-priority): a real domain, DO Spaces for media, automated Droplet backups, and bumping the
-Droplet size — none of them require re-architecting anything below.
+priority): DO Spaces for media, a managed database, automated Droplet backups, and bumping
+the Droplet size — none of them require re-architecting anything below.
 
 ---
 
@@ -42,19 +42,25 @@ Droplet size — none of them require re-architecting anything below.
 
 ---
 
-## 2. Get free HTTPS hostnames (no domain purchase)
+## 2. Point DNS at the Droplet
 
-[sslip.io](https://sslip.io) resolves `anything.<IP-with-dots-replaced-by-dashes>.sslip.io`
-straight to `<IP>` — it's real public DNS, so Let's Encrypt will issue certificates for it
-normally. Two hostnames, mirroring the local dev split:
+Two hostnames, mirroring the local dev split, both subdomains of the client's existing
+`victoriafones.com` (their live WordPress site is untouched — this only adds records,
+doesn't change any existing ones):
 
-- Frontend: `app.IP-WITH-DASHES.sslip.io`
-- Backend/API/admin: `api.IP-WITH-DASHES.sslip.io`
+- Frontend: `demo.victoriafones.com`
+- Backend/API/admin: `api.demo.victoriafones.com`
 
-Example: if the Droplet IP is `203.0.113.10`, use `app.203-0-113-10.sslip.io` and
-`api.203-0-113-10.sslip.io`. Nothing to configure — just use these strings in the steps
-below. (If the client already owns a domain, use real subdomains instead — same steps,
-just point A records at `IP` first.)
+In whatever DNS provider hosts `victoriafones.com` (their registrar, or Cloudflare, etc.),
+add two **A records** pointing at the Droplet's IP:
+
+| Type | Name | Value |
+|---|---|---|
+| A | `demo` | `IP` |
+| A | `api.demo` | `IP` |
+
+DNS propagation is usually minutes, sometimes longer — give it a bit before step 10
+(certbot) if `curl -I http://demo.victoriafones.com` doesn't resolve yet.
 
 ---
 
@@ -153,13 +159,13 @@ composer install --no-dev --optimize-autoloader
 cp .env.example .env   # or create fresh if no .env.example
 ```
 
-Edit `.env` (`nano .env`) — set these (fill in your two sslip.io hostnames):
+Edit `.env` (`nano .env`) — set these:
 
 ```
 APP_ENV=production
 APP_DEBUG=false
-APP_URL=https://api.IP-WITH-DASHES.sslip.io
-FRONTEND_URL=https://app.IP-WITH-DASHES.sslip.io
+APP_URL=https://api.demo.victoriafones.com
+FRONTEND_URL=https://demo.victoriafones.com
 
 DB_CONNECTION=sqlite
 # (remove/comment DB_HOST, DB_DATABASE etc. — not used with sqlite)
@@ -234,8 +240,8 @@ cd /var/www/victoriafones/frontend
 Create `.env.production`:
 
 ```
-NEXT_PUBLIC_API_URL=https://api.IP-WITH-DASHES.sslip.io
-NEXT_PUBLIC_SITE_URL=https://app.IP-WITH-DASHES.sslip.io
+NEXT_PUBLIC_API_URL=https://api.demo.victoriafones.com
+NEXT_PUBLIC_SITE_URL=https://demo.victoriafones.com
 REVALIDATE_SECRET=<same value as backend's REVALIDATE_SECRET>
 ```
 
@@ -259,7 +265,7 @@ sudo nano /etc/nginx/sites-available/vf-api
 ```nginx
 server {
     listen 80;
-    server_name api.IP-WITH-DASHES.sslip.io;
+    server_name api.demo.victoriafones.com;
     root /var/www/victoriafones/backend/public;
 
     index index.php;
@@ -299,7 +305,7 @@ sudo nano /etc/nginx/sites-available/vf-app
 ```nginx
 server {
     listen 80;
-    server_name app.IP-WITH-DASHES.sslip.io;
+    server_name demo.victoriafones.com;
 
     location / {
         proxy_pass http://127.0.0.1:3001;
@@ -325,7 +331,7 @@ sudo nginx -t && sudo systemctl reload nginx
 ## 10. Free SSL
 
 ```bash
-sudo certbot --nginx -d api.IP-WITH-DASHES.sslip.io -d app.IP-WITH-DASHES.sslip.io
+sudo certbot --nginx -d api.demo.victoriafones.com -d demo.victoriafones.com
 ```
 
 Certbot edits both server blocks to redirect HTTP → HTTPS and auto-renews via a systemd
@@ -335,8 +341,8 @@ timer it installs — nothing else to do.
 
 ## 11. Verify
 
-- `https://app.IP-WITH-DASHES.sslip.io` → the public site.
-- `https://api.IP-WITH-DASHES.sslip.io/admin` → Filament login (`admin@victoriafones.com`
+- `https://demo.victoriafones.com` → the public site.
+- `https://api.demo.victoriafones.com/admin` → Filament login (`admin@victoriafones.com`
   + the password you just set).
 - In Filament, edit a property and save — confirm it doesn't error (that's the
   Observer calling the frontend's `/api/revalidate` with `REVALIDATE_SECRET`; if the
