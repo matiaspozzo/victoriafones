@@ -8,14 +8,21 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 /**
- * Backfills the `en`/`pt` property descriptions from the live WordPress site.
+ * Backfills property descriptions from the live WordPress site, per locale.
  *
  * `import:wordpress` only ever pulled the `es` description (see its docblock), so
- * every property currently falls back to Spanish text on the /en and /br pages.
+ * every property originally fell back to Spanish text on the /en and /br pages.
  * The live site's title/H1 is NOT translated per locale (WPML keeps the same
  * post title across languages — verified by comparing rendered H1s), so only
  * `description` is actually mixed-language today; title/slug stay `es`-only
  * on purpose and are left untouched here.
+ *
+ * `es` is also in the locale map (not just en/pt): a handful of properties'
+ * original `es` description was scraped with an older, buggier heuristic (see
+ * `scrapeDescription()`) that could grab the page's copyright footer instead of
+ * the real text. Re-run with `--code=` for a specific affected property to fix
+ * it in place — don't run `es` in bulk, since editors may have since hand-edited
+ * some descriptions in Filament and a blanket re-scrape would clobber that.
  *
  * WPML exposes each language's posts as separate WP post IDs via the REST API's
  * `?lang=` filter. Slugs are consistent across languages for most properties
@@ -37,6 +44,7 @@ class ImportWordpressTranslations extends Command
 
     /** Our translatable locale => WPML `lang` query value. */
     private const LOCALE_MAP = [
+        'es' => 'es',
         'en' => 'en',
         'pt' => 'br',
     ];
@@ -169,13 +177,29 @@ class ImportWordpressTranslations extends Command
         libxml_use_internal_errors(false);
         $xpath = new \DOMXPath($dom);
 
-        // Pick the text-editor widget with the most content, not the single longest
-        // <p> in it: EN/PT pages often split the description across several short
-        // <p> tags, each individually shorter than the fixed-length contact-info
-        // card widget ("Name: Victoria Fones / Phone #: ... / Address: ...") that
-        // also lives in a `.elementor-widget-text-editor`. Comparing whole widgets
-        // (joining their <p> children) reliably beats that card and the "Price: USD"
-        // label widget, since real descriptions run much longer than either.
+        // Every property page repeats the same handful of boilerplate widgets
+        // (office address/contact card, phone, Instagram, copyright footer) in
+        // the same `.elementor-widget-text-editor` class as the real description.
+        // "Longest widget wins" isn't enough on its own — a few properties have a
+        // genuinely terse one-line description that's shorter than the contact
+        // card or copyright text (e.g. MASJIB2: "Venta terreno de 820m2..." at 44
+        // chars vs. the 147-char contact card) — so boilerplate is excluded by
+        // known signature phrases first, and "longest" only picks among the rest.
+        // (EN/PT pages also split the description across several short <p> tags,
+        // each individually shorter than the contact card — joining a widget's
+        // <p> children before comparing handles that case too.)
+        // The address/phone/Instagram lines are untranslated (verbatim English)
+        // on both the es and en pages — only the pt page actually translates
+        // them, hence the separate pt-specific signatures below.
+        $boilerplateSignatures = [
+            'Galería Los Caracoles',
+            'Copyright ©',
+            'Phone & Whatsapp',
+            'Visit our Instagram',
+            'Telefone e Whatsapp',
+            'Visite nosso Instagram',
+        ];
+
         $bestText = '';
 
         foreach ($xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' elementor-widget-text-editor ')]") as $widget) {
@@ -190,6 +214,12 @@ class ImportWordpressTranslations extends Command
             }
 
             $candidate = $paragraphs ? implode("\n\n", $paragraphs) : trim($widget->textContent);
+
+            foreach ($boilerplateSignatures as $signature) {
+                if (Str::contains($candidate, $signature)) {
+                    continue 2;
+                }
+            }
 
             if (mb_strlen($candidate) > mb_strlen($bestText)) {
                 $bestText = $candidate;
