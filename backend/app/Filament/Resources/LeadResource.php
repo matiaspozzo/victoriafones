@@ -16,25 +16,34 @@ class LeadResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-envelope';
 
+    protected static ?string $navigationLabel = 'Consultas';
+
+    protected static ?string $modelLabel = 'Consulta';
+
+    protected static ?string $pluralModelLabel = 'Consultas';
+
+    public const TYPE_LABELS = ['form' => 'Formulario', 'whatsapp' => 'WhatsApp'];
+
+    public const TYPE_COLORS = ['form' => 'info', 'whatsapp' => 'success'];
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Select::make('property_id')
+                    ->label('Propiedad')
                     ->relationship('property', 'code')
                     ->disabled(),
                 Forms\Components\Select::make('type')
-                    ->options([
-                        'form' => 'Formulario',
-                        'whatsapp' => 'WhatsApp',
-                    ])
+                    ->label('Tipo')
+                    ->options(self::TYPE_LABELS)
                     ->disabled(),
-                Forms\Components\TextInput::make('name')->disabled(),
-                Forms\Components\TextInput::make('email')->email()->disabled(),
-                Forms\Components\TextInput::make('phone')->tel()->disabled(),
-                Forms\Components\Textarea::make('message')->columnSpanFull()->disabled(),
-                Forms\Components\TextInput::make('locale')->disabled(),
-                Forms\Components\TextInput::make('source_url')->disabled(),
+                Forms\Components\TextInput::make('name')->label('Nombre')->disabled(),
+                Forms\Components\TextInput::make('email')->label('Email')->email()->disabled(),
+                Forms\Components\TextInput::make('phone')->label('Teléfono')->tel()->disabled(),
+                Forms\Components\Textarea::make('message')->label('Mensaje')->columnSpanFull()->disabled(),
+                Forms\Components\TextInput::make('locale')->label('Idioma')->disabled(),
+                Forms\Components\TextInput::make('source_url')->label('URL de origen')->disabled(),
             ]);
     }
 
@@ -48,28 +57,33 @@ class LeadResource extends Resource
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('type')
-                    ->badge(),
+                    ->label('Tipo')
+                    ->formatStateUsing(fn (string $state): string => self::TYPE_LABELS[$state] ?? $state)
+                    ->badge()
+                    ->color(fn (string $state): string => self::TYPE_COLORS[$state] ?? 'gray'),
                 Tables\Columns\TextColumn::make('property.code')
                     ->label('Propiedad'),
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->label('Email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone')
+                    ->label('Teléfono')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('locale'),
+                Tables\Columns\TextColumn::make('locale')
+                    ->label('Idioma'),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
-                    ->options([
-                        'form' => 'Formulario',
-                        'whatsapp' => 'WhatsApp',
-                    ]),
+                    ->label('Tipo')
+                    ->options(self::TYPE_LABELS),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()->label('Ver'),
+                Tables\Actions\DeleteAction::make()->modalDescription('¿Estás seguro de que querés eliminar esta consulta? Esta acción no se puede deshacer.'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

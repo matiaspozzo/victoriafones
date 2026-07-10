@@ -39,17 +39,17 @@ class RentalPricesRelationManager extends RelationManager
             ->recordTitleAttribute('label')
             ->defaultPaginationPageOption(25)
             ->columns([
-                Tables\Columns\TextColumn::make('label'),
-                Tables\Columns\TextColumn::make('price_usd')->money('usd'),
-                Tables\Columns\TextColumn::make('order'),
+                Tables\Columns\TextColumn::make('label')->label('Temporada / período'),
+                Tables\Columns\TextColumn::make('price_usd')->label('Precio (USD)')->money('usd'),
+                Tables\Columns\TextColumn::make('order')->label('Orden'),
             ])
             ->defaultSort('order')
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()->label('Crear'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()->label('Editar'),
+                Tables\Actions\DeleteAction::make()->modalDescription('¿Estás seguro de que querés eliminar este precio de alquiler? Esta acción no se puede deshacer.'),
             ]);
     }
 }

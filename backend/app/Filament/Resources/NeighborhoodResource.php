@@ -46,9 +46,11 @@ class NeighborhoodResource extends Resource
                     ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug($state)))
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('slug')
+                    ->label('Slug')
                     ->required()
                     ->unique(ignoreRecord: true),
                 Forms\Components\TextInput::make('order')
+                    ->label('Orden')
                     ->numeric()
                     ->default(0),
                 Forms\Components\TextInput::make('center_lat')
@@ -66,18 +68,21 @@ class NeighborhoodResource extends Resource
             ->defaultPaginationPageOption(25)
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('parent.name')
                     ->label('Padre'),
                 Tables\Columns\TextColumn::make('slug')
+                    ->label('Slug')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('order')
+                    ->label('Orden')
                     ->sortable(),
             ])
             ->defaultSort('order')
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()->label('Editar'),
+                Tables\Actions\DeleteAction::make()->modalDescription('¿Estás seguro de que querés eliminar este barrio? Esta acción no se puede deshacer.'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

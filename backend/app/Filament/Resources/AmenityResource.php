@@ -20,6 +20,15 @@ class AmenityResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';
 
+    // "Amenities" is kept untranslated — the frontend itself uses the same
+    // loanword for Spanish content (Property.amenities in es.json), matching
+    // how Uruguayan real-estate listings commonly use the English term as-is.
+    protected static ?string $navigationLabel = 'Amenities';
+
+    protected static ?string $modelLabel = 'Amenity';
+
+    protected static ?string $pluralModelLabel = 'Amenities';
+
     public static function getTranslatableLocales(): array
     {
         return ['es', 'en', 'pt'];
@@ -36,11 +45,14 @@ class AmenityResource extends Resource
                     ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug($state)))
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('slug')
+                    ->label('Slug')
                     ->required()
                     ->unique(ignoreRecord: true),
                 Forms\Components\TextInput::make('icon')
+                    ->label('Icono')
                     ->helperText('Nombre del icono (ej. pool, grill, waves)'),
                 Forms\Components\TextInput::make('order')
+                    ->label('Orden')
                     ->numeric()
                     ->default(0),
             ]);
@@ -52,17 +64,21 @@ class AmenityResource extends Resource
             ->defaultPaginationPageOption(25)
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
+                    ->label('Slug')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('icon'),
+                Tables\Columns\TextColumn::make('icon')
+                    ->label('Icono'),
                 Tables\Columns\TextColumn::make('order')
+                    ->label('Orden')
                     ->sortable(),
             ])
             ->defaultSort('order')
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()->label('Editar'),
+                Tables\Actions\DeleteAction::make()->modalDescription('¿Estás seguro de que querés eliminar este amenity? Esta acción no se puede deshacer.'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
