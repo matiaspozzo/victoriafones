@@ -24,7 +24,7 @@ export default async function AboutPage({
         <Image src={ABOUT_HERO} alt="" fill priority className="object-cover" sizes="100vw" />
       </div>
 
-      <section className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-[minmax(0,320px)_1fr]">
+      <section className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 py-16 md:grid-cols-[minmax(0,320px)_1fr]">
         <div>
           <div className="relative aspect-[3/4] w-full overflow-hidden bg-brand-gray">
             <Image

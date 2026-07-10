@@ -12,7 +12,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-brand-accent text-brand-text">
-      <div className="mx-auto grid max-w-7xl items-start gap-8 px-6 py-12 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-8 px-6 py-12 sm:grid-cols-2 lg:grid-cols-5">
         <Image
           src="/brand/logo-azul@2x.webp"
           alt="Victoria Fones Real Estate"

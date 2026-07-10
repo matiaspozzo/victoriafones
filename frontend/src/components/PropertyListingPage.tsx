@@ -161,7 +161,7 @@ export default async function PropertyListingPage({
       <section className="relative text-white">
         <Image src="/brand/search-cta.jpg" alt="" fill className="object-cover" sizes="100vw" />
         <div className="absolute inset-0 bg-brand-primary/90" />
-        <div className="relative mx-auto grid w-full max-w-7xl items-center gap-10 px-6 py-16 md:grid-cols-2 lg:gap-16 lg:px-12">
+        <div className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-6 py-16 md:grid-cols-2 lg:gap-16 lg:px-12">
           <div>
             <h2 className="font-heading text-[2rem] font-normal leading-tight whitespace-normal xl:whitespace-nowrap">
               {cta("title")}

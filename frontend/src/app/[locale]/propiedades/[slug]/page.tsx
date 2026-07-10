@@ -176,7 +176,7 @@ export default async function PropertyPage({ params }: Props) {
         title={property.title}
       />
 
-      <section className="mx-auto grid max-w-7xl gap-10 px-6 py-12 md:grid-cols-2">
+      <section className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 py-12 md:grid-cols-2">
         <div>
           <h2
             className="text-[1.875rem] font-medium leading-[1.41] text-brand-primary"
@@ -283,7 +283,7 @@ export default async function PropertyPage({ params }: Props) {
         </section>
       ) : null}
 
-      <section className="mx-auto grid max-w-7xl gap-10 px-6 pb-16 md:grid-cols-2">
+      <section className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 pb-16 md:grid-cols-2">
         {/* Contact form */}
         <div>
           <h2

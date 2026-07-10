@@ -53,7 +53,7 @@ export default function FeaturedPropertiesMasonry({ properties }: { properties: 
   if (!hero) return null;
 
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <FeaturedCard property={hero} hero />
       <div className="grid grid-cols-2 gap-4">
         {rest.map((property) => (

@@ -42,7 +42,7 @@ export default async function Home({
 
       <HeroVideo />
 
-      <section className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-2">
+      <section className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 py-16 md:grid-cols-2">
         <div>
           <h2 className="font-heading text-[26px] font-light leading-[1.2] tracking-[1.2px] text-brand-primary">
             {t.rich("aboutTitle", { b: (chunks) => <strong className="font-medium">{chunks}</strong> })}
