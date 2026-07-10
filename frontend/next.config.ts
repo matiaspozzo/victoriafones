@@ -88,6 +88,39 @@ const legacyRedirects: Array<{ source: string; destination: string }> = [
 
   { source: "/br/sobre-nos", destination: "/br/quienes-somos" },
   { source: "/br/contato", destination: "/br/contacto" },
+
+  // --- Flat taxonomy archives (tipo-de-operacion-sitemap.xml, tipo-de-propiedad-
+  // sitemap.xml, zona-sitemap.xml) — only indexed in `es`, no /en or /br versions
+  // existed on the live site for these. Zone slugs reuse the exact mapping
+  // `import:wordpress` uses (backend/app/Console/Commands/ImportWordpress.php's
+  // NEIGHBORHOOD_MAP/CATCH_ALL_NEIGHBORHOOD): known sub-zones map directly,
+  // the generic "jose-ignacio" tag defaults to the town, and unrecognized/
+  // discontinued zones (chacras, la-barra, la-juanita, manantiales, santa-monica —
+  // not part of the new site's simplified neighborhood tree) fall back to
+  // "otras-zonas" rather than 404ing.
+  { source: "/tipo-de-operacion/venta", destination: "/propiedades-en-venta" },
+  { source: "/tipo-de-operacion/alquiler", destination: "/propiedades-en-alquiler" },
+
+  { source: "/tipo-de-propiedad/casa", destination: "/nuestras-propiedades?type=house" },
+  { source: "/tipo-de-propiedad/casas", destination: "/nuestras-propiedades?type=house" },
+  { source: "/tipo-de-propiedad/departamento", destination: "/nuestras-propiedades?type=apartment" },
+  { source: "/tipo-de-propiedad/departamentos", destination: "/nuestras-propiedades?type=apartment" },
+  { source: "/tipo-de-propiedad/terreno", destination: "/nuestras-propiedades?type=land" },
+  { source: "/tipo-de-propiedad/terrenos", destination: "/nuestras-propiedades?type=land" },
+  { source: "/tipo-de-propiedad/chacras", destination: "/nuestras-propiedades?type=chacra" },
+
+  { source: "/zona/pueblo", destination: "/nuestras-propiedades?zona=pueblo-jose-ignacio" },
+  { source: "/zona/club-de-mar", destination: "/nuestras-propiedades?zona=club-de-mar" },
+  { source: "/zona/pinar-del-faro", destination: "/nuestras-propiedades?zona=pinar-del-faro" },
+  { source: "/zona/laguna-escondida", destination: "/nuestras-propiedades?zona=laguna-escondida" },
+  { source: "/zona/alderedores-de-jose-ignacio", destination: "/nuestras-propiedades?zona=alrededores" },
+  { source: "/zona/jose-ignacio", destination: "/nuestras-propiedades?zona=pueblo-jose-ignacio" },
+  { source: "/zona/otra-zona", destination: "/nuestras-propiedades?zona=otras-zonas" },
+  { source: "/zona/chacras", destination: "/nuestras-propiedades?zona=otras-zonas" },
+  { source: "/zona/la-barra", destination: "/nuestras-propiedades?zona=otras-zonas" },
+  { source: "/zona/la-juanita", destination: "/nuestras-propiedades?zona=otras-zonas" },
+  { source: "/zona/manantiales", destination: "/nuestras-propiedades?zona=otras-zonas" },
+  { source: "/zona/santa-monica", destination: "/nuestras-propiedades?zona=otras-zonas" },
 ];
 
 // Property photos are served by the Laravel backend (Spatie Media Library),
