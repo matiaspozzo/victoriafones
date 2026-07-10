@@ -1,10 +1,31 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import PageHeader from "@/components/PageHeader";
 import { getPageHeader } from "@/lib/api";
 import { ABOUT_HERO } from "@/lib/heroes";
+import { buildAlternates, canonicalFor } from "@/lib/seo";
 
 type Value = { term: string; desc: string };
+
+const PATHNAME = "/quienes-somos";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "About" });
+
+  return {
+    title: `${t("title")} | Victoria Fones Real Estate`,
+    alternates: {
+      canonical: canonicalFor(locale, PATHNAME),
+      languages: buildAlternates(PATHNAME),
+    },
+  };
+}
 
 export default async function AboutPage({
   params,

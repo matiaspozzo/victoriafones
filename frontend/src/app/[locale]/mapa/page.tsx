@@ -1,5 +1,27 @@
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import PropertyFilters from "@/components/PropertyFilters";
 import PropertyMap from "@/components/PropertyMap";
+import { buildAlternates, canonicalFor } from "@/lib/seo";
+
+const PATHNAME = "/mapa";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "Nav" });
+
+  return {
+    title: `${t("map")} | Victoria Fones Real Estate`,
+    alternates: {
+      canonical: canonicalFor(locale, PATHNAME),
+      languages: buildAlternates(PATHNAME),
+    },
+  };
+}
 
 export default async function MapPage({
   params,
