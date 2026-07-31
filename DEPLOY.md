@@ -402,3 +402,4 @@ If only the backend changed, you can skip the `frontend` block (and vice versa).
 only translation/content JSON or a Blade/PHP view changed with no new migration, you
 can usually skip `migrate --force` too — it's a no-op when there's nothing pending,
 so it's safe to always include if unsure.
+

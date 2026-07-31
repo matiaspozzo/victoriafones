@@ -22,7 +22,7 @@ function prefixFor(locale: string): string {
 
 type NeighborhoodNode = { slug: string; children?: NeighborhoodNode[] };
 
-// Only leaf neighborhoods (no children) have their own /venta|alquiler/{barrio}
+// Only leaf neighborhoods (no children) have their own /propiedades-en-venta|alquiler/{barrio}
 // listing page — intermediate nodes like "José Ignacio" or "Punta del Este" are
 // grouping labels only, never a property's direct neighborhood, so a listing
 // page for one would always be empty and isn't linked from anywhere in the UI.
@@ -66,7 +66,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     for (const slug of leafSlugs(neighborhoods)) {
       for (const locale of routing.locales) {
-        for (const pageKey of ["venta", "alquiler"]) {
+        for (const pageKey of ["propiedades-en-venta", "propiedades-en-alquiler"]) {
           entries.push({
             url: `${SITE_URL}${prefixFor(locale)}/${pageKey}/${slug}`,
             changeFrequency: "weekly",

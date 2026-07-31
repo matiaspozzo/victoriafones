@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: MetaProps): Promise<Metadata>
   const { locale, barrio } = await params;
   const t = await getTranslations({ locale, namespace: "Listing" });
   const tZones = await getTranslations({ locale, namespace: "Zones" });
-  const pathname = `/alquiler/${barrio}`;
+  const pathname = `/propiedades-en-alquiler/${barrio}`;
   const zoneName = tZones.has(barrio) ? tZones(barrio) : undefined;
 
   return {
@@ -32,8 +32,9 @@ export default async function RentalsByNeighborhoodPage({
   searchParams: Promise<Record<string, string | undefined>>;
 }) {
   const { locale, barrio } = await params;
-  const t = await getTranslations({ locale, namespace: "Zones" });
-  const zoneName = t.has(barrio) ? t(barrio) : undefined;
+  const tZones = await getTranslations({ locale, namespace: "Zones" });
+  const tListing = await getTranslations({ locale, namespace: "Listing" });
+  const zoneName = tZones.has(barrio) ? tZones(barrio) : undefined;
 
   return (
     <PropertyListingPage
@@ -42,7 +43,8 @@ export default async function RentalsByNeighborhoodPage({
       neighborhood={barrio}
       pageKey="alquiler"
       heroImage={ALQUILER_HERO}
-      subtitleOverride={zoneName}
+      titleOverride={zoneName ? tListing("rentInZone", { zone: zoneName }) : undefined}
+      subtitleOverride=""
       searchParams={searchParams}
     />
   );
