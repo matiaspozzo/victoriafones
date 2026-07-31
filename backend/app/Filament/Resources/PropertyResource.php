@@ -312,6 +312,45 @@ class PropertyResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->label('Editar'),
+                Tables\Actions\ReplicateAction::make()
+                    ->label('Duplicar')
+                    ->modalHeading('Duplicar propiedad')
+                    ->beforeReplicaSaved(function (Property $replica): void {
+                        $replica->code = self::nextAvailableCode($replica->code);
+                        $replica->status = 'draft';
+                        $replica->featured = false;
+
+                        foreach (['es', 'en', 'pt'] as $locale) {
+                            $title = $replica->getTranslation('title', $locale, false);
+                            if (filled($title)) {
+                                $replica->setTranslation('title', $locale, $title.' (copia)');
+                            }
+
+                            $slug = $replica->getTranslation('slug', $locale, false);
+                            if (filled($slug)) {
+                                $replica->setTranslation('slug', $locale, $slug.'-copia');
+                            }
+                        }
+                    })
+                    ->after(function (Property $record, Property $replica): void {
+                        $replica->amenities()->sync($record->amenities->pluck('id'));
+
+                        foreach (['hero', 'images'] as $collection) {
+                            foreach ($record->getMedia($collection) as $media) {
+                                $media->copy($replica, $collection);
+                            }
+                        }
+
+                        foreach ($record->rentalPrices as $rentalPrice) {
+                            $replica->rentalPrices()->create([
+                                'label' => $rentalPrice->getTranslations('label'),
+                                'price_usd' => $rentalPrice->price_usd,
+                                'order' => $rentalPrice->order,
+                            ]);
+                        }
+                    })
+                    ->successRedirectUrl(fn (Property $replica): string => self::getUrl('edit', ['record' => $replica]))
+                    ->successNotificationTitle('Propiedad duplicada. Revisá el código y el slug antes de publicar.'),
                 Tables\Actions\DeleteAction::make()->modalDescription('¿Estás seguro de que querés eliminar esta propiedad? Esta acción no se puede deshacer.'),
             ])
             ->bulkActions([
@@ -319,6 +358,23 @@ class PropertyResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    /**
+     * `code` is unique, so a straight copy would fail to save. Appends
+     * "-COPIA" (and a counter, if that's already taken too).
+     */
+    protected static function nextAvailableCode(string $baseCode): string
+    {
+        $candidate = "{$baseCode}-COPIA";
+        $suffix = 2;
+
+        while (Property::query()->where('code', $candidate)->exists()) {
+            $candidate = "{$baseCode}-COPIA-{$suffix}";
+            $suffix++;
+        }
+
+        return $candidate;
     }
 
     public static function getRelations(): array
