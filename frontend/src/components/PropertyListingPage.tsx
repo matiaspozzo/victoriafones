@@ -9,6 +9,7 @@ import PropertyMap from "@/components/PropertyMap";
 import { iconArea, iconBath, iconBed, iconCalendar } from "@/components/PropertyStats";
 import { getPageHeader, getProperties } from "@/lib/api";
 import { formatUsd } from "@/lib/format";
+import { canonicalFor } from "@/lib/seo";
 
 export default async function PropertyListingPage({
   locale,
@@ -59,6 +60,38 @@ export default async function PropertyListingPage({
   const subtitle = subtitleOverride ?? header?.hero_subtitle ?? undefined;
   const cta = await getTranslations({ locale, namespace: "SearchCta" });
 
+  // Marks up the listed properties as a Product ItemList, so search engines
+  // can pick up price/availability for each card (see the property detail
+  // page's Product markup for why Product rather than RealEstateListing).
+  const itemListJsonLd =
+    properties.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          itemListElement: properties.map((property, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            item: {
+              "@type": "Product",
+              name: property.title,
+              url: canonicalFor(locale, `/propiedades/${property.slug}`),
+              image: property.cover_image ?? undefined,
+              sku: property.code,
+              ...(property.price_usd
+                ? {
+                    offers: {
+                      "@type": "Offer",
+                      priceCurrency: "USD",
+                      price: property.price_usd,
+                      availability: "https://schema.org/InStock",
+                    },
+                  }
+                : {}),
+            },
+          })),
+        }
+      : null;
+
   // GeoJSON query for the map view (same filters as the list).
   const mapParams = new URLSearchParams();
   if (operation) mapParams.set("operation", operation);
@@ -71,13 +104,19 @@ export default async function PropertyListingPage({
 
   return (
     <main>
-      <PageHeader title={title} subtitle={subtitle} />
-
-      <div className="relative h-[320px] w-full overflow-hidden sm:h-[400px]">
+      {itemListJsonLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+        />
+      ) : null}
+      <div className="relative h-[60vh] w-full overflow-hidden">
         <Image src={heroImage} alt="" fill priority className="object-cover" sizes="100vw" />
       </div>
 
-      <div className={`w-full px-6 pt-12 lg:px-12 ${view === "map" ? "pb-4" : "pb-12"}`}>
+      <PageHeader title={title} subtitle={subtitle} />
+
+      <div className={`mx-auto max-w-7xl px-6 pt-12 ${view === "map" ? "pb-4" : "pb-12"}`}>
         <PropertyFilters
           currentType={params.type}
           currentBedrooms={params.bedrooms}
@@ -142,7 +181,7 @@ export default async function PropertyListingPage({
             })}
           </ul>
         ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-10 grid grid-cols-1 gap-20 sm:grid-cols-2">
             {properties.map((property) => (
               <PropertyCard key={property.id} property={property} />
             ))}
@@ -151,7 +190,7 @@ export default async function PropertyListingPage({
       </div>
 
       {view === "map" ? (
-        <div className="mb-16">
+        <div className="mx-auto mb-16 max-w-7xl px-6">
           <PropertyMap locale={locale} query={mapParams.toString()} />
         </div>
       ) : null}

@@ -3,9 +3,14 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import LocaleSwitcher from "./LocaleSwitcher";
 import NavDropdown, { ZONES } from "./NavDropdown";
+
+// Pages with no hero photo behind the nav — the header stays solid on these
+// instead of starting transparent, otherwise it'd be illegible against the
+// plain page background.
+const HEROLESS_PATHS = new Set(["/contacto", "/mapa"]);
 
 /** Offcanvas accordion group: main listing link + expandable zone submenu. */
 function MobileNavGroup({
@@ -57,7 +62,7 @@ function MobileNavGroup({
           {ZONES.map((zone) => (
             <li key={zone}>
               <Link
-                href={`/${basePath}/${zone}`}
+                href={`${listingPath}/${zone}`}
                 className="block py-2.5 pl-4 text-sm text-white/80 hover:text-white"
                 onClick={onNavigate}
               >
@@ -74,8 +79,12 @@ function MobileNavGroup({
 
 export default function Header() {
   const t = useTranslations("Nav");
+  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const heroless = HEROLESS_PATHS.has(pathname);
+  const solid = scrolled || heroless;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -93,7 +102,11 @@ export default function Header() {
   }, [menuOpen]);
 
   return (
-    <header className="sticky top-0 z-50 bg-brand-primary text-white shadow-md">
+    <header
+      className={`fixed inset-x-0 top-0 z-50 text-white transition-colors duration-300 ${
+        solid ? "bg-brand-primary shadow-md" : "bg-transparent"
+      }`}
+    >
       {/* Fixed height (h-20 = 80px) so the scroll-driven logo swap never
           changes the header height — that reflow was causing the jitter. */}
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-6 px-6 lg:px-0">
@@ -123,9 +136,6 @@ export default function Header() {
         </Link>
 
         <nav className="hidden items-center gap-8 pr-6 lg:flex">
-          <Link href="/" className="text-sm font-medium tracking-wide hover:text-brand-secondary">
-            {t("home")}
-          </Link>
           <NavDropdown label={t("sales")} basePath="venta" />
           <NavDropdown label={t("rentals")} basePath="alquiler" />
           <Link href="/quienes-somos" className="text-sm font-medium tracking-wide hover:text-brand-secondary">
@@ -183,14 +193,6 @@ export default function Header() {
             <span className="absolute block h-0.5 w-6 -rotate-45 bg-white" />
           </button>
         </div>
-
-        <Link
-          href="/"
-          className="border-b border-white/10 py-4 text-base font-medium tracking-wide"
-          onClick={() => setMenuOpen(false)}
-        >
-          {t("home")}
-        </Link>
 
         <MobileNavGroup label={t("sales")} basePath="venta" onNavigate={() => setMenuOpen(false)} />
         <MobileNavGroup label={t("rentals")} basePath="alquiler" onNavigate={() => setMenuOpen(false)} />

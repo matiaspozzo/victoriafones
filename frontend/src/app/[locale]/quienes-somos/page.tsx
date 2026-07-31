@@ -39,11 +39,11 @@ export default async function AboutPage({
 
   return (
     <main>
-      <PageHeader title={header?.hero_title ?? t("title")} subtitle={header?.hero_subtitle || undefined} />
-
-      <div className="relative h-[320px] w-full overflow-hidden sm:h-[400px]">
+      <div className="relative h-[60vh] w-full overflow-hidden">
         <Image src={ABOUT_HERO} alt="" fill priority className="object-cover" sizes="100vw" />
       </div>
+
+      <PageHeader title={header?.hero_title ?? t("title")} subtitle={header?.hero_subtitle || undefined} />
 
       <section className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 py-16 md:grid-cols-[minmax(0,320px)_1fr]">
         <div>

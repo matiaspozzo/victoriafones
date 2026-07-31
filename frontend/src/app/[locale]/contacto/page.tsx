@@ -34,7 +34,7 @@ export default async function ContactPage({
   const header = await getPageHeader(locale, "contacto");
 
   return (
-    <main>
+    <main className="pt-20">
       <PageHeader
         title={header?.hero_title ?? t("title")}
         subtitle={header?.hero_subtitle ?? t("subtitle")}

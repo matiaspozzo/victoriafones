@@ -24,35 +24,21 @@ export default async function Home({
 
   return (
     <main>
-      <section className="bg-brand-primary px-6 py-24 text-white">
-        <div className="mx-auto max-w-7xl">
-          <h1 className="font-heading text-[2rem] font-medium leading-tight">
-            {t("heroTitle")}
-            <br />
-            {t("heroSubtitle")}
-          </h1>
+      <HeroVideo />
+
+      <section className="mx-auto max-w-7xl px-6 py-16">
+        <div className="md:w-1/2">
+          <h2 className="font-heading text-[26px] font-light leading-[1.2] tracking-[1.2px] text-brand-primary">
+            {t.rich("aboutTitle", { b: (chunks) => <strong className="font-medium">{chunks}</strong> })}
+          </h2>
           <Link
             href="/propiedades-en-venta"
-            className="mt-8 inline-block border border-white px-6 py-3 text-sm font-medium uppercase tracking-wide hover:bg-white hover:text-brand-primary"
+            className="mt-6 inline-block text-sm font-medium uppercase tracking-wide text-brand-primary hover:underline"
           >
             {t("heroCta")}
           </Link>
         </div>
-      </section>
-
-      <HeroVideo />
-
-      <section className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 py-16 md:grid-cols-2">
-        <div>
-          <h2 className="font-heading text-[26px] font-light leading-[1.2] tracking-[1.2px] text-brand-primary">
-            {t.rich("aboutTitle", { b: (chunks) => <strong className="font-medium">{chunks}</strong> })}
-          </h2>
-          <hr className="mt-6 max-w-xs border-brand-text/30" />
-          <p className="mt-4 text-xs font-normal uppercase tracking-[2px] text-brand-text/70">
-            {t("aboutTag")}
-          </p>
-        </div>
-        <div className="space-y-4 text-brand-text">
+        <div className="mt-10 space-y-4 text-brand-text md:ml-auto md:w-1/2">
           {t("aboutBody")
             .split("\n\n")
             .map((paragraph, i) => (
@@ -88,9 +74,9 @@ export default async function Home({
         </section>
       ) : null}
 
-      <section className="bg-brand-primary px-6 py-16 text-white">
+      <section className="px-6 py-16">
         <div className="mx-auto max-w-7xl">
-          <h2 className="font-heading text-2xl font-light tracking-[0.8px] sm:text-[2rem]">
+          <h2 className="font-heading text-2xl font-light tracking-[0.8px] text-brand-primary sm:text-[2rem]">
             {t("salesTitle")}
           </h2>
 

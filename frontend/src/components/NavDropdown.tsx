@@ -45,7 +45,7 @@ export default function NavDropdown({
           <ul className="min-w-[230px] overflow-hidden rounded-lg bg-brand-accent py-2 text-sm text-brand-primary shadow-xl">
             {ZONES.map((zone) => (
               <li key={zone}>
-                <Link href={`/${basePath}/${zone}`} className="block px-5 py-2.5 hover:bg-white">
+                <Link href={`${listingPath}/${zone}`} className="block px-5 py-2.5 hover:bg-white">
                   {tZones(zone)}
                 </Link>
               </li>

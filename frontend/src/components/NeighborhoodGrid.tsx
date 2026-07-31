@@ -17,21 +17,21 @@ export default async function NeighborhoodGrid({ locale }: { locale: string }) {
   const tZones = await getTranslations({ locale, namespace: "Zones" });
 
   return (
-    <div className="grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-3">
+    <div className="grid grid-cols-2 gap-20">
       {ZONES.map((zone) => (
-        <Link key={zone.slug} href={`/venta/${zone.slug}`} className="group block">
-          <div className="relative aspect-[4/3] overflow-hidden bg-white/5">
+        <Link key={zone.slug} href={`/propiedades-en-venta/${zone.slug}`} className="group block">
+          <div className="relative aspect-video overflow-hidden bg-brand-gray">
             <Image
               src={zone.image}
               alt={tZones(zone.slug)}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"
-              sizes="(min-width: 640px) 33vw, 50vw"
+              sizes="50vw"
             />
           </div>
           {/* Label sits below the image (matches the live site's separate
-              heading widget: Montserrat 300, uppercase, white). */}
-          <span className="block py-5 font-label text-base font-light uppercase tracking-wide text-white">
+              heading widget: Montserrat 300, uppercase). */}
+          <span className="block py-5 font-label text-lg font-bold text-brand-primary">
             {tZones(zone.slug)}
           </span>
         </Link>

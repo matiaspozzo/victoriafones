@@ -1,6 +1,5 @@
 {
   "Nav": {
-    "home": "Home",
     "sales": "Sales",
     "rentals": "Rentals",
     "about": "About Us",
@@ -18,13 +17,10 @@
     "otras-zonas": "Other Areas"
   },
   "Home": {
-    "heroTitle": "Sale, Rental and Property Management.",
-    "heroSubtitle": "José Ignacio. Uruguay.",
     "heroCta": "View Properties",
-    "aboutTitle": "We are a real estate agency dedicated to the <b>sale, rental and management of properties</b> in <b>José Ignacio, Uruguay.</b>",
-    "aboutTag": "Punta del Este · José Ignacio · Other Areas",
-    "aboutBody": "We are a boutique real estate agency specialized in the José Ignacio market and surrounding areas, offering high-level real estate advice.\n\nWe combine personalized attention with deep local knowledge to understand your needs and find the ideal property.\n\nWe stand out for our commitment, professionalism and agile execution in the sale, purchase or rental of houses, farms, lots and apartments.\n\nWe accompany every stage of the process with turnkey services that include legal and financial advice and property management, caring for them as our own.\n\nWe guarantee trust and seriousness in representing you in the sale, rental or search for your next property.",
-    "salesTitle": "Properties for Sale in José Ignacio",
+    "aboutTitle": "We have the perfect property for every client.",
+    "aboutBody": "Real estate advisory — for those looking for the right place. At VF Real Estate we work with real information, a carefully curated portfolio, and the knowledge of someone who lives and works here — to accompany every search with the judgment it deserves. José Ignacio is our market, our home, and our specialty.",
+    "salesTitle": "Properties for Sale by Zone",
     "featuredTitle": "Featured properties",
     "featuredSubtitle": "We selected the best properties for you",
     "featuredViewAll": "View all"
@@ -49,6 +45,8 @@
     "allTitle": "Our Properties",
     "saleTitle": "Properties for Sale",
     "rentTitle": "Properties for Rent",
+    "saleInZone": "Properties for sale in {zone}",
+    "rentInZone": "Properties for rent in {zone}",
     "allTypes": "All types",
     "house": "House",
     "apartment": "Apartment",

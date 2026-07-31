@@ -1,6 +1,5 @@
 {
   "Nav": {
-    "home": "Home",
     "sales": "Vendas",
     "rentals": "Aluguéis",
     "about": "Quem Somos",
@@ -18,13 +17,10 @@
     "otras-zonas": "Outras Áreas"
   },
   "Home": {
-    "heroTitle": "Venda, Aluguel e Administração de propriedades.",
-    "heroSubtitle": "José Ignacio. Uruguai.",
     "heroCta": "Ver Propriedades",
-    "aboutTitle": "Somos uma agência imobiliária dedicada à <b>venda, aluguel e gestão de propriedades</b> em <b>José Ignacio, Uruguai.</b>",
-    "aboutTag": "Punta del Este · José Ignacio · Outras Zonas",
-    "aboutBody": "Somos uma imobiliária boutique especializada no mercado de José Ignacio e arredores, oferecendo assessoria imobiliária de alto nível.\n\nCombinamos atendimento personalizado e profundo conhecimento do lugar para entender suas necessidades e encontrar a propriedade ideal.\n\nDestacamo-nos pelo nosso compromisso, profissionalismo e execução ágil na venda, compra ou aluguel de casas, chácras, terrenos e apartamentos.\n\nAcompanhamos cada etapa do processo com serviços chave na mão que incluem assessoria jurídica, financeira e administração de propriedades, cuidando delas como próprias.\n\nGarantimos confiança e seriedade ao representá-lo na venda, aluguel ou busca da sua próxima propriedade.",
-    "salesTitle": "Propriedades à Venda em José Ignacio",
+    "aboutTitle": "Temos o imóvel perfeito para cada cliente.",
+    "aboutBody": "Assessoria imobiliária — para quem busca o lugar certo. Na VF Real Estate trabalhamos com informação real, um portfólio cuidado e o conhecimento de quem vive e trabalha aqui — para acompanhar cada busca com o critério que ela merece. José Ignacio é o nosso mercado, a nossa casa e a nossa especialidade.",
+    "salesTitle": "Propriedades à Venda por Zona",
     "featuredTitle": "Propriedades em destaque",
     "featuredSubtitle": "Selecionamos as melhores propriedades para você",
     "featuredViewAll": "Ver todas"
@@ -49,6 +45,8 @@
     "allTitle": "Nossas Propriedades",
     "saleTitle": "Propriedades à Venda",
     "rentTitle": "Propriedades para Alugar",
+    "saleInZone": "Propriedades à venda em {zone}",
+    "rentInZone": "Propriedades para alugar em {zone}",
     "allTypes": "Todos os tipos",
     "house": "Casa",
     "apartment": "Apartamento",

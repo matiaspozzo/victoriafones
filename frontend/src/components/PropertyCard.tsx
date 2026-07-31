@@ -36,7 +36,7 @@ export default function PropertyCard({ property }: { property: PropertySummary }
       </div>
 
       <div className="pt-5">
-        <h3 className="border-b border-brand-text/15 pb-3 font-heading text-2xl font-medium leading-snug text-brand-primary">
+        <h3 className="pb-3 font-heading text-2xl font-medium leading-snug text-brand-primary">
           {property.title}
         </h3>
 

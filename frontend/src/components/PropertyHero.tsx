@@ -23,7 +23,7 @@ export default function PropertyHero({ images, title }: { images: HeroImage[]; t
   if (count === 0) return null;
 
   return (
-    <section className="relative h-[380px] w-full overflow-hidden bg-brand-gray sm:h-[520px]">
+    <section className="relative h-[60vh] w-full overflow-hidden bg-brand-gray">
       {slides.map((img, i) => (
         <div
           key={i}

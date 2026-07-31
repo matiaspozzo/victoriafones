@@ -1,9 +1,9 @@
 import { Fragment, type ReactNode } from "react";
 
 /**
- * Navy header band used on every internal (non-homepage) page — mirrors the
- * live site's ~220px blue header with the page title in white. Text is editable
- * from the Filament backend (PageSetting), fetched per page and passed in here.
+ * Page title block shown below the hero photo on every internal (non-homepage)
+ * page. Text is editable from the Filament backend (PageSetting), fetched per
+ * page and passed in here.
  *
  * Bold segments are configurable from the backend: wrap a word in **double
  * asterisks** (e.g. "Todas las propiedades en **Venta**.") to render it bold,
@@ -29,8 +29,8 @@ export default function PageHeader({
   subtitle?: string;
 }) {
   return (
-    <section className="w-full bg-brand-primary text-white">
-      <div className="mx-auto flex min-h-[220px] max-w-7xl flex-col justify-center px-6 py-12">
+    <section className="w-full text-brand-primary">
+      <div className="mx-auto max-w-7xl px-6 py-10">
         <h1 className="font-heading text-[2rem] font-normal leading-tight">
           {renderRich(title)}
           {subtitle ? (

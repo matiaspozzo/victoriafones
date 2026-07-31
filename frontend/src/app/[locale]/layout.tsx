@@ -42,6 +42,8 @@ const organizationJsonLd = {
   "@type": "RealEstateAgent",
   name: "Victoria Fones Real Estate",
   url: SITE_URL,
+  logo: `${SITE_URL}/brand/logo-azul@2x.webp`,
+  image: `${SITE_URL}/brand/logo-azul@2x.webp`,
   telephone: "+598 9470 7314",
   email: "info@victoriafones.com",
   address: {
@@ -50,6 +52,12 @@ const organizationJsonLd = {
     addressLocality: "José Ignacio",
     addressCountry: "UY",
   },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: -34.8425851,
+    longitude: -54.6406539,
+  },
+  areaServed: "José Ignacio, Punta del Este, Uruguay",
   sameAs: ["https://www.instagram.com/victoriafones.realestate"],
 };
 

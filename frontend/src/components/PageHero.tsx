@@ -15,8 +15,8 @@ export default function PageHero({
   subtitle?: string;
 }) {
   return (
-    <section className="relative max-h-[400px] w-full overflow-hidden">
-      <div className="relative h-[400px] w-full">
+    <section className="relative w-full overflow-hidden">
+      <div className="relative h-[60vh] w-full">
         <Image src={image} alt="" fill priority className="object-cover" sizes="100vw" />
         <div className="absolute inset-0 bg-gradient-to-t from-brand-primary/85 via-brand-primary/40 to-brand-primary/30" />
         <div className="absolute inset-0 flex items-center">

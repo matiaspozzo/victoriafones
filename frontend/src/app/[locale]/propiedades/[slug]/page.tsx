@@ -144,6 +144,31 @@ export default async function PropertyPage({ params }: Props) {
       : {}),
   };
 
+  // Google doesn't offer rich results for RealEstateListing, so this
+  // additionally marks the property up as a Product — Product/Offer is what
+  // actually renders price/availability in search results.
+  const productJsonLd = property.price_usd
+    ? {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: property.title,
+        description: property.description ?? property.excerpt ?? undefined,
+        image: property.images.map((img) => img.full),
+        sku: property.code,
+        brand: {
+          "@type": "Organization",
+          name: "Victoria Fones Real Estate",
+        },
+        offers: {
+          "@type": "Offer",
+          url: canonicalFor(locale, `/propiedades/${property.slug}`),
+          priceCurrency: "USD",
+          price: property.price_usd,
+          availability: "https://schema.org/InStock",
+        },
+      }
+    : null;
+
   const stats: { icon: ReactNode; value: string }[] = [];
   if (property.bedrooms) stats.push({ icon: iconBed, value: `${property.bedrooms} ${t("bedrooms")}` });
   if (property.bathrooms) stats.push({ icon: iconBath, value: `${property.bathrooms} ${t("bathrooms")}` });
@@ -157,9 +182,19 @@ export default async function PropertyPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      {/* Navy headline block, with the image slider below it (matches the live site). */}
-      <section className="w-full bg-brand-primary text-white">
-        <div className="mx-auto max-w-7xl px-6 py-12">
+      {productJsonLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+        />
+      ) : null}
+      <PropertyHero
+        images={property.hero_images?.length ? property.hero_images : property.images}
+        title={property.title}
+      />
+
+      <section className="w-full text-brand-primary">
+        <div className="mx-auto max-w-7xl px-6 py-10">
           <h1 className="font-heading text-[2rem] font-medium leading-[1.2]">
             {property.title}
           </h1>
@@ -170,11 +205,6 @@ export default async function PropertyPage({ params }: Props) {
           ) : null}
         </div>
       </section>
-
-      <PropertyHero
-        images={property.hero_images?.length ? property.hero_images : property.images}
-        title={property.title}
-      />
 
       <section className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 py-12 md:grid-cols-2">
         <div>
