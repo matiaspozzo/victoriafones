@@ -172,9 +172,20 @@ class ImportWordpress extends Command
                 'bedrooms' => $scraped['bedrooms'],
                 'bathrooms' => $scraped['bathrooms'],
                 'built_area_m2' => $type === 'land' ? null : $scraped['built_area_m2'],
-                'lot_area_m2' => $type === 'land' ? $scraped['built_area_m2'] : null,
                 'year_built' => $scraped['year_built'],
             ]);
+
+            // WP's JetEngine listing only exposes a single generic m² field. For
+            // land it IS the lot size, so it's safe to keep in sync from the source.
+            // For every other type WP has no lot-size concept at all — that value
+            // only ever comes from manual entry in Filament (built vs. lot area is
+            // an our-side distinction WP doesn't make) — so never clobber it on
+            // re-sync, only default it to null the first time a property is created.
+            if ($type === 'land') {
+                $property->lot_area_m2 = $scraped['built_area_m2'];
+            } elseif ($isNew) {
+                $property->lot_area_m2 = null;
+            }
 
             // Manual/content fields are only seeded on first import so re-runs
             // (e.g. to re-map neighborhoods) never clobber editor changes:
@@ -361,7 +372,7 @@ class ImportWordpress extends Command
             return $result;
         }
 
-        $dom = new \DOMDocument();
+        $dom = new \DOMDocument;
         libxml_use_internal_errors(true);
         $dom->loadHTML($response->body());
         libxml_use_internal_errors(false);
