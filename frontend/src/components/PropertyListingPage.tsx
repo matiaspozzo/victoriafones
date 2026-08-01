@@ -206,20 +206,20 @@ export default async function PropertyListingPage({
       ) : null}
 
       {/* "Didn't find what you were looking for?" CTA + contact form.
-          Background photo with a 90% navy overlay, like the live site. */}
-      <section className="relative text-white">
-        <Image src="/brand/search-cta.jpg" alt="" fill className="object-cover" sizes="100vw" />
-        <div className="absolute inset-0 bg-brand-primary/90" />
+          Grayscale background photo with a 90% light overlay. */}
+      <section className="relative text-brand-primary">
+        <Image src="/brand/search-cta.jpg" alt="" fill className="object-cover grayscale" sizes="100vw" />
+        <div className="absolute inset-0 bg-[#eeeeec]/90" />
         <div className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-6 py-16 md:grid-cols-2 lg:gap-16 lg:px-12">
           <div>
-            <h2 className="font-heading text-[2rem] font-normal leading-tight whitespace-normal xl:whitespace-nowrap">
+            <h2 className="font-heading text-[2rem] font-bold leading-tight text-brand-primary whitespace-normal xl:whitespace-nowrap">
               {cta("title")}
             </h2>
-            <hr className="my-8 max-w-xs border-white/25" />
-            <p className="max-w-md text-white/80">{cta("text")}</p>
+            <hr className="my-8 max-w-xs border-brand-primary/25" />
+            <p className="max-w-md font-bold text-brand-primary">{cta("text")}</p>
           </div>
           <div>
-            <LeadForm variant="onDark" />
+            <LeadForm />
           </div>
         </div>
       </section>
