@@ -100,6 +100,9 @@ export type Neighborhood = {
   name: string;
   description: string | null;
   hero_image: { desktop: string | null; mobile: string | null };
+  seo_title: string | null;
+  seo_description: string | null;
+  og_image: string | null;
   // Absent entirely (not []) past the API's 2-level eager-load depth — leaf
   // nodes have no "children" key at all in the JSON.
   children?: Neighborhood[];

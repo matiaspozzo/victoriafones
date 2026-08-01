@@ -16,14 +16,29 @@ export async function generateMetadata({ params }: MetaProps): Promise<Metadata>
   const pathname = `/propiedades-en-venta/${barrio}`;
   const zoneName = tZones.has(barrio) ? tZones(barrio) : undefined;
 
+  const { data: neighborhoods } = await getNeighborhoods(locale).catch(() => ({ data: [] }));
+  const neighborhood = findNeighborhoodBySlug(neighborhoods, barrio);
+
+  const title =
+    neighborhood?.seo_title ||
+    (zoneName ? t("saleMetaTitle", { zone: zoneName }) : `${t("saleTitle")} | Victoria Fones Real Estate`);
+  const description = neighborhood?.seo_description ?? undefined;
+
   return {
-    title: zoneName
-      ? t("saleMetaTitle", { zone: zoneName })
-      : `${t("saleTitle")} | Victoria Fones Real Estate`,
+    title,
+    // Omit the key entirely rather than passing description: undefined — Next
+    // treats an explicitly-present-but-undefined field as "this page has no
+    // description" (blocking inheritance from the root layout's), not as
+    // "unset, inherit from parent". Zones without a custom SEO description
+    // would otherwise render with none at all instead of falling back.
+    ...(description ? { description } : {}),
     alternates: {
       canonical: canonicalFor(locale, pathname),
       languages: buildAlternates(pathname),
     },
+    ...(neighborhood?.og_image
+      ? { openGraph: { title, description, images: [neighborhood.og_image] } }
+      : {}),
   };
 }
 

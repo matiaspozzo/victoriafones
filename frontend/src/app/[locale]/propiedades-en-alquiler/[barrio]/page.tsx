@@ -16,14 +16,25 @@ export async function generateMetadata({ params }: MetaProps): Promise<Metadata>
   const pathname = `/propiedades-en-alquiler/${barrio}`;
   const zoneName = tZones.has(barrio) ? tZones(barrio) : undefined;
 
+  const { data: neighborhoods } = await getNeighborhoods(locale).catch(() => ({ data: [] }));
+  const neighborhood = findNeighborhoodBySlug(neighborhoods, barrio);
+
+  const title =
+    neighborhood?.seo_title ||
+    (zoneName ? t("rentMetaTitle", { zone: zoneName }) : `${t("rentTitle")} | Victoria Fones Real Estate`);
+  const description = neighborhood?.seo_description ?? undefined;
+
   return {
-    title: zoneName
-      ? t("rentMetaTitle", { zone: zoneName })
-      : `${t("rentTitle")} | Victoria Fones Real Estate`,
+    title,
+    // See the sale-zone page's identical comment: omit rather than pass undefined.
+    ...(description ? { description } : {}),
     alternates: {
       canonical: canonicalFor(locale, pathname),
       languages: buildAlternates(pathname),
     },
+    ...(neighborhood?.og_image
+      ? { openGraph: { title, description, images: [neighborhood.og_image] } }
+      : {}),
   };
 }
 

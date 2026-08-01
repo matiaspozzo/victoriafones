@@ -28,9 +28,9 @@ export default async function Home({
 
       <section className="mx-auto max-w-7xl px-6 py-16">
         <div className="md:w-1/2">
-          <h2 className="font-heading text-[26px] font-light leading-[1.2] tracking-[1.2px] text-brand-primary">
+          <h1 className="font-heading text-[26px] font-light leading-[1.2] tracking-[1.2px] text-brand-primary">
             {t.rich("aboutTitle", { b: (chunks) => <strong className="font-medium">{chunks}</strong> })}
-          </h2>
+          </h1>
           <Link
             href="/propiedades-en-venta"
             className="mt-6 inline-block text-sm font-medium uppercase tracking-wide text-brand-primary hover:underline"

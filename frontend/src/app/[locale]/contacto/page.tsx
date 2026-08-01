@@ -17,9 +17,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Nav" });
+  const tContact = await getTranslations({ locale, namespace: "Contact" });
 
   return {
     title: `${t("contact")} | Victoria Fones Real Estate`,
+    description: tContact("metaDescription"),
     alternates: {
       canonical: canonicalFor(locale, PATHNAME),
       languages: buildAlternates(PATHNAME),

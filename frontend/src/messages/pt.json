@@ -6,7 +6,8 @@
     "contact": "Contato",
     "map": "Buscador",
     "language": "Português",
-    "viewAll": "Ver todas"
+    "viewAll": "Ver todas",
+    "mapDescription": "Explore propriedades à venda e para alugar em José Ignacio e Punta del Este em nosso mapa interativo."
   },
   "Zones": {
     "pueblo-jose-ignacio": "Pueblo José Ignacio",
@@ -39,7 +40,8 @@
     "email": "Email",
     "subject": "Assunto",
     "message": "Mensagem",
-    "submit": "Enviar"
+    "submit": "Enviar",
+    "metaDescription": "Entre em contato com a Victoria Fones Real Estate para assessoria imobiliária em José Ignacio e Punta del Este. Ajudamos você a encontrar o imóvel ideal."
   },
   "Listing": {
     "allTitle": "Nossas Propriedades",
@@ -49,6 +51,9 @@
     "rentInZone": "Propriedades para alugar em {zone}",
     "saleMetaTitle": "Casa à Venda em {zone} - Punta del Este | Victoria Fones",
     "rentMetaTitle": "Casa para Alugar em {zone} - Punta del Este | Victoria Fones",
+    "saleMetaDescription": "Descubra propriedades à venda em José Ignacio e Punta del Este: casas, apartamentos e terrenos selecionados pela Victoria Fones Real Estate.",
+    "rentMetaDescription": "Aluguéis de temporada e anuais em José Ignacio e Punta del Este. Casas e apartamentos selecionados pela Victoria Fones Real Estate.",
+    "allMetaDescription": "Conheça o portfólio completo de propriedades à venda e para alugar da Victoria Fones Real Estate em José Ignacio e Punta del Este.",
     "allTypes": "Todos os tipos",
     "house": "Casa",
     "apartment": "Apartamento",
@@ -75,6 +80,7 @@
   },
   "About": {
     "title": "Sobre a Victoria Fones Real Estate",
+    "metaDescription": "Conheça a Victoria Fones Real Estate, imobiliária boutique especializada em José Ignacio e Punta del Este, Uruguai.",
     "intro": "Sou Victoria Fones, sócia fundadora da VF Real Estate, uma empresa boutique especializada no mercado de José Ignacio e arredores, dentro da exclusiva cidade de Punta del Este, oferecendo serviços de assessoria imobiliária de alto nível.",
     "personName": "Victoria Fones",
     "personRole": "CEO & Founder. Sales",
@@ -115,6 +121,8 @@
     "amenities": "Amenities",
     "rentalPrices": "Preços de aluguel por temporada",
     "gallery": "Galeria de Fotos",
+    "next": "próximo",
+    "previous": "anterior",
     "location": "Localização",
     "contactAgent": "Consultar sobre esta propriedade",
     "agent": "Agente",

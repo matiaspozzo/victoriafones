@@ -6,7 +6,8 @@
     "contact": "Contacto",
     "map": "Buscador",
     "language": "Español",
-    "viewAll": "Ver todas"
+    "viewAll": "Ver todas",
+    "mapDescription": "Explorá propiedades en venta y alquiler en José Ignacio y Punta del Este en nuestro mapa interactivo."
   },
   "Zones": {
     "pueblo-jose-ignacio": "Pueblo José Ignacio",
@@ -39,7 +40,8 @@
     "email": "Email",
     "subject": "Asunto",
     "message": "Mensaje",
-    "submit": "Enviar"
+    "submit": "Enviar",
+    "metaDescription": "Contactá a Victoria Fones Real Estate para asesoramiento inmobiliario en José Ignacio y Punta del Este. Te ayudamos a encontrar la propiedad ideal."
   },
   "Listing": {
     "allTitle": "Nuestras Propiedades",
@@ -49,10 +51,13 @@
     "rentInZone": "Propiedades en alquiler en {zone}",
     "saleMetaTitle": "Casa en Venta en {zone} - Punta del Este | Victoria Fones",
     "rentMetaTitle": "Casa en Alquiler en {zone} - Punta del Este | Victoria Fones",
+    "saleMetaDescription": "Explorá propiedades en venta en José Ignacio y Punta del Este: casas, apartamentos y terrenos seleccionados por Victoria Fones Real Estate.",
+    "rentMetaDescription": "Alquileres de temporada y anuales en José Ignacio y Punta del Este. Casas y apartamentos seleccionados por Victoria Fones Real Estate.",
+    "allMetaDescription": "Conocé el portfolio completo de propiedades en venta y alquiler de Victoria Fones Real Estate en José Ignacio y Punta del Este.",
     "allTypes": "Todos los tipos",
     "allZones": "Todas las zonas",
     "house": "Casa",
-    "apartment": "Apartamento",
+    "apartment": "Departamento",
     "land": "Terreno",
     "chacra": "Chacra",
     "commercial": "Comercial",
@@ -75,6 +80,7 @@
   },
   "About": {
     "title": "Acerca de Victoria Fones Real Estate",
+    "metaDescription": "Conocé a Victoria Fones Real Estate, inmobiliaria boutique especializada en José Ignacio y Punta del Este, Uruguay.",
     "intro": "Soy Victoria Fones, socia fundadora de VF Real Estate, una empresa boutique que se especializa en el mercado de José Ignacio y alrededores, dentro de la exclusiva ciudad de Punta del Este, ofreciendo servicios de asesoramiento inmobiliario de alto nivel.",
     "personName": "Victoria Fones",
     "personRole": "CEO & Founder. Sales",
@@ -115,6 +121,8 @@
     "amenities": "Amenities",
     "rentalPrices": "Precios de alquiler por temporada",
     "gallery": "Galería de Fotos",
+    "next": "siguiente",
+    "previous": "anterior",
     "location": "Ubicación",
     "contactAgent": "Consultar por esta propiedad",
     "agent": "Agente",

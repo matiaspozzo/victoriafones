@@ -6,7 +6,8 @@
     "contact": "Contact",
     "map": "Search",
     "language": "English",
-    "viewAll": "View all"
+    "viewAll": "View all",
+    "mapDescription": "Explore properties for sale and rent in José Ignacio and Punta del Este on our interactive map."
   },
   "Zones": {
     "pueblo-jose-ignacio": "Pueblo José Ignacio",
@@ -39,7 +40,8 @@
     "email": "Email",
     "subject": "Subject",
     "message": "Message",
-    "submit": "Send"
+    "submit": "Send",
+    "metaDescription": "Get in touch with Victoria Fones Real Estate for real estate advisory in José Ignacio and Punta del Este. We'll help you find the right property."
   },
   "Listing": {
     "allTitle": "Our Properties",
@@ -49,6 +51,9 @@
     "rentInZone": "Properties for rent in {zone}",
     "saleMetaTitle": "House for Sale in {zone} - Punta del Este | Victoria Fones",
     "rentMetaTitle": "House for Rent in {zone} - Punta del Este | Victoria Fones",
+    "saleMetaDescription": "Browse properties for sale in José Ignacio and Punta del Este: houses, apartments and land curated by Victoria Fones Real Estate.",
+    "rentMetaDescription": "Seasonal and annual rentals in José Ignacio and Punta del Este. Houses and apartments curated by Victoria Fones Real Estate.",
+    "allMetaDescription": "Explore the full portfolio of properties for sale and rent from Victoria Fones Real Estate in José Ignacio and Punta del Este.",
     "allTypes": "All types",
     "house": "House",
     "apartment": "Apartment",
@@ -75,6 +80,7 @@
   },
   "About": {
     "title": "About Victoria Fones Real Estate",
+    "metaDescription": "Meet Victoria Fones Real Estate, a boutique agency specializing in José Ignacio and Punta del Este, Uruguay.",
     "intro": "I am Victoria Fones, founding partner of VF Real Estate, a boutique firm specialized in the José Ignacio market and its surroundings, within the exclusive city of Punta del Este, offering high-level real estate advisory services.",
     "personName": "Victoria Fones",
     "personRole": "CEO & Founder. Sales",
@@ -115,6 +121,8 @@
     "amenities": "Amenities",
     "rentalPrices": "Seasonal rental prices",
     "gallery": "Photo Gallery",
+    "next": "next",
+    "previous": "previous",
     "location": "Location",
     "contactAgent": "Inquire about this property",
     "agent": "Agent",

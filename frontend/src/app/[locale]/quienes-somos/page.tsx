@@ -21,6 +21,7 @@ export async function generateMetadata({
 
   return {
     title: `${t("title")} | Victoria Fones Real Estate`,
+    description: t("metaDescription"),
     alternates: {
       canonical: canonicalFor(locale, PATHNAME),
       languages: buildAlternates(PATHNAME),
