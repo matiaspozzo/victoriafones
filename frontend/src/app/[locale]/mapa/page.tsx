@@ -46,7 +46,7 @@ export default async function MapPage({
   return (
     <div className="relative pt-20">
       {/* Filter bar: stacked above the map on mobile, floating over it on desktop. */}
-      <div className="border-b border-brand-text/10 bg-white px-4 py-4 lg:absolute lg:left-4 lg:top-4 lg:z-10 lg:rounded-lg lg:border lg:px-4 lg:py-3 lg:shadow-lg">
+      <div className="border-b border-brand-text/10 bg-white px-4 py-4 lg:absolute lg:left-4 lg:top-24 lg:z-10 lg:rounded-lg lg:border lg:px-4 lg:py-3 lg:shadow-lg">
         <PropertyFilters
           currentType={sp.type}
           currentBedrooms={sp.bedrooms}
