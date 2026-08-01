@@ -5,75 +5,55 @@ import { useState } from "react";
 
 type GalleryImage = { thumb: string; card: string; full: string };
 
+const PAGE_SIZE = 6;
+
 export default function PropertyGallery({
   images,
   title,
+  nextLabel,
+  previousLabel,
 }: {
   images: GalleryImage[];
   title: string;
+  nextLabel: string;
+  previousLabel: string;
 }) {
-  const [index, setIndex] = useState(0);
+  const [page, setPage] = useState(0);
 
   if (images.length === 0) return null;
 
-  const go = (delta: number) =>
-    setIndex((i) => (i + delta + images.length) % images.length);
+  const pageCount = Math.ceil(images.length / PAGE_SIZE);
+  const visible = images.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
 
   return (
     <div>
-      {/* Main image with prev/next controls */}
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-brand-gray">
-        <Image
-          key={index}
-          src={images[index].full}
-          alt={`${title} ${index + 1}`}
-          fill
-          className="object-cover"
-          sizes="(min-width: 1024px) 1152px, 100vw"
-          priority={index === 0}
-        />
-
-        {images.length > 1 ? (
-          <>
-            <button
-              type="button"
-              onClick={() => go(-1)}
-              aria-label="Previous"
-              className="absolute left-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-white/90 text-2xl text-brand-primary shadow-md hover:bg-white"
-            >
-              ‹
-            </button>
-            <button
-              type="button"
-              onClick={() => go(1)}
-              aria-label="Next"
-              className="absolute right-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-white/90 text-2xl text-brand-primary shadow-md hover:bg-white"
-            >
-              ›
-            </button>
-            <span className="absolute bottom-4 right-4 bg-brand-primary/80 px-3 py-1 text-xs font-medium text-white">
-              {index + 1} / {images.length}
-            </span>
-          </>
-        ) : null}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {visible.map((image, i) => (
+          <div key={page * PAGE_SIZE + i} className="relative aspect-[4/3] w-full overflow-hidden bg-brand-gray">
+            <Image
+              src={image.full}
+              alt={`${title} ${page * PAGE_SIZE + i + 1}`}
+              fill
+              className="object-cover"
+              sizes="(min-width: 640px) 50vw, 100vw"
+              priority={page === 0 && i < 2}
+            />
+          </div>
+        ))}
       </div>
 
-      {/* Thumbnail strip */}
-      {images.length > 1 ? (
-        <div className="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:thin]">
-          {images.map((image, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => setIndex(i)}
-              aria-label={`Image ${i + 1}`}
-              className={`relative aspect-[4/3] h-16 w-24 flex-shrink-0 overflow-hidden bg-brand-gray transition-opacity ${
-                i === index ? "ring-2 ring-brand-primary" : "opacity-70 hover:opacity-100"
-              }`}
-            >
-              <Image src={image.thumb} alt="" fill className="object-cover" sizes="96px" />
+      {pageCount > 1 ? (
+        <div className="mt-6 flex items-center justify-end gap-6 font-heading text-sm font-medium text-brand-primary">
+          {page > 0 ? (
+            <button type="button" onClick={() => setPage((p) => p - 1)} className="hover:underline">
+              ← {previousLabel}
             </button>
-          ))}
+          ) : null}
+          {page < pageCount - 1 ? (
+            <button type="button" onClick={() => setPage((p) => p + 1)} className="hover:underline">
+              {nextLabel} →
+            </button>
+          ) : null}
         </div>
       ) : null}
     </div>

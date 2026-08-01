@@ -21,14 +21,14 @@ export default function RelatedPropertiesSlider({ properties }: { properties: Pr
     <div className="relative">
       <div
         ref={scrollRef}
-        className="flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth [justify-content:safe_center] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {properties.map((property) => (
           <div
             key={property.id}
-            className="w-[85%] flex-shrink-0 snap-start sm:w-[46%] lg:w-[31%]"
+            className="w-[85%] flex-shrink-0 snap-center sm:w-[46%]"
           >
-            <PropertyCard property={property} />
+            <PropertyCard property={property} variant="related" />
           </div>
         ))}
       </div>

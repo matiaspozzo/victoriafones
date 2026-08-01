@@ -12,15 +12,18 @@ export default function LeadForm({
 }: {
   propertyId?: number;
   defaultSubject?: string;
-  variant?: "light" | "onDark";
+  variant?: "light" | "onDark" | "underline";
 }) {
   const t = useTranslations("Contact");
   const locale = useLocale();
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const onDark = variant === "onDark";
-  const inputClass = onDark
-    ? "w-full border border-white/20 bg-white px-4 py-3 text-brand-text placeholder:text-brand-text/50 focus:outline-none"
-    : "mt-1 w-full border border-brand-text/20 bg-[#F9F9F9] px-3 py-2";
+  const inputClass =
+    variant === "onDark"
+      ? "w-full border border-white/20 bg-white px-4 py-3 text-brand-text placeholder:text-brand-text/50 focus:outline-none"
+      : variant === "underline"
+        ? "mt-1 w-full border-0 border-b border-brand-text/30 bg-transparent px-0 py-2 focus:outline-none focus:border-brand-primary"
+        : "mt-1 w-full border border-brand-text/20 bg-[#F9F9F9] px-3 py-2";
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
