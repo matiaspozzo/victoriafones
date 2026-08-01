@@ -40,4 +40,11 @@ return [
         'revalidate_secret' => env('REVALIDATE_SECRET'),
     ],
 
+    'leads' => [
+        // Who gets emailed when a lead form is submitted. MAIL_MAILER=log until
+        // there's a real mail provider configured (see DEPLOY.md's known limits) —
+        // until then this just writes the email to the log instead of sending it.
+        'notify_email' => env('LEAD_NOTIFY_EMAIL', 'info@victoriafones.com'),
+    ],
+
 ];

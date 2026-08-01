@@ -365,9 +365,12 @@ timer it installs — nothing else to do.
   → ~$1.20/mo on the $6 plan) rather than migrating to managed Postgres/Spaces.
 - **Single droplet = single point of failure**, no auto-scaling. Fine for a
   low-traffic client demo.
-- **`MAIL_MAILER=log`** — lead form emails aren't actually sent, they just log. Point
-  it at a real SMTP (or a free-tier provider like Resend/Mailgun) if the client needs
-  to receive lead notifications during the demo.
+- **`MAIL_MAILER=log`** — a lead form submission emails `LEAD_NOTIFY_EMAIL`
+  (`App\Mail\NewLeadReceived`, sent from `LeadController`), but with the mailer still
+  set to `log` it just writes the email to `storage/logs/laravel.log` instead of
+  actually sending it. Point `MAIL_MAILER` at a real SMTP (or a free-tier provider
+  like Resend/Mailgun) if the client needs to receive lead notifications during the
+  demo — the lead itself is always saved and visible in Filament's Consultas either way.
 
 ---
 
