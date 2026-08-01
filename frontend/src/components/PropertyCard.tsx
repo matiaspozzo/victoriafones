@@ -1,20 +1,40 @@
 import Image from "next/image";
+import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { iconArea, iconBath, iconBed, iconCalendar, iconList } from "@/components/PropertyStats";
 import type { PropertySummary } from "@/lib/api";
+import { BATHROOMS_LABEL, BEDROOMS_LABEL, TYPE_LABELS, formatNumber, priceOnRequestLabel } from "@/lib/format";
 
-function priceLabel(price: number | null): string {
-  if (price === null || price <= 0) return "Consultar";
-  return `USD: ${price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
-
-export default function PropertyCard({ property }: { property: PropertySummary }) {
+export default function PropertyCard({
+  property,
+  variant = "grid",
+}: {
+  property: PropertySummary;
+  variant?: "grid" | "related";
+}) {
+  const locale = useLocale();
   const area = property.built_area_m2 ?? property.lot_area_m2;
-  const code = [property.code, property.neighborhood?.name].filter(Boolean).join(" - ").toUpperCase();
+  const typeLabel = TYPE_LABELS[locale]?.[property.type] ?? property.type;
+  const title = [property.neighborhood?.name, typeLabel].filter(Boolean).join(" · ");
+
+  const stats = [
+    area ? `${area}m2` : null,
+    property.bedrooms ? `${property.bedrooms} ${BEDROOMS_LABEL[locale] ?? BEDROOMS_LABEL.es}` : null,
+    property.bathrooms ? `${property.bathrooms} ${BATHROOMS_LABEL[locale] ?? BATHROOMS_LABEL.es}` : null,
+  ]
+    .filter(Boolean)
+    .join(" | ");
+
+  const price = property.price_usd
+    ? `USD ${formatNumber(property.price_usd, locale)}`
+    : priceOnRequestLabel(locale);
+
+  const isRelated = variant === "related";
 
   return (
-    <Link href={`/propiedades/${property.slug}`} className="group block min-w-0 bg-white">
-      <div className="relative h-[360px] w-full overflow-hidden bg-brand-gray">
+    <Link href={`/propiedades/${property.slug}`} className="group block min-w-0">
+      <div
+        className={`relative w-full overflow-hidden bg-brand-gray ${isRelated ? "aspect-video" : "h-[360px]"}`}
+      >
         {property.cover_image ? (
           <Image
             src={property.cover_image}
@@ -35,36 +55,11 @@ export default function PropertyCard({ property }: { property: PropertySummary }
         />
       </div>
 
-      <div className="pt-5">
-        <h3 className="pb-3 font-heading text-2xl font-medium leading-snug text-brand-primary">
-          {property.title}
-        </h3>
-
-        <p className="mt-3 font-price text-base font-bold tracking-wide text-brand-primary">
-          {priceLabel(property.price_usd)}
-        </p>
-
-        {/* Stats + code on a single line; the code truncates if it runs long. */}
-        <div className="mt-3 flex min-w-0 items-center gap-x-3 overflow-hidden whitespace-nowrap text-sm text-brand-text/80">
-          {property.bedrooms ? (
-            <span className="inline-flex shrink-0 items-center gap-1.5">{iconBed}{property.bedrooms}</span>
-          ) : null}
-          {property.bathrooms ? (
-            <span className="inline-flex shrink-0 items-center gap-1.5">{iconBath}{property.bathrooms}</span>
-          ) : null}
-          {area ? (
-            <span className="inline-flex shrink-0 items-center gap-1.5">{iconArea}{area}</span>
-          ) : null}
-          {property.year_built ? (
-            <span className="inline-flex shrink-0 items-center gap-1.5">{iconCalendar}{property.year_built}</span>
-          ) : null}
-          {code ? (
-            <span className="inline-flex min-w-0 items-center gap-1.5 font-label text-xs uppercase tracking-wide text-brand-text/60">
-              {iconList}
-              <span className="truncate">{code}</span>
-            </span>
-          ) : null}
-        </div>
+      <div className="pt-5 font-heading text-brand-primary">
+        <h3 className="text-2xl font-bold leading-snug">{title}</h3>
+        {stats ? <p className="mt-2 text-base">{stats}</p> : null}
+        <p className="mt-2 text-base">{price}</p>
+        {property.code ? <p className="mt-2 text-base">{property.code}</p> : null}
       </div>
     </Link>
   );
