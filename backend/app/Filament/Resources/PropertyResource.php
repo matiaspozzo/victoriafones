@@ -82,7 +82,7 @@ class PropertyResource extends Resource
                             ->label('Tipo')
                             ->options([
                                 'house' => 'Casa',
-                                'apartment' => 'Apartamento',
+                                'apartment' => 'Departamento',
                                 'land' => 'Terreno',
                                 'chacra' => 'Chacra',
                                 'commercial' => 'Comercial',
@@ -304,7 +304,7 @@ class PropertyResource extends Resource
                     ->label('Tipo')
                     ->options([
                         'house' => 'Casa',
-                        'apartment' => 'Apartamento',
+                        'apartment' => 'Departamento',
                         'land' => 'Terreno',
                         'chacra' => 'Chacra',
                         'commercial' => 'Comercial',
