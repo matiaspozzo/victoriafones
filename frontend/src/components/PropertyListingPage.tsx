@@ -19,6 +19,7 @@ export default async function PropertyListingPage({
   heroImage,
   titleOverride,
   subtitleOverride,
+  neighborhoodDescription,
   searchParams,
 }: {
   locale: string;
@@ -28,6 +29,7 @@ export default async function PropertyListingPage({
   heroImage: string;
   titleOverride?: string;
   subtitleOverride?: string;
+  neighborhoodDescription?: string;
   searchParams: Promise<Record<string, string | undefined>>;
 }) {
   const params = await searchParams;
@@ -115,6 +117,19 @@ export default async function PropertyListingPage({
       </div>
 
       <PageHeader title={title} subtitle={subtitle} />
+
+      {neighborhoodDescription ? (
+        <section className="mx-auto max-w-7xl px-6 py-16">
+          <div className="md:w-1/2">
+            <h2 className="font-heading text-[26px] font-light leading-[1.2] tracking-[1.2px] text-brand-primary">
+              {t("zoneAboutHeading")}
+            </h2>
+          </div>
+          <div className="mt-10 space-y-4 text-brand-text md:ml-auto md:w-1/2">
+            <p className="whitespace-pre-line">{neighborhoodDescription}</p>
+          </div>
+        </section>
+      ) : null}
 
       <div className={`mx-auto max-w-7xl px-6 pt-12 ${view === "map" ? "pb-4" : "pb-12"}`}>
         <PropertyFilters

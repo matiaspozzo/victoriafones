@@ -75,14 +75,29 @@ export async function getPageHeader(locale: string, key: string): Promise<PageHe
   }
 }
 
-export async function getNeighborhoods(locale: string) {
-  type Neighborhood = {
-    id: number;
-    parent_id: number | null;
-    slug: string;
-    name: string;
-    children: Neighborhood[];
-  };
+export type Neighborhood = {
+  id: number;
+  parent_id: number | null;
+  slug: string;
+  name: string;
+  description: string | null;
+  // Absent entirely (not []) past the API's 2-level eager-load depth — leaf
+  // nodes have no "children" key at all in the JSON.
+  children?: Neighborhood[];
+};
 
+export async function getNeighborhoods(locale: string) {
   return apiFetch<{ data: Neighborhood[] }>("/neighborhoods", locale);
+}
+
+/** Depth-first lookup by slug through the neighborhood tree returned by getNeighborhoods. */
+export function findNeighborhoodBySlug(tree: Neighborhood[], slug: string): Neighborhood | null {
+  for (const node of tree) {
+    if (node.slug === slug) return node;
+
+    const match = findNeighborhoodBySlug(node.children ?? [], slug);
+    if (match) return match;
+  }
+
+  return null;
 }

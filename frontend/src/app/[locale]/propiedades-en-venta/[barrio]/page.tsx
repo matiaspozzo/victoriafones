@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import PropertyListingPage from "@/components/PropertyListingPage";
+import { findNeighborhoodBySlug, getNeighborhoods } from "@/lib/api";
 import { ventaZoneHero } from "@/lib/heroes";
 import { buildAlternates, canonicalFor } from "@/lib/seo";
 
@@ -16,7 +17,9 @@ export async function generateMetadata({ params }: MetaProps): Promise<Metadata>
   const zoneName = tZones.has(barrio) ? tZones(barrio) : undefined;
 
   return {
-    title: `${t("saleTitle")}${zoneName ? ` — ${zoneName}` : ""} | Victoria Fones Real Estate`,
+    title: zoneName
+      ? t("saleMetaTitle", { zone: zoneName })
+      : `${t("saleTitle")} | Victoria Fones Real Estate`,
     alternates: {
       canonical: canonicalFor(locale, pathname),
       languages: buildAlternates(pathname),
@@ -36,6 +39,9 @@ export default async function SalesByNeighborhoodPage({
   const tListing = await getTranslations({ locale, namespace: "Listing" });
   const zoneName = tZones.has(barrio) ? tZones(barrio) : undefined;
 
+  const { data: neighborhoods } = await getNeighborhoods(locale).catch(() => ({ data: [] }));
+  const neighborhood = findNeighborhoodBySlug(neighborhoods, barrio);
+
   return (
     <PropertyListingPage
       locale={locale}
@@ -45,6 +51,7 @@ export default async function SalesByNeighborhoodPage({
       heroImage={ventaZoneHero(barrio)}
       titleOverride={zoneName ? tListing("saleInZone", { zone: zoneName }) : undefined}
       subtitleOverride=""
+      neighborhoodDescription={neighborhood?.description ?? undefined}
       searchParams={searchParams}
     />
   );
