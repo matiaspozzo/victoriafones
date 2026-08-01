@@ -70,6 +70,22 @@ class NeighborhoodResource extends Resource
                 Forms\Components\TextInput::make('center_lng')
                     ->label('Longitud central')
                     ->numeric(),
+                Forms\Components\Section::make('SEO')
+                    ->description('Metadatos para buscadores y para la vista previa al compartir el link (WhatsApp, redes sociales).')
+                    ->schema([
+                        Forms\Components\TextInput::make('seo_title')
+                            ->label('SEO Title')
+                            ->columnSpanFull(),
+                        Forms\Components\Textarea::make('seo_description')
+                            ->label('SEO Description')
+                            ->columnSpanFull(),
+                        Forms\Components\SpatieMediaLibraryFileUpload::make('og_image')
+                            ->label('Imagen para compartir (OG image)')
+                            ->collection('og_image')
+                            ->image()
+                            ->helperText('Se recorta automáticamente a 1200×630, el tamaño estándar para vistas previas. Si no se sube ninguna, se usa la imagen del sitio por defecto.')
+                            ->columnSpanFull(),
+                    ]),
             ]);
     }
 
