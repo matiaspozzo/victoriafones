@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Anaheim, Montserrat, Raleway } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages } from "next-intl/server";
@@ -6,6 +7,9 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import RawScripts from "@/components/RawScripts";
+import { getSiteSettings } from "@/lib/api";
+import { OFFICE } from "@/lib/office";
 import { buildAlternates, SITE_URL } from "@/lib/seo";
 import "../globals.css";
 
@@ -54,8 +58,8 @@ const organizationJsonLd = {
   },
   geo: {
     "@type": "GeoCoordinates",
-    latitude: -34.8425851,
-    longitude: -54.6406539,
+    latitude: OFFICE.lat,
+    longitude: OFFICE.lng,
   },
   areaServed: "José Ignacio, Punta del Este, Uruguay",
   sameAs: ["https://www.instagram.com/victoriafones.realestate"],
@@ -79,6 +83,7 @@ export default async function LocaleLayout({
   }
 
   const messages = await getMessages();
+  const siteSettings = await getSiteSettings(locale);
 
   return (
     <html lang={locale}>
@@ -94,6 +99,51 @@ export default async function LocaleLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
+
+        {siteSettings?.google_analytics_id ? (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${siteSettings.google_analytics_id}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${siteSettings.google_analytics_id}');`}
+            </Script>
+          </>
+        ) : null}
+
+        {siteSettings?.facebook_pixel_id ? (
+          <>
+            <Script id="fb-pixel-init" strategy="afterInteractive">
+              {`!function(f,b,e,v,n,t,s)
+                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                n.queue=[];t=b.createElement(e);t.async=!0;
+                t.src=v;s=b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t,s)}(window, document,'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+                fbq('init', '${siteSettings.facebook_pixel_id}');
+                fbq('track', 'PageView');`}
+            </Script>
+            <noscript>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                height="1"
+                width="1"
+                style={{ display: "none" }}
+                src={`https://www.facebook.com/tr?id=${siteSettings.facebook_pixel_id}&ev=PageView&noscript=1`}
+                alt=""
+              />
+            </noscript>
+          </>
+        ) : null}
+
+        {siteSettings?.additional_scripts ? <RawScripts html={siteSettings.additional_scripts} /> : null}
+
         <NextIntlClientProvider messages={messages}>
           <Header />
           {children}

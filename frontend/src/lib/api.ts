@@ -79,6 +79,20 @@ export async function getPageHeader(locale: string, key: string): Promise<PageHe
   }
 }
 
+export type SiteSettings = {
+  google_analytics_id: string | null;
+  facebook_pixel_id: string | null;
+  additional_scripts: string | null;
+};
+
+export async function getSiteSettings(locale: string): Promise<SiteSettings | null> {
+  try {
+    return await apiFetch<SiteSettings>("/site-settings", locale);
+  } catch {
+    return null;
+  }
+}
+
 export type Neighborhood = {
   id: number;
   parent_id: number | null;

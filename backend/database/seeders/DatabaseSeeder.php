@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             NeighborhoodSeeder::class,
             AmenitySeeder::class,
             PageSettingSeeder::class,
+            SiteSettingSeeder::class,
         ]);
     }
 }
