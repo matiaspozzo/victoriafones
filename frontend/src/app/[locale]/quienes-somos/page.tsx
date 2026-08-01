@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import PageHeader from "@/components/PageHeader";
+import ResponsiveHero from "@/components/ResponsiveHero";
 import { getPageHeader } from "@/lib/api";
 import { ABOUT_HERO } from "@/lib/heroes";
 import { buildAlternates, canonicalFor } from "@/lib/seo";
@@ -39,9 +40,10 @@ export default async function AboutPage({
 
   return (
     <main>
-      <div className="relative h-[60vh] w-full overflow-hidden">
-        <Image src={ABOUT_HERO} alt="" fill priority className="object-cover" sizes="100vw" />
-      </div>
+      <ResponsiveHero
+        desktop={header?.hero_image.desktop ?? ABOUT_HERO}
+        mobile={header?.hero_image.mobile ?? ABOUT_HERO}
+      />
 
       <PageHeader title={header?.hero_title ?? t("title")} subtitle={header?.hero_subtitle || undefined} />
 

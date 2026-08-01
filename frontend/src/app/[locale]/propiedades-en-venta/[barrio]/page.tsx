@@ -49,6 +49,10 @@ export default async function SalesByNeighborhoodPage({
       neighborhood={barrio}
       pageKey="venta"
       heroImage={ventaZoneHero(barrio)}
+      heroImageOverride={{
+        desktop: neighborhood?.hero_image.desktop ?? ventaZoneHero(barrio),
+        mobile: neighborhood?.hero_image.mobile ?? ventaZoneHero(barrio),
+      }}
       titleOverride={zoneName ? tListing("saleInZone", { zone: zoneName }) : undefined}
       subtitleOverride=""
       neighborhoodDescription={neighborhood?.description ?? undefined}

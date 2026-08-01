@@ -49,6 +49,10 @@ export default async function RentalsByNeighborhoodPage({
       neighborhood={barrio}
       pageKey="alquiler"
       heroImage={ALQUILER_HERO}
+      heroImageOverride={{
+        desktop: neighborhood?.hero_image.desktop ?? ALQUILER_HERO,
+        mobile: neighborhood?.hero_image.mobile ?? ALQUILER_HERO,
+      }}
       titleOverride={zoneName ? tListing("rentInZone", { zone: zoneName }) : undefined}
       subtitleOverride=""
       neighborhoodDescription={neighborhood?.description ?? undefined}

@@ -86,14 +86,17 @@ class Property extends Model implements HasMedia
     {
         $this->addMediaConversion('thumb')
             ->fit(Fit::Crop, 400, 300)
+            ->format('webp')
             ->nonQueued();
 
         $this->addMediaConversion('card')
             ->fit(Fit::Crop, 800, 600)
+            ->format('webp')
             ->nonQueued();
 
         $this->addMediaConversion('full')
             ->fit(Fit::Max, 1920, 1920)
+            ->format('webp')
             ->nonQueued();
     }
 }

@@ -19,6 +19,10 @@ class PageController extends Controller
                         ?: $page->getTranslation('hero_title', 'es', false),
                     'hero_subtitle' => $page->getTranslation('hero_subtitle', $locale, false)
                         ?: $page->getTranslation('hero_subtitle', 'es', false),
+                    'hero_image' => [
+                        'desktop' => $page->getFirstMediaUrl('hero', 'desktop') ?: null,
+                        'mobile' => $page->getFirstMediaUrl('hero', 'mobile') ?: null,
+                    ],
                 ],
             ];
         });

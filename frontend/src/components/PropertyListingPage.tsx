@@ -7,6 +7,7 @@ import PropertyCard from "@/components/PropertyCard";
 import PropertyFilters from "@/components/PropertyFilters";
 import PropertyMap from "@/components/PropertyMap";
 import { iconArea, iconBath, iconBed, iconCalendar } from "@/components/PropertyStats";
+import ResponsiveHero from "@/components/ResponsiveHero";
 import { getPageHeader, getProperties } from "@/lib/api";
 import { formatUsd } from "@/lib/format";
 import { canonicalFor } from "@/lib/seo";
@@ -17,6 +18,7 @@ export default async function PropertyListingPage({
   neighborhood,
   pageKey,
   heroImage,
+  heroImageOverride,
   titleOverride,
   subtitleOverride,
   neighborhoodDescription,
@@ -26,7 +28,13 @@ export default async function PropertyListingPage({
   operation?: "sale" | "rent";
   neighborhood?: string;
   pageKey: "venta" | "alquiler" | "nuestras-propiedades";
+  /** Static fallback used until the client uploads a custom hero photo in Filament. */
   heroImage: string;
+  /** Fully-resolved hero (already merged with its own static fallback) for pages with
+      their own distinct photo per neighborhood (venta|alquiler/[barrio]) — takes
+      priority over the page-wide PageSetting hero, which would otherwise silently
+      override every zone's distinct hero image. */
+  heroImageOverride?: { desktop: string; mobile: string };
   titleOverride?: string;
   subtitleOverride?: string;
   neighborhoodDescription?: string;
@@ -60,6 +68,8 @@ export default async function PropertyListingPage({
     operation === "rent" ? t("rentTitle") : operation === "sale" ? t("saleTitle") : t("allTitle");
   const title = titleOverride ?? header?.hero_title ?? fallbackTitle;
   const subtitle = subtitleOverride ?? header?.hero_subtitle ?? undefined;
+  const heroDesktop = heroImageOverride?.desktop ?? header?.hero_image.desktop ?? heroImage;
+  const heroMobile = heroImageOverride?.mobile ?? header?.hero_image.mobile ?? heroImage;
   const cta = await getTranslations({ locale, namespace: "SearchCta" });
 
   // Marks up the listed properties as a Product ItemList, so search engines
@@ -112,24 +122,9 @@ export default async function PropertyListingPage({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
         />
       ) : null}
-      <div className="relative h-[60vh] w-full overflow-hidden">
-        <Image src={heroImage} alt="" fill priority className="object-cover" sizes="100vw" />
-      </div>
+      <ResponsiveHero desktop={heroDesktop} mobile={heroMobile} />
 
-      <PageHeader title={title} subtitle={subtitle} />
-
-      {neighborhoodDescription ? (
-        <section className="mx-auto max-w-7xl px-6 py-16">
-          <div className="md:w-1/2">
-            <h2 className="font-heading text-[26px] font-light leading-[1.2] tracking-[1.2px] text-brand-primary">
-              {t("zoneAboutHeading")}
-            </h2>
-          </div>
-          <div className="mt-10 space-y-4 text-brand-text md:ml-auto md:w-1/2">
-            <p className="whitespace-pre-line">{neighborhoodDescription}</p>
-          </div>
-        </section>
-      ) : null}
+      <PageHeader title={title} subtitle={subtitle} description={neighborhoodDescription} />
 
       <div className={`mx-auto max-w-7xl px-6 pt-12 ${view === "map" ? "pb-4" : "pb-12"}`}>
         <PropertyFilters

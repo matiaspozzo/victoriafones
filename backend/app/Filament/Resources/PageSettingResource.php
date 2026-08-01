@@ -49,6 +49,12 @@ class PageSettingResource extends Resource
                     ->label('Subtítulo')
                     ->helperText('Segunda línea (opcional).')
                     ->columnSpanFull(),
+                Forms\Components\SpatieMediaLibraryFileUpload::make('hero')
+                    ->label('Imagen de fondo')
+                    ->collection('hero')
+                    ->image()
+                    ->helperText('Se recorta automáticamente a 1920×1080 en desktop y 828×1104 en mobile (se recorta desde el centro, así que en fotos horizontales conviene que lo importante esté centrado). Se convierte a WebP automáticamente. Si no se sube ninguna, se usa la imagen por defecto.')
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -57,6 +63,12 @@ class PageSettingResource extends Resource
         return $table
             ->defaultPaginationPageOption(25)
             ->columns([
+                Tables\Columns\SpatieMediaLibraryImageColumn::make('hero')
+                    ->collection('hero')
+                    ->conversion('desktop')
+                    ->square()
+                    ->size(56)
+                    ->label('Imagen'),
                 Tables\Columns\TextColumn::make('label')
                     ->label('Página')
                     ->searchable(),

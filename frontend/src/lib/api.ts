@@ -64,7 +64,11 @@ export async function getProperty(locale: string, slug: string) {
   return apiFetch<{ data: PropertyDetail }>(`/properties/${slug}`, locale);
 }
 
-export type PageHeader = { hero_title: string; hero_subtitle: string };
+export type PageHeader = {
+  hero_title: string;
+  hero_subtitle: string;
+  hero_image: { desktop: string | null; mobile: string | null };
+};
 
 export async function getPageHeader(locale: string, key: string): Promise<PageHeader | null> {
   try {
@@ -81,6 +85,7 @@ export type Neighborhood = {
   slug: string;
   name: string;
   description: string | null;
+  hero_image: { desktop: string | null; mobile: string | null };
   // Absent entirely (not []) past the API's 2-level eager-load depth — leaf
   // nodes have no "children" key at all in the JSON.
   children?: Neighborhood[];

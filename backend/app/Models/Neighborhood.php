@@ -5,11 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Image\Enums\Fit;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Translatable\HasTranslations;
 
-class Neighborhood extends Model
+class Neighborhood extends Model implements HasMedia
 {
-    use HasTranslations;
+    use HasTranslations, InteractsWithMedia;
 
     public array $translatable = ['name', 'description'];
 
@@ -43,5 +47,25 @@ class Neighborhood extends Model
     public function properties(): HasMany
     {
         return $this->hasMany(Property::class);
+    }
+
+    public function registerMediaCollections(): void
+    {
+        // Background photo behind the zone listing page's title (single image).
+        $this->addMediaCollection('hero')->singleFile();
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        // Same target sizes/reasoning as PageSetting's hero — see that model.
+        $this->addMediaConversion('desktop')
+            ->fit(Fit::Crop, 1920, 1080)
+            ->format('webp')
+            ->nonQueued();
+
+        $this->addMediaConversion('mobile')
+            ->fit(Fit::Crop, 828, 1104)
+            ->format('webp')
+            ->nonQueued();
     }
 }
