@@ -16,6 +16,7 @@ class NeighborhoodResource extends JsonResource
             'parent_id' => $this->parent_id,
             'slug' => $this->slug,
             'name' => $this->getTranslation('name', $locale, false) ?: $this->getTranslation('name', 'es'),
+            'description' => $this->getTranslation('description', $locale, false) ?: $this->getTranslation('description', 'es', false),
             'center_lat' => $this->center_lat,
             'center_lng' => $this->center_lng,
             'children' => NeighborhoodResource::collection($this->whenLoaded('children')),

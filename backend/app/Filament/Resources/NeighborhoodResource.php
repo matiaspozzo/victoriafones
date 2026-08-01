@@ -49,6 +49,11 @@ class NeighborhoodResource extends Resource
                     ->label('Slug')
                     ->required()
                     ->unique(ignoreRecord: true),
+                Forms\Components\Textarea::make('description')
+                    ->label('Descripción')
+                    ->helperText('Se muestra en la página de listado de este barrio (bloque título + descripción).')
+                    ->rows(4)
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('order')
                     ->label('Orden')
                     ->numeric()

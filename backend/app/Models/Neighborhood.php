@@ -11,11 +11,12 @@ class Neighborhood extends Model
 {
     use HasTranslations;
 
-    public array $translatable = ['name'];
+    public array $translatable = ['name', 'description'];
 
     protected $fillable = [
         'parent_id',
         'name',
+        'description',
         'slug',
         'center_lat',
         'center_lng',
