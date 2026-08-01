@@ -3,9 +3,11 @@
 namespace App\Filament\Resources\PropertyResource\Pages;
 
 use App\Filament\Resources\PropertyResource;
+use App\Services\PropertyFichaPdf;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Pages\EditRecord\Concerns\Translatable;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class EditProperty extends EditRecord
 {
@@ -17,6 +19,25 @@ class EditProperty extends EditRecord
     {
         return [
             Actions\LocaleSwitcher::make(),
+            Actions\Action::make('ficha')
+                ->label('Descargar Ficha PDF')
+                ->icon('heroicon-o-document-arrow-down')
+                ->color('gray')
+                ->action(function (): StreamedResponse {
+                    $pdfService = app(PropertyFichaPdf::class);
+                    $record = $this->getRecord();
+                    $document = $pdfService->render($record);
+
+                    // Livewire only intercepts StreamedResponse/BinaryFileResponse as a
+                    // browser download — Barryvdh's own ->download() returns a plain
+                    // Response, which Livewire instead tries to JSON-encode as a normal
+                    // action return value and chokes on the raw PDF binary.
+                    return response()->streamDownload(
+                        fn () => print ($document->output()),
+                        $pdfService->filename($record),
+                        ['Content-Type' => 'application/pdf'],
+                    );
+                }),
             Actions\DeleteAction::make(),
         ];
     }
