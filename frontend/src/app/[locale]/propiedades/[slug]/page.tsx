@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import LeadForm from "@/components/LeadForm";
+import OfficeInfo from "@/components/OfficeInfo";
 import PropertyGallery from "@/components/PropertyGallery";
 import PropertyHero from "@/components/PropertyHero";
 import PropertyLocationMap from "@/components/PropertyLocationMap";
@@ -54,18 +55,6 @@ async function getRelatedProperties(locale: string, property: PropertyDetail): P
 
   return related.slice(0, RELATED_MAX);
 }
-
-// Agency office shown alongside the property contact form.
-const OFFICE = {
-  addressLine: "Galería Los Caracoles. Sainz Martinez y Los Biguá.",
-  city: "José Ignacio, Uruguay",
-  phone: "+598 9470 7314",
-  phoneHref: "+59894707314",
-  email: "info@victoriafones.com",
-  instagram: "https://www.instagram.com/victoriafones.realestate",
-  lat: -34.8425851,
-  lng: -54.6406539,
-};
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
@@ -328,43 +317,7 @@ export default async function PropertyPage({ params }: Props) {
         </div>
 
         {/* Contact info + office map (map fills the remaining column height) */}
-        <div className="flex flex-col gap-6 text-sm text-brand-text">
-          <div className="space-y-3">
-            <p>
-              {OFFICE.addressLine}{" "}
-              <span className="font-bold text-brand-primary">{OFFICE.city}</span>
-            </p>
-            <p>
-              Phone &amp; Whatsapp{" "}
-              <a href={`tel:${OFFICE.phoneHref}`} className="font-bold text-brand-primary">
-                {OFFICE.phone}
-              </a>
-            </p>
-            <p>
-              Visit our{" "}
-              <a
-                href={OFFICE.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-bold text-brand-primary underline"
-              >
-                Instagram
-              </a>
-              <br />
-              <a href={`mailto:${OFFICE.email}`} className="text-brand-primary">
-                {OFFICE.email}
-              </a>
-            </p>
-          </div>
-          <PropertyLocationMap
-            lat={OFFICE.lat}
-            lng={OFFICE.lng}
-            title="Victoria Fones Real Estate"
-            className="min-h-[280px] flex-1"
-            popupTitle="Victoria Fones Real Estate"
-            popupSubtitle={`${OFFICE.addressLine} ${OFFICE.city}`}
-          />
-        </div>
+        <OfficeInfo locale={locale} />
       </section>
 
       {relatedProperties.length > 0 ? (

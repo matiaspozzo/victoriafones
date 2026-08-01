@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import LeadForm from "@/components/LeadForm";
+import OfficeInfo from "@/components/OfficeInfo";
 import PageHeader from "@/components/PageHeader";
+import ResponsiveHero from "@/components/ResponsiveHero";
 import { getPageHeader } from "@/lib/api";
+import { ABOUT_HERO } from "@/lib/heroes";
 import { buildAlternates, canonicalFor } from "@/lib/seo";
 
 const PATHNAME = "/contacto";
@@ -34,14 +37,20 @@ export default async function ContactPage({
   const header = await getPageHeader(locale, "contacto");
 
   return (
-    <main className="pt-20">
+    <main>
+      <ResponsiveHero
+        desktop={header?.hero_image.desktop ?? ABOUT_HERO}
+        mobile={header?.hero_image.mobile ?? ABOUT_HERO}
+      />
+
       <PageHeader
         title={header?.hero_title ?? t("title")}
         subtitle={header?.hero_subtitle ?? t("subtitle")}
       />
 
-      <section className="mx-auto max-w-3xl px-6 py-16">
+      <section className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 py-16 md:grid-cols-2">
         <LeadForm />
+        <OfficeInfo locale={locale} />
       </section>
     </main>
   );
