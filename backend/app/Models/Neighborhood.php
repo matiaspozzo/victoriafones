@@ -21,6 +21,7 @@ class Neighborhood extends Model implements HasMedia
         'parent_id',
         'name',
         'description',
+        'navbar_style',
         'seo_title',
         'seo_description',
         'slug',

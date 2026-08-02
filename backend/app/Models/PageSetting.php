@@ -20,6 +20,7 @@ class PageSetting extends Model implements HasMedia
         'label',
         'hero_title',
         'hero_subtitle',
+        'navbar_style',
     ];
 
     public function registerMediaCollections(): void

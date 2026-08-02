@@ -60,6 +60,13 @@ class NeighborhoodResource extends Resource
                     ->image()
                     ->helperText('Se muestra en la página de listado de este barrio. Se recorta automáticamente a 1920×1080 en desktop y 828×1104 en mobile (desde el centro) y se convierte a WebP. Si no se sube ninguna, se usa la imagen por defecto de la zona.')
                     ->columnSpanFull(),
+                Forms\Components\Select::make('navbar_style')
+                    ->label('Color del menú (antes de hacer scroll)')
+                    ->options(['white' => 'Blanco', 'blue' => 'Azul'])
+                    ->default('white')
+                    ->required()
+                    ->helperText('Elegí azul si la imagen de fondo es clara y el menú blanco no se lee bien. Una vez que se hace scroll, el menú siempre queda azul sólido con texto blanco.')
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('order')
                     ->label('Orden')
                     ->numeric()

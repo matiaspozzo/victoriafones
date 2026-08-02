@@ -23,6 +23,7 @@ class PageController extends Controller
                         'desktop' => $page->getFirstMediaUrl('hero', 'desktop') ?: null,
                         'mobile' => $page->getFirstMediaUrl('hero', 'mobile') ?: null,
                     ],
+                    'navbar_style' => $page->navbar_style,
                 ],
             ];
         });

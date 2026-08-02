@@ -21,6 +21,7 @@ class NeighborhoodResource extends JsonResource
                 'desktop' => $this->getFirstMediaUrl('hero', 'desktop') ?: null,
                 'mobile' => $this->getFirstMediaUrl('hero', 'mobile') ?: null,
             ],
+            'navbar_style' => $this->navbar_style,
             'seo_title' => $this->getTranslation('seo_title', $locale, false) ?: $this->getTranslation('seo_title', 'es', false),
             'seo_description' => $this->getTranslation('seo_description', $locale, false) ?: $this->getTranslation('seo_description', 'es', false),
             'og_image' => $this->getFirstMediaUrl('og_image', 'og') ?: null,
