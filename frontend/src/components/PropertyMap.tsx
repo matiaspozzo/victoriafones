@@ -214,7 +214,7 @@ export default function PropertyMap({ locale, query = "" }: { locale: string; qu
 
       <div className="max-h-[70vh] overflow-y-auto border-brand-text/10 bg-white lg:h-full lg:max-h-none lg:border-l">
         <div className="sticky top-0 z-10 border-b border-brand-text/10 bg-white px-4 py-3">
-          <p className="text-sm text-brand-text/70">
+          <p className="text-sm text-brand-text/80">
             <span className="font-semibold text-brand-primary">{visible.length}</span> {unit}
           </p>
         </div>
@@ -245,7 +245,7 @@ export default function PropertyMap({ locale, query = "" }: { locale: string; qu
               </div>
               <div className="flex min-w-0 flex-1 flex-col">
                 {feature.properties.neighborhood ? (
-                  <span className="text-[11px] font-medium uppercase tracking-wide text-brand-text/50">
+                  <span className="text-[11px] font-medium uppercase tracking-wide text-brand-text/80">
                     {feature.properties.neighborhood}
                   </span>
                 ) : null}
@@ -290,7 +290,7 @@ function priceEl(label: string): HTMLElement {
   el.className = "cursor-pointer";
   el.innerHTML = `
     <div style="position:relative;display:inline-block">
-      <div style="background:${BRAND};color:#fff;font-family:var(--font-anaheim),sans-serif;font-size:12px;font-weight:700;padding:5px 10px;border-radius:6px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.3)">${label}</div>
+      <div style="background:${BRAND};color:#fff;font-family:var(--font-raleway),sans-serif;font-size:12px;font-weight:700;padding:5px 10px;border-radius:6px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.3)">${label}</div>
       <div style="position:absolute;left:50%;bottom:-5px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:6px solid ${BRAND}"></div>
     </div>`;
   return el;
@@ -334,7 +334,7 @@ function cardPopupHTML(p: Record<string, unknown>): string {
   return `<div style="width:240px">${img}
     <div style="padding:10px 12px 12px">
       <h3 style="font-size:15px;font-weight:500;color:${BRAND};line-height:1.25;margin:0">${escapeHtml(String(p.title ?? ""))}</h3>
-      <p style="font-family:var(--font-anaheim),sans-serif;font-weight:700;font-size:13px;letter-spacing:.02em;color:${BRAND};margin:8px 0 0">${popupPrice(p.price_usd)}</p>
+      <p style="font-family:var(--font-raleway),sans-serif;font-weight:700;font-size:13px;letter-spacing:.02em;color:${BRAND};margin:8px 0 0">${popupPrice(p.price_usd)}</p>
       <div style="display:flex;flex-wrap:nowrap;white-space:nowrap;gap:10px;margin-top:8px">${stats}</div>
     </div>
   </div>`;

@@ -56,7 +56,7 @@ export default function PropertyCard({
       </div>
 
       <div className="pt-5 font-heading text-brand-primary">
-        <h3 className="text-2xl font-bold leading-snug">{title}</h3>
+        <h2 className="text-2xl font-bold leading-snug">{title}</h2>
         {stats ? <p className="mt-2 text-base">{stats}</p> : null}
         <p className="mt-2 text-base">{price}</p>
         {property.code ? <p className="mt-2 text-base">{property.code}</p> : null}

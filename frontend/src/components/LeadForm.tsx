@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useId, useState } from "react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
@@ -16,6 +16,7 @@ export default function LeadForm({
 }) {
   const t = useTranslations("Contact");
   const locale = useLocale();
+  const id = useId();
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const onDark = variant === "onDark";
   const inputClass =
@@ -70,20 +71,20 @@ export default function LeadForm({
   return (
     <form onSubmit={handleSubmit} className={onDark ? "space-y-4" : "max-w-md space-y-5"}>
       <div>
-        <label className={labelClass}>{t("name")}</label>
-        <input name="name" required placeholder={onDark ? t("name") : undefined} className={inputClass} />
+        <label htmlFor={`${id}-name`} className={labelClass}>{t("name")}</label>
+        <input id={`${id}-name`} name="name" required placeholder={onDark ? t("name") : undefined} className={inputClass} />
       </div>
       <div>
-        <label className={labelClass}>{t("email")}</label>
-        <input type="email" name="email" required placeholder={onDark ? t("email") : undefined} className={inputClass} />
+        <label htmlFor={`${id}-email`} className={labelClass}>{t("email")}</label>
+        <input id={`${id}-email`} type="email" name="email" required placeholder={onDark ? t("email") : undefined} className={inputClass} />
       </div>
       <div>
-        <label className={labelClass}>{t("subject")}</label>
-        <input name="subject" defaultValue={defaultSubject} placeholder={onDark ? t("subject") : undefined} className={inputClass} />
+        <label htmlFor={`${id}-subject`} className={labelClass}>{t("subject")}</label>
+        <input id={`${id}-subject`} name="subject" defaultValue={defaultSubject} placeholder={onDark ? t("subject") : undefined} className={inputClass} />
       </div>
       <div>
-        <label className={labelClass}>{t("message")}</label>
-        <textarea name="message" rows={5} placeholder={onDark ? t("message") : undefined} className={inputClass} />
+        <label htmlFor={`${id}-message`} className={labelClass}>{t("message")}</label>
+        <textarea id={`${id}-message`} name="message" rows={5} placeholder={onDark ? t("message") : undefined} className={inputClass} />
       </div>
       <button
         type="submit"

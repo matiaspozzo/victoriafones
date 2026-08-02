@@ -51,10 +51,14 @@ export default function PropertyHero({ images, title }: { images: HeroImage[]; t
               type="button"
               onClick={() => setIndex(i)}
               aria-label={`Slide ${i + 1}`}
-              className={`h-2 w-2 rounded-full transition-colors ${
-                i === index ? "bg-white" : "bg-white/40 hover:bg-white/70"
-              }`}
-            />
+              className="flex h-6 w-6 items-center justify-center"
+            >
+              <span
+                className={`h-2 w-2 rounded-full transition-colors ${
+                  i === index ? "bg-white" : "bg-white/40 hover:bg-white/70"
+                }`}
+              />
+            </button>
           ))}
         </div>
       ) : null}

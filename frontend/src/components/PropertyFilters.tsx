@@ -118,7 +118,7 @@ export default function PropertyFilters({
     });
   }
 
-  const labelClass = "pb-1 text-[11px] font-medium uppercase tracking-wide text-brand-text/60";
+  const labelClass = "pb-1 text-[11px] font-medium uppercase tracking-wide text-brand-text/80";
   const fieldClass = "flex w-full min-w-0 flex-col gap-1 sm:w-auto sm:min-w-[130px] sm:flex-1";
   const selectClass =
     "w-full min-w-0 border border-brand-text/30 bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-primary focus:outline-none";
@@ -183,7 +183,7 @@ export default function PropertyFilters({
         {showPrice ? (
           <div className="flex w-full min-w-0 flex-col gap-1 sm:w-auto sm:min-w-[170px] sm:flex-[1.5]">
             <span className={labelClass}>{t("priceRange")}</span>
-            <div className="flex items-center justify-between text-xs text-brand-text/70">
+            <div className="flex items-center justify-between text-xs text-brand-text/80">
               <span>{formatUsd(minPrice, "es")}</span>
               <span>
                 {formatUsd(maxPrice, "es")}
