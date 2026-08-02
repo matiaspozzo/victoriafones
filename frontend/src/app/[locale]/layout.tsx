@@ -7,7 +7,6 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { NavbarStyleProvider } from "@/components/NavbarStyleContext";
 import RawScripts from "@/components/RawScripts";
 import { getSiteSettings } from "@/lib/api";
 import { OFFICE } from "@/lib/office";
@@ -139,11 +138,9 @@ export default async function LocaleLayout({
         {siteSettings?.additional_scripts ? <RawScripts html={siteSettings.additional_scripts} /> : null}
 
         <NextIntlClientProvider messages={messages}>
-          <NavbarStyleProvider>
-            <Header />
-            {children}
-            <Footer />
-          </NavbarStyleProvider>
+          <Header />
+          {children}
+          <Footer />
         </NextIntlClientProvider>
       </body>
     </html>
