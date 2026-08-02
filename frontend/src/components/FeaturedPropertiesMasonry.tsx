@@ -2,11 +2,13 @@ import Image from "next/image";
 import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { PropertySummary } from "@/lib/api";
-import { formatNumber, formatUsd, OPERATION_LABELS } from "@/lib/format";
+import { formatNumber, formatUsd, OPERATION_LABELS, TYPE_LABELS } from "@/lib/format";
 
 function FeaturedCard({ property, hero = false }: { property: PropertySummary; hero?: boolean }) {
   const locale = useLocale();
   const operation = OPERATION_LABELS[locale]?.[property.operation] ?? "";
+  const typeLabel = TYPE_LABELS[locale]?.[property.type] ?? property.type;
+  const title = [property.neighborhood?.name, typeLabel].filter(Boolean).join(" · ");
   const price =
     property.price_usd !== null
       ? `USD ${formatNumber(property.price_usd, locale)}`
@@ -38,8 +40,15 @@ function FeaturedCard({ property, hero = false }: { property: PropertySummary; h
       <div className="absolute inset-0 bg-gradient-to-t from-brand-primary/90 via-brand-primary/10 to-transparent" />
 
       <div className="absolute bottom-4 left-4 right-4 text-white">
-        <p className={`font-heading font-semibold ${hero ? "text-3xl" : "text-xl"}`}>{price}</p>
-        <p className={`truncate text-white/85 ${hero ? "text-base" : "text-sm"}`}>{property.title}</p>
+        <p className={`truncate font-heading ${hero ? "text-base" : "text-sm"}`}>{title}</p>
+        <p className={`font-heading font-bold ${hero ? "text-3xl" : "text-xl"}`}>
+          {price}
+          {property.code ? (
+            <span className={`ml-2 font-light text-white/70 ${hero ? "text-base" : "text-sm"}`}>
+              {property.code}
+            </span>
+          ) : null}
+        </p>
       </div>
     </Link>
   );

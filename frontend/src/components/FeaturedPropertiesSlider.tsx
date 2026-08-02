@@ -5,7 +5,7 @@ import { useLocale } from "next-intl";
 import { useRef } from "react";
 import { Link } from "@/i18n/navigation";
 import type { PropertySummary } from "@/lib/api";
-import { formatUsd, OPERATION_LABELS } from "@/lib/format";
+import { formatUsd, OPERATION_LABELS, TYPE_LABELS } from "@/lib/format";
 
 /**
  * Featured slider used when there are fewer than five featured properties
@@ -34,6 +34,8 @@ export default function FeaturedPropertiesSlider({ properties }: { properties: P
       >
         {properties.map((property) => {
           const operation = OPERATION_LABELS[locale]?.[property.operation] ?? "";
+          const typeLabel = TYPE_LABELS[locale]?.[property.type] ?? property.type;
+          const title = [property.neighborhood?.name, typeLabel].filter(Boolean).join(" · ");
           return (
             <Link
               key={property.id}
@@ -59,14 +61,12 @@ export default function FeaturedPropertiesSlider({ properties }: { properties: P
               <div className="absolute inset-0 bg-gradient-to-t from-brand-primary/90 via-brand-primary/10 to-transparent" />
 
               <div className="absolute bottom-6 left-6 right-6 text-white">
-                {property.neighborhood ? (
-                  <p className="text-xs uppercase tracking-wide text-white/80">
-                    {property.neighborhood.name}
-                  </p>
-                ) : null}
-                <p className="mt-1 font-heading text-2xl font-medium sm:text-3xl">{property.title}</p>
-                <p className="mt-1 font-price text-xl font-bold">
-                  {formatUsd(property.price_usd, locale)}
+                <p className="font-heading text-2xl font-medium sm:text-3xl">{title}</p>
+                <p className="mt-1 font-price text-xl">
+                  <span className="font-bold">{formatUsd(property.price_usd, locale)}</span>
+                  {property.code ? (
+                    <span className="ml-3 text-base font-light text-white/70">{property.code}</span>
+                  ) : null}
                 </p>
               </div>
             </Link>
