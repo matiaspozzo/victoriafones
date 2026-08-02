@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 
 class PropertyController extends Controller
 {
+    // The bedrooms/bathrooms filter dropdowns are exact-match except their
+    // top option ("5+"), which is the only one meant to be "at least" —
+    // matches PropertyFilters.tsx's BEDROOMS/BATHROOMS = [1,2,3,4,5] arrays.
+    private const MAX_ROOMS_FILTER = 5;
+
     public function index(Request $request)
     {
         // Base query: everything except the price range + sort. The price
@@ -33,11 +38,13 @@ class PropertyController extends Controller
         }
 
         if ($request->filled('bedrooms')) {
-            $base->where('bedrooms', '>=', (int) $request->input('bedrooms'));
+            $bedrooms = (int) $request->input('bedrooms');
+            $base->where('bedrooms', $bedrooms >= self::MAX_ROOMS_FILTER ? '>=' : '=', $bedrooms);
         }
 
         if ($request->filled('bathrooms')) {
-            $base->where('bathrooms', '>=', (int) $request->input('bathrooms'));
+            $bathrooms = (int) $request->input('bathrooms');
+            $base->where('bathrooms', $bathrooms >= self::MAX_ROOMS_FILTER ? '>=' : '=', $bathrooms);
         }
 
         if ($request->boolean('featured')) {

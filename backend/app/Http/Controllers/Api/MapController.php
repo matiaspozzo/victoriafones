@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 
 class MapController extends Controller
 {
+    // Same exact-match-except-the-top-option rule as PropertyController —
+    // matches PropertyFilters.tsx's BEDROOMS/BATHROOMS = [1,2,3,4,5] arrays.
+    private const MAX_ROOMS_FILTER = 5;
+
     public function properties(Request $request)
     {
         $locale = $request->attributes->get('locale', 'es');
@@ -34,11 +38,13 @@ class MapController extends Controller
         }
 
         if ($request->filled('bedrooms')) {
-            $query->where('bedrooms', '>=', (int) $request->input('bedrooms'));
+            $bedrooms = (int) $request->input('bedrooms');
+            $query->where('bedrooms', $bedrooms >= self::MAX_ROOMS_FILTER ? '>=' : '=', $bedrooms);
         }
 
         if ($request->filled('bathrooms')) {
-            $query->where('bathrooms', '>=', (int) $request->input('bathrooms'));
+            $bathrooms = (int) $request->input('bathrooms');
+            $query->where('bathrooms', $bathrooms >= self::MAX_ROOMS_FILTER ? '>=' : '=', $bathrooms);
         }
 
         if ($request->filled('price_min')) {
