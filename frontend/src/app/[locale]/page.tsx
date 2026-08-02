@@ -28,7 +28,7 @@ export default async function Home({
 
       <section className="mx-auto max-w-7xl px-6 py-16">
         <div className="md:w-1/2">
-          <h1 className="font-heading text-[26px] font-light leading-[1.2] tracking-[1.2px] text-brand-primary">
+          <h1 className="font-heading text-[32px] font-light leading-[1.2] tracking-[1.2px] text-brand-primary">
             {t.rich("aboutTitle", { b: (chunks) => <strong className="font-medium">{chunks}</strong> })}
           </h1>
           <Link
@@ -55,7 +55,7 @@ export default async function Home({
                 <h2 className="font-heading text-2xl font-light tracking-[0.8px] text-brand-primary sm:text-[2rem]">
                   {t("featuredTitle")}
                 </h2>
-                <p className="mt-1 text-brand-text/70">{t("featuredSubtitle")}</p>
+                <p className="mt-1 text-brand-text/80">{t("featuredSubtitle")}</p>
               </div>
               <Link
                 href="/nuestras-propiedades"

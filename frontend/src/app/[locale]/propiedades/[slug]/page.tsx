@@ -175,7 +175,7 @@ export default async function PropertyPage({ params }: Props) {
     primaryArea ? `${primaryArea}m2` : null,
     property.bedrooms ? `${property.bedrooms} ${BEDROOMS_LABEL[locale] ?? BEDROOMS_LABEL.es}` : null,
     property.bathrooms ? `${property.bathrooms} ${BATHROOMS_LABEL[locale] ?? BATHROOMS_LABEL.es}` : null,
-    property.lot_area_m2 && property.built_area_m2 ? `${property.lot_area_m2}m2 ${t("lotArea")}` : null,
+    property.lot_area_m2 && property.built_area_m2 ? `${property.lot_area_m2} ${t("lotArea")}` : null,
     property.year_built ? `${property.year_built}` : null,
   ]
     .filter(Boolean)
@@ -207,14 +207,14 @@ export default async function PropertyPage({ params }: Props) {
           {property.neighborhood ? (
             <p
               className="text-[18px] font-medium leading-[1.41] text-brand-text"
-              style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
+              style={{ fontFamily: "var(--font-raleway), sans-serif" }}
             >
               {property.neighborhood.name}
             </p>
           ) : null}
           <h1
             className="text-[1.875rem] font-medium leading-[1.41] text-brand-primary"
-            style={{ fontFamily: "var(--font-montserrat), sans-serif", letterSpacing: "-1.4px" }}
+            style={{ fontFamily: "var(--font-raleway), sans-serif", letterSpacing: "-1.4px" }}
           >
             {property.title}
           </h1>
@@ -223,7 +223,7 @@ export default async function PropertyPage({ params }: Props) {
             {statsLine ? <p className="font-bold">{statsLine}</p> : null}
             <p className="mt-1 font-bold">{price}</p>
             {property.code ? (
-              <p className="mt-3 font-label text-xs uppercase tracking-wide text-brand-text/60">
+              <p className="mt-3 font-label text-xs uppercase tracking-wide text-brand-text/80">
                 {property.code}
               </p>
             ) : null}
@@ -277,7 +277,7 @@ export default async function PropertyPage({ params }: Props) {
         <section className="mx-auto max-w-7xl px-6 py-12">
           <h2
             className="text-[1.875rem] font-light leading-[1.41] text-brand-primary"
-            style={{ fontFamily: "var(--font-montserrat), sans-serif", letterSpacing: "-1.4px" }}
+            style={{ fontFamily: "var(--font-raleway), sans-serif", letterSpacing: "-1.4px" }}
           >
             {t("location")}
           </h2>
@@ -299,7 +299,7 @@ export default async function PropertyPage({ params }: Props) {
         <div>
           <h2
             className="text-[1.875rem] font-light leading-[1.41] text-brand-primary"
-            style={{ fontFamily: "var(--font-montserrat), sans-serif", letterSpacing: "-1.4px" }}
+            style={{ fontFamily: "var(--font-raleway), sans-serif", letterSpacing: "-1.4px" }}
           >
             {t("contactHeading")}
           </h2>
@@ -316,7 +316,7 @@ export default async function PropertyPage({ params }: Props) {
         <section className="mx-auto max-w-7xl px-6 pb-16">
           <h2
             className="mb-6 text-[1.875rem] font-light leading-[1.41] text-brand-primary"
-            style={{ fontFamily: "var(--font-montserrat), sans-serif", letterSpacing: "-1.4px" }}
+            style={{ fontFamily: "var(--font-raleway), sans-serif", letterSpacing: "-1.4px" }}
           >
             {t("relatedProperties")}
           </h2>

@@ -34,12 +34,13 @@
      the live site explicitly overrides to Raleway (confirmed via the site's
      own combined CSS: .raven-heading font-family:"Raleway" on every section
      heading — hero, about, listings). Raleway is the real heading font.
-     Montserrat is still used in a few specific spots (e.g. the neighborhood
-     grid labels: `.elementor-widget-heading` = Montserrat 300 uppercase). */
+     Montserrat is still used for small uppercase labels (property code,
+     "VER MÁS"-style links). Prices use Raleway too, per client request —
+     the live site's Anaheim numeral font read as inconsistent. */
   --font-heading: var(--font-raleway), sans-serif;
   --font-body: var(--font-raleway), sans-serif;
   --font-label: var(--font-montserrat), sans-serif;
-  --font-price: var(--font-anaheim), sans-serif;
+  --font-price: var(--font-raleway), sans-serif;
 }
 
 /*

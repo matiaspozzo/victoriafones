@@ -28,7 +28,10 @@ export default function Footer() {
 
         <div className="text-[0.75rem]">
           <p>{t("phoneLabel")}</p>
-          <a href={`tel:${PHONE_HREF}`} className="font-semibold text-brand-primary underline">
+          <a
+            href={`tel:${PHONE_HREF}`}
+            className="inline-block -my-1.5 py-1.5 font-semibold text-brand-primary underline"
+          >
             {PHONE}
           </a>
         </div>
@@ -40,12 +43,12 @@ export default function Footer() {
               href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-semibold text-brand-primary underline"
+              className="inline-block -my-1.5 py-1.5 font-semibold text-brand-primary underline"
             >
               Instagram
             </a>
           </p>
-          <a href={`mailto:${EMAIL}`} className="text-brand-primary">
+          <a href={`mailto:${EMAIL}`} className="inline-block -my-1.5 py-1.5 text-brand-primary">
             {EMAIL}
           </a>
         </div>
@@ -55,15 +58,18 @@ export default function Footer() {
             href={`https://wa.me/${PHONE_HREF.replace("+", "")}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex h-11 w-11 items-center justify-center bg-[#25D366] text-white"
+            className="flex h-12 w-12 items-center justify-center text-brand-primary"
             aria-label="WhatsApp"
           >
-            <svg viewBox="0 0 32 32" className="h-6 w-6 fill-current">
-              <path d="M16.001 3C9.373 3 4 8.373 4 15c0 2.393.7 4.62 1.902 6.49L4 29l7.71-1.87A11.94 11.94 0 0 0 16 27c6.627 0 12-5.373 12-12S22.628 3 16.001 3Zm0 21.6c-1.98 0-3.83-.55-5.41-1.5l-.39-.23-4.58 1.11 1.14-4.46-.25-.4A9.57 9.57 0 0 1 6.4 15c0-5.3 4.3-9.6 9.6-9.6 5.3 0 9.6 4.3 9.6 9.6 0 5.3-4.3 9.6-9.6 9.6Zm5.27-7.19c-.29-.14-1.7-.84-1.96-.93-.26-.1-.45-.14-.64.14-.19.29-.74.93-.9 1.11-.17.19-.33.21-.62.07-.29-.14-1.2-.44-2.29-1.4-.85-.75-1.42-1.68-1.59-1.97-.17-.29-.02-.44.13-.58.13-.13.29-.33.43-.5.14-.17.19-.29.29-.48.1-.19.05-.36-.02-.5-.07-.14-.64-1.54-.88-2.1-.23-.55-.47-.48-.64-.49h-.55c-.19 0-.5.07-.76.36-.26.29-1 1-1 2.43 0 1.43 1.03 2.81 1.17 3 .14.19 2.03 3.1 4.93 4.35.69.3 1.23.48 1.65.61.69.22 1.32.19 1.82.11.56-.08 1.7-.7 1.94-1.37.24-.67.24-1.24.17-1.37-.07-.12-.26-.19-.55-.33Z" />
+            {/* Font Awesome's "whatsapp" brand glyph (fa-brands fa-whatsapp), same
+                technique as the fa-bed/fa-bath icons in PropertyStats.tsx: the
+                real FA vector path recreated inline, no FA library dependency. */}
+            <svg viewBox="0 0 448 512" className="h-[42px] w-[42px] fill-current">
+              <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
             </svg>
           </a>
 
-          <p className="text-[0.5rem] leading-snug text-brand-text/60">
+          <p className="text-[11px] leading-snug text-brand-text/85">
             {t("rights", { year: new Date().getFullYear() })}
           </p>
         </div>

@@ -29,9 +29,7 @@ export default async function NeighborhoodGrid({ locale }: { locale: string }) {
               sizes="50vw"
             />
           </div>
-          {/* Label sits below the image (matches the live site's separate
-              heading widget: Montserrat 300, uppercase). */}
-          <span className="block py-5 font-label text-lg font-bold text-brand-primary">
+          <span className="block py-5 font-heading text-lg font-bold text-brand-primary">
             {tZones(zone.slug)}
           </span>
         </Link>
