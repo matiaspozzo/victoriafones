@@ -48,7 +48,7 @@ export default function LocaleSwitcher({ variant = "dropdown" }: { variant?: "dr
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1 text-sm font-semibold tracking-wide text-white"
+        className="flex items-center gap-1 text-sm font-semibold tracking-wide text-current"
       >
         {t("language")}
         <svg

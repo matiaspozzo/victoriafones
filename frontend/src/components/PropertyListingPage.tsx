@@ -2,6 +2,7 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import LeadForm from "@/components/LeadForm";
+import { SetNavbarStyle, type NavbarStyle } from "@/components/NavbarStyleContext";
 import PageHeader from "@/components/PageHeader";
 import PropertyCard from "@/components/PropertyCard";
 import PropertyFilters from "@/components/PropertyFilters";
@@ -19,6 +20,7 @@ export default async function PropertyListingPage({
   pageKey,
   heroImage,
   heroImageOverride,
+  navbarStyleOverride,
   titleOverride,
   subtitleOverride,
   neighborhoodDescription,
@@ -35,6 +37,9 @@ export default async function PropertyListingPage({
       priority over the page-wide PageSetting hero, which would otherwise silently
       override every zone's distinct hero image. */
   heroImageOverride?: { desktop: string; mobile: string };
+  /** Neighborhood's own navbar_style, when this is a zone page — same
+      priority-over-PageSetting reasoning as heroImageOverride. */
+  navbarStyleOverride?: NavbarStyle;
   titleOverride?: string;
   subtitleOverride?: string;
   neighborhoodDescription?: string;
@@ -70,6 +75,7 @@ export default async function PropertyListingPage({
   const subtitle = subtitleOverride ?? header?.hero_subtitle ?? undefined;
   const heroDesktop = heroImageOverride?.desktop ?? header?.hero_image.desktop ?? heroImage;
   const heroMobile = heroImageOverride?.mobile ?? header?.hero_image.mobile ?? heroImage;
+  const navbarStyle = navbarStyleOverride ?? header?.navbar_style ?? "white";
   const cta = await getTranslations({ locale, namespace: "SearchCta" });
 
   // Marks up the listed properties as a Product ItemList, so search engines
@@ -116,6 +122,7 @@ export default async function PropertyListingPage({
 
   return (
     <main>
+      <SetNavbarStyle style={navbarStyle} />
       {itemListJsonLd ? (
         <script
           type="application/ld+json"
@@ -141,7 +148,7 @@ export default async function PropertyListingPage({
         />
 
         {view === "map" ? null : properties.length === 0 ? (
-          <p className="text-brand-text/70">{t("noResults")}</p>
+          <p className="text-brand-text/80">{t("noResults")}</p>
         ) : view === "list" ? (
           <ul className="divide-y divide-brand-text/10 border-y border-brand-text/10">
             {properties.map((property) => {

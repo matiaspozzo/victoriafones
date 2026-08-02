@@ -68,6 +68,7 @@ export type PageHeader = {
   hero_title: string;
   hero_subtitle: string;
   hero_image: { desktop: string | null; mobile: string | null };
+  navbar_style: "white" | "blue";
 };
 
 export async function getPageHeader(locale: string, key: string): Promise<PageHeader | null> {
@@ -100,6 +101,7 @@ export type Neighborhood = {
   name: string;
   description: string | null;
   hero_image: { desktop: string | null; mobile: string | null };
+  navbar_style: "white" | "blue";
   seo_title: string | null;
   seo_description: string | null;
   og_image: string | null;

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import { SetNavbarStyle } from "@/components/NavbarStyleContext";
 import PageHeader from "@/components/PageHeader";
 import ResponsiveHero from "@/components/ResponsiveHero";
 import { getPageHeader } from "@/lib/api";
@@ -41,6 +42,7 @@ export default async function AboutPage({
 
   return (
     <main>
+      <SetNavbarStyle style={header?.navbar_style ?? "white"} />
       <ResponsiveHero
         desktop={header?.hero_image.desktop ?? ABOUT_HERO}
         mobile={header?.hero_image.mobile ?? ABOUT_HERO}

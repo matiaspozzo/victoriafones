@@ -11,9 +11,11 @@ export const ZONES = ["pueblo-jose-ignacio", "club-de-mar", "pinar-del-faro", "l
 export default function NavDropdown({
   label,
   basePath,
+  hoverClassName = "hover:text-brand-secondary",
 }: {
   label: string;
   basePath: "venta" | "alquiler";
+  hoverClassName?: string;
 }) {
   const [open, setOpen] = useState(false);
   const tZones = useTranslations("Zones");
@@ -27,7 +29,7 @@ export default function NavDropdown({
     >
       <Link
         href={listingPath}
-        className="flex items-center gap-1 text-sm font-medium tracking-wide hover:text-brand-secondary"
+        className={`flex items-center gap-1 text-sm font-medium tracking-wide ${hoverClassName}`}
       >
         {label}
         <svg

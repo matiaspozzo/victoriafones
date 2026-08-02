@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Link, usePathname } from "@/i18n/navigation";
 import LocaleSwitcher from "./LocaleSwitcher";
+import { useNavbarStyle } from "./NavbarStyleContext";
 import NavDropdown, { ZONES } from "./NavDropdown";
 
 // Pages with no hero photo behind the nav — the header stays solid on these
@@ -80,11 +81,21 @@ function MobileNavGroup({
 export default function Header() {
   const t = useTranslations("Nav");
   const pathname = usePathname();
+  const navbarStyle = useNavbarStyle();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   const heroless = HEROLESS_PATHS.has(pathname);
   const solid = scrolled || heroless;
+  // The scrolled/heroless state is always solid navy + white text, regardless
+  // of the page's chosen style — only the pre-scroll transparent state (sitting
+  // directly over the hero photo) switches to navy text for light hero images.
+  const blue = !solid && navbarStyle === "blue";
+  // Scrolled/heroless keeps its existing accent hover untouched; the
+  // transparent states hover to the opposite of their base color so it still
+  // reads against the hero photo (navy base -> white hover, white base -> navy hover).
+  const hoverText = solid ? "hover:text-brand-secondary" : blue ? "hover:text-white" : "hover:text-brand-primary";
+  const hoverBorder = solid ? "hover:border-brand-secondary" : blue ? "hover:border-white" : "hover:border-brand-primary";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -103,8 +114,8 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 text-white transition-colors duration-300 ${
-        solid ? "bg-brand-primary shadow-md" : "bg-transparent"
+      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
+        solid ? "bg-brand-primary text-white shadow-md" : blue ? "bg-transparent text-brand-primary" : "bg-transparent text-white"
       }`}
     >
       {/* Fixed height (h-20 = 80px) so the scroll-driven logo swap never
@@ -114,7 +125,7 @@ export default function Header() {
             (the iso overlays absolutely) so only opacity animates — no reflow. */}
         <Link href="/" className="relative flex items-center">
           <Image
-            src="/brand/logo@2x.webp"
+            src={blue ? "/brand/logo-azul@2x.webp" : "/brand/logo@2x.webp"}
             alt="Victoria Fones Real Estate"
             width={220}
             height={48}
@@ -136,17 +147,19 @@ export default function Header() {
         </Link>
 
         <nav className="hidden items-center gap-8 pr-6 lg:flex">
-          <NavDropdown label={t("sales")} basePath="venta" />
-          <NavDropdown label={t("rentals")} basePath="alquiler" />
-          <Link href="/quienes-somos" className="text-sm font-medium tracking-wide hover:text-brand-secondary">
+          <NavDropdown label={t("sales")} basePath="venta" hoverClassName={hoverText} />
+          <NavDropdown label={t("rentals")} basePath="alquiler" hoverClassName={hoverText} />
+          <Link href="/quienes-somos" className={`text-sm font-medium tracking-wide ${hoverText}`}>
             {t("about")}
           </Link>
-          <Link href="/mapa" className="text-sm font-medium tracking-wide hover:text-brand-secondary">
+          <Link href="/mapa" className={`text-sm font-medium tracking-wide ${hoverText}`}>
             {t("map")}
           </Link>
           <Link
             href="/contacto"
-            className="border border-white/60 px-5 py-2 text-sm font-medium tracking-wide hover:border-brand-secondary hover:text-brand-secondary"
+            className={`border px-5 py-2 text-sm font-medium tracking-wide ${hoverBorder} ${hoverText} ${
+              blue ? "border-brand-primary/60" : "border-white/60"
+            }`}
           >
             {t("contact")}
           </Link>
@@ -160,9 +173,9 @@ export default function Header() {
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen(true)}
         >
-          <span className="block h-0.5 w-6 bg-white" />
-          <span className="mt-1.5 block h-0.5 w-6 bg-white" />
-          <span className="mt-1.5 block h-0.5 w-6 bg-white" />
+          <span className={`block h-0.5 w-6 ${blue ? "bg-brand-primary" : "bg-white"}`} />
+          <span className={`mt-1.5 block h-0.5 w-6 ${blue ? "bg-brand-primary" : "bg-white"}`} />
+          <span className={`mt-1.5 block h-0.5 w-6 ${blue ? "bg-brand-primary" : "bg-white"}`} />
         </button>
       </div>
 
@@ -175,9 +188,12 @@ export default function Header() {
         aria-hidden="true"
       />
 
-      {/* Offcanvas panel */}
+      {/* Offcanvas panel — always navy background regardless of the page's
+          navbar_style (like the scrolled header), so it needs its own
+          explicit white text rather than inheriting the header's color,
+          which now varies by page. */}
       <nav
-        className={`fixed inset-y-0 right-0 z-[70] flex h-full w-[85%] max-w-sm flex-col overflow-y-auto bg-brand-primary px-6 pb-8 shadow-xl transition-transform duration-300 ease-in-out lg:hidden ${
+        className={`fixed inset-y-0 right-0 z-[70] flex h-full w-[85%] max-w-sm flex-col overflow-y-auto bg-brand-primary px-6 pb-8 text-white shadow-xl transition-transform duration-300 ease-in-out lg:hidden ${
           menuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >

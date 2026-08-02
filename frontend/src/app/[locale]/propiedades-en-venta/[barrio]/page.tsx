@@ -68,6 +68,7 @@ export default async function SalesByNeighborhoodPage({
         desktop: neighborhood?.hero_image.desktop ?? ventaZoneHero(barrio),
         mobile: neighborhood?.hero_image.mobile ?? ventaZoneHero(barrio),
       }}
+      navbarStyleOverride={neighborhood?.navbar_style}
       titleOverride={zoneName ? tListing("saleInZone", { zone: zoneName }) : undefined}
       subtitleOverride=""
       neighborhoodDescription={neighborhood?.description ?? undefined}

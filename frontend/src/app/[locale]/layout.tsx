@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Anaheim, Montserrat, Raleway } from "next/font/google";
+import { Montserrat, Raleway } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { NavbarStyleProvider } from "@/components/NavbarStyleContext";
 import RawScripts from "@/components/RawScripts";
 import { getSiteSettings } from "@/lib/api";
 import { OFFICE } from "@/lib/office";
@@ -23,13 +24,6 @@ const raleway = Raleway({
   variable: "--font-raleway",
   subsets: ["latin"],
   weight: ["400", "500", "600"],
-});
-
-// Anaheim — the font the live site uses for property prices.
-const anaheim = Anaheim({
-  variable: "--font-anaheim",
-  subsets: ["latin"],
-  weight: ["400"],
 });
 
 export const metadata: Metadata = {
@@ -87,7 +81,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
-      <body className={`${montserrat.variable} ${raleway.variable} ${anaheim.variable} antialiased`}>
+      <body className={`${montserrat.variable} ${raleway.variable} antialiased`}>
         {/* Browsers restore the last scroll position on reload by default. Since this
             property/page height isn't fixed (varies with content, e.g. photo count),
             a restored position can land past the new page's height and get clamped
@@ -145,9 +139,11 @@ export default async function LocaleLayout({
         {siteSettings?.additional_scripts ? <RawScripts html={siteSettings.additional_scripts} /> : null}
 
         <NextIntlClientProvider messages={messages}>
-          <Header />
-          {children}
-          <Footer />
+          <NavbarStyleProvider>
+            <Header />
+            {children}
+            <Footer />
+          </NavbarStyleProvider>
         </NextIntlClientProvider>
       </body>
     </html>
