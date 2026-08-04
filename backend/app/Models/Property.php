@@ -37,6 +37,7 @@ class Property extends Model implements HasMedia
         'built_area_m2',
         'lot_area_m2',
         'year_built',
+        'youtube_url',
         'lat',
         'lng',
         'featured',

@@ -33,6 +33,7 @@ class PropertyDetailResource extends JsonResource
             'built_area_m2' => $this->built_area_m2,
             'lot_area_m2' => $this->lot_area_m2,
             'year_built' => $this->year_built,
+            'youtube_url' => $this->youtube_url,
             'featured' => $this->featured,
             'lat' => $this->lat,
             'lng' => $this->lng,

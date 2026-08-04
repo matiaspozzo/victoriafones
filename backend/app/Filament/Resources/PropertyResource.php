@@ -154,6 +154,12 @@ class PropertyResource extends Resource
                         Forms\Components\TextInput::make('year_built')
                             ->label('Año de construcción')
                             ->numeric(),
+                        Forms\Components\TextInput::make('youtube_url')
+                            ->label('Video de YouTube')
+                            ->url()
+                            ->prefixIcon('heroicon-o-play-circle')
+                            ->helperText('URL del video de YouTube de la propiedad (opcional)')
+                            ->columnSpanFull(),
                     ]),
 
                 Forms\Components\Section::make('Ubicación')
