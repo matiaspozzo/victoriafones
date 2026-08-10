@@ -32,6 +32,22 @@ class PropertyResource extends Resource
 
     public const OPERATION_COLORS = ['sale' => 'info', 'rent' => 'warning', 'sale_and_rent' => 'primary'];
 
+    public const TYPE_LABELS = [
+        'house' => 'Casa',
+        'apartment' => 'Departamento',
+        'land' => 'Terreno',
+        'chacra' => 'Chacra',
+        'commercial' => 'Comercial',
+    ];
+
+    public const TYPE_COLORS = [
+        'house' => 'success',
+        'apartment' => 'info',
+        'land' => 'warning',
+        'chacra' => 'primary',
+        'commercial' => 'gray',
+    ];
+
     protected static ?string $model = Property::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-home-modern';
@@ -80,13 +96,7 @@ class PropertyResource extends Resource
                             ->required(),
                         Forms\Components\Select::make('type')
                             ->label('Tipo')
-                            ->options([
-                                'house' => 'Casa',
-                                'apartment' => 'Departamento',
-                                'land' => 'Terreno',
-                                'chacra' => 'Chacra',
-                                'commercial' => 'Comercial',
-                            ])
+                            ->options(self::TYPE_LABELS)
                             ->required(),
                         Forms\Components\Select::make('neighborhood_id')
                             ->label('Barrio')
@@ -283,7 +293,10 @@ class PropertyResource extends Resource
                     ->badge()
                     ->color(fn (string $state): string => self::OPERATION_COLORS[$state] ?? 'gray'),
                 Tables\Columns\TextColumn::make('type')
-                    ->label('Tipo'),
+                    ->label('Tipo')
+                    ->formatStateUsing(fn (string $state): string => self::TYPE_LABELS[$state] ?? $state)
+                    ->badge()
+                    ->color(fn (string $state): string => self::TYPE_COLORS[$state] ?? 'gray'),
                 Tables\Columns\TextColumn::make('neighborhood.name')
                     ->label('Barrio'),
                 Tables\Columns\TextColumn::make('price_usd')
@@ -308,13 +321,7 @@ class PropertyResource extends Resource
                     ->options(self::OPERATION_LABELS),
                 Tables\Filters\SelectFilter::make('type')
                     ->label('Tipo')
-                    ->options([
-                        'house' => 'Casa',
-                        'apartment' => 'Departamento',
-                        'land' => 'Terreno',
-                        'chacra' => 'Chacra',
-                        'commercial' => 'Comercial',
-                    ]),
+                    ->options(self::TYPE_LABELS),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->label('Editar'),
