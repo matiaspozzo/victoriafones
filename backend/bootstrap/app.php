@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\DisableLiteSpeedCache;
 use App\Http\Middleware\ResolveApiLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -13,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->appendToGroup('api', [ResolveApiLocale::class]);
+        $middleware->appendToGroup('api', [ResolveApiLocale::class, DisableLiteSpeedCache::class]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
