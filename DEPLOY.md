@@ -191,8 +191,8 @@ so copy them straight from your machine to the server instead.
 Run this **from your local machine**, from the repo root (not on the server):
 
 ```bash
-rsync -avz backend/database/database.sqlite deploy@143.198.191.68:/var/www/victoriafones/backend/database/database.sqlite
-rsync -avz backend/storage/app/public/ deploy@143.198.191.68:/var/www/victoriafones/backend/storage/app/public/
+rsync -avz backend/database/database.sqlite deploy@174.138.127.78:/var/www/victoriafones_2026/backend/database/database.sqlite
+rsync -avz backend/storage/app/public/ deploy@174.138.127.78:/var/www/victoriafones_2026/backend/storage/app/public/
 ```
 
 Back on the server:
@@ -380,7 +380,7 @@ Whenever new commits land on `main` (like the fixes made while setting this demo
 pull and rebuild both apps on the droplet:
 
 ```bash
-cd /var/www/victoriafones && git pull
+cd /var/www/victoriafones_2026 && git pull
 
 # Backend
 cd backend
@@ -392,10 +392,18 @@ php artisan filament:optimize
 # Frontend — npm run build is required even for CSS/JSX-only changes; NEXT_PUBLIC_*
 # env vars and next.config.ts are baked in at build time, not read at runtime.
 cd ../frontend
-npm install
-npm run build
-pm2 restart vf-frontend
+./deploy.sh
 ```
+
+`frontend/deploy.sh` runs `npm install && npm run build && pm2 restart vf-frontend`,
+then hits the frontend's own `/api/revalidate` endpoint. That last step is not
+optional: Next's tagged fetch cache (`revalidate: 3600, tags: ["properties"]` in
+`lib/api.ts`) does **not** reliably clear on rebuild or `pm2 restart` alone — a
+process can keep serving pre-restart cached API data indefinitely until
+`revalidateTag("properties")` is explicitly called against the *running* process.
+Always use `deploy.sh` instead of `npm run build && pm2 restart` by hand, or you can
+end up with stale data (e.g. property images pointing at a stale scheme/host) that
+persists across rebuilds and even multiple restarts.
 
 Nothing here touches `database/database.sqlite`, `storage/app/public/`, or their
 permissions (set up back in step 6) — `git pull` only updates tracked source files,
