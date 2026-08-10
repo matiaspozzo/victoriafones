@@ -19,7 +19,8 @@ use Illuminate\Support\Str;
  * Elementor markup:
  *   - price:            .jet-listing-dynamic-field__content
  *   - bed/bath/m2/year:  .elementor-icon-list-text (first 4, in that order)
- *   - description:       longest <p> inside .elementor-widget-text-editor
+ *   - description:       longest .elementor-widget-text-editor widget (its <p>
+ *                         children joined), excluding known boilerplate widgets
  *   - gallery images:    data-src attributes under /wp-content/uploads/
  *   - lat/lng:           not available in the source for any property today
  *     (JetEngine map widget renders "Coordinates of this location not found");
@@ -425,17 +426,53 @@ class ImportWordpress extends Command
         $result['built_area_m2'] = isset($iconMap['area']) && is_numeric($iconMap['area']) ? (int) $iconMap['area'] : null;
         $result['year_built'] = isset($iconMap['year']) && is_numeric($iconMap['year']) ? (int) $iconMap['year'] : null;
 
-        $longestParagraph = '';
+        // Group <p> tags by their parent widget and join them, rather than picking
+        // a single longest <p> — some descriptions are two paragraphs (e.g. a short
+        // "Excelente terreno de Xm2" line followed by the neighborhood blurb) inside
+        // the *same* widget, and picking only the longest single <p> silently drops
+        // the other one. This mirrors ImportWordpressTranslations::scrapeDescription(),
+        // written later for en/pt, which got this right from the start — see PFK14
+        // (2026-08-10): its es description was missing the "Excelente terreno..."
+        // line that the en/pt translations (scraped with the widget-joining logic)
+        // both had. Boilerplate widgets (address/contact card, phone, Instagram,
+        // copyright footer) share the same widget class as the real description and
+        // are excluded by known signature phrases rather than relying on length
+        // alone — a few properties have a genuinely terse one-line description
+        // shorter than the contact card or copyright text.
+        $boilerplateSignatures = [
+            'Galería Los Caracoles',
+            'Copyright ©',
+            'Phone & Whatsapp',
+            'Visit our Instagram',
+        ];
 
-        foreach ($xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' elementor-widget-text-editor ')]//p") as $node) {
-            $text = trim($node->textContent);
+        $bestText = '';
 
-            if (strlen($text) > strlen($longestParagraph)) {
-                $longestParagraph = $text;
+        foreach ($xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' elementor-widget-text-editor ')]") as $widget) {
+            $paragraphs = [];
+
+            foreach ($xpath->query('.//p', $widget) as $p) {
+                $text = trim($p->textContent);
+
+                if ($text !== '') {
+                    $paragraphs[] = $text;
+                }
+            }
+
+            $candidate = $paragraphs ? implode("\n\n", $paragraphs) : trim($widget->textContent);
+
+            foreach ($boilerplateSignatures as $signature) {
+                if (Str::contains($candidate, $signature)) {
+                    continue 2;
+                }
+            }
+
+            if (mb_strlen($candidate) > mb_strlen($bestText)) {
+                $bestText = $candidate;
             }
         }
 
-        $result['description'] = $longestParagraph ?: null;
+        $result['description'] = $bestText ?: null;
 
         $images = [];
 
