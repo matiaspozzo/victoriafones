@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import LeadForm from "@/components/LeadForm";
 import { SetNavbarStyle, type NavbarStyle } from "@/components/NavbarStyleContext";
 import PageHeader from "@/components/PageHeader";
+import Pagination from "@/components/Pagination";
 import PropertyCard from "@/components/PropertyCard";
 import PropertyFilters from "@/components/PropertyFilters";
 import PropertyMap from "@/components/PropertyMap";
@@ -64,6 +65,7 @@ export default async function PropertyListingPage({
       price_max: params.price_max,
       sort: params.sort,
       per_page: "48",
+      page: params.page,
     }),
     getPageHeader(locale, pageKey),
   ]);
@@ -203,6 +205,15 @@ export default async function PropertyListingPage({
               <PropertyCard key={property.id} property={property} />
             ))}
           </div>
+        )}
+
+        {view === "map" || properties.length === 0 ? null : (
+          <Pagination
+            locale={locale}
+            currentPage={listing.meta.current_page}
+            lastPage={listing.meta.last_page}
+            params={params}
+          />
         )}
       </div>
 
