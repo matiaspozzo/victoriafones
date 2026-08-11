@@ -269,6 +269,7 @@ export default async function PropertyPage({ params }: Props) {
             title={property.title}
             nextLabel={t("next")}
             previousLabel={t("previous")}
+            closeLabel={t("close")}
           />
         </section>
       ) : null}
