@@ -213,6 +213,12 @@ class PropertyResource extends Resource
                     ->schema([
                         Forms\Components\SpatieMediaLibraryFileUpload::make('hero')
                             ->collection('hero')
+                            // Without an explicit conversion, Filament's preview
+                            // thumbnail loads the *original* file's URL — that
+                            // original gets deleted 15 days after upload (see
+                            // media:prune-originals), so the preview needs to be
+                            // pinned to a conversion that's guaranteed to survive.
+                            ->conversion('card')
                             ->image()
                             ->multiple()
                             ->reorderable()
@@ -225,6 +231,7 @@ class PropertyResource extends Resource
                     ->schema([
                         Forms\Components\SpatieMediaLibraryFileUpload::make('images')
                             ->collection('images')
+                            ->conversion('card')
                             ->image()
                             ->multiple()
                             ->reorderable()
