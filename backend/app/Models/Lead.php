@@ -18,6 +18,12 @@ class Lead extends Model
         'source_url',
     ];
 
+    // Not mass-fillable on purpose — set programmatically (auto-marked on view,
+    // or toggled explicitly), never via the disabled-field lead form.
+    protected $casts = [
+        'read_at' => 'datetime',
+    ];
+
     public function property(): BelongsTo
     {
         return $this->belongsTo(Property::class);
