@@ -217,6 +217,7 @@ class PropertyResource extends Resource
                             ->multiple()
                             ->reorderable()
                             ->maxFiles(3)
+                            ->maxSize(32768)
                             ->columnSpanFull(),
                     ]),
 
@@ -227,6 +228,7 @@ class PropertyResource extends Resource
                             ->image()
                             ->multiple()
                             ->reorderable()
+                            ->maxSize(32768)
                             ->columnSpanFull(),
                     ]),
             ]);
