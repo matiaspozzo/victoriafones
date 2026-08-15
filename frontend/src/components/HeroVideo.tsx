@@ -52,6 +52,14 @@ export default function HeroVideo() {
 
   return (
     <div className="relative h-[60vh] w-full overflow-hidden bg-brand-gray">
+      {/* The poster is the LCP element (the video's own .mp4 is never in the
+          initial HTML — see below). It's already discoverable via the
+          <video poster> attribute, but Chrome fetches poster images at a low
+          priority by default and there's no `fetchpriority` attribute for
+          <video> itself — a <link rel="preload" fetchpriority="high"> is the
+          only way to raise it. Next.js hoists any <link> rendered anywhere
+          in the tree into <head>. */}
+      <link rel="preload" as="image" href="/hero-video/hero-video-poster.webp" fetchPriority="high" />
       <video
         ref={videoRef}
         poster="/hero-video/hero-video-poster.webp"
