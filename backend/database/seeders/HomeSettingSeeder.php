@@ -30,6 +30,19 @@ class HomeSettingSeeder extends Seeder
                 'en' => 'Properties for Sale by Zone',
                 'pt' => 'Propriedades à Venda por Zona',
             ]);
+            // Matches what was previously hardcoded as Home.metaTitle/
+            // metaDescription in messages.json, before those fields existed
+            // here — same starting point, now editable.
+            $setting->setTranslations('seo_title', [
+                'es' => 'Propiedades en Venta, Alquiler y Administración en José Ignacio | Victoria Fones Real Estate',
+                'en' => 'Properties for Sale, Rent and Management in José Ignacio | Victoria Fones Real Estate',
+                'pt' => 'Imóveis à Venda, Aluguel e Administração em José Ignacio | Victoria Fones Real Estate',
+            ]);
+            $setting->setTranslations('seo_description', [
+                'es' => 'Compra, venta, alquiler y administración de propiedades en José Ignacio, Punta del Este. Inmobiliaria boutique con conocimiento profundo de cada zona.',
+                'en' => 'Buy, sell, rent and manage properties in José Ignacio, Punta del Este. A boutique real estate agency with deep local market knowledge.',
+                'pt' => 'Compra, venda, aluguel e administração de imóveis em José Ignacio, Punta del Este. Imobiliária boutique com profundo conhecimento de cada região.',
+            ]);
             $setting->save();
         }
 

@@ -18,6 +18,14 @@ export const routing = defineRouting({
   // round-trip (~600ms LCP hit, confirmed via Lighthouse) and disabling
   // back/forward cache on every page.
   localeDetection: false,
+  // With localeDetection already off, the only thing this cookie was doing
+  // was getting set (Set-Cookie: NEXT_LOCALE) on every single response.
+  // Chrome won't bfcache a page whose response both sets a cookie and is
+  // Cache-Control: no-store (which every page here is, since the app is
+  // fully dynamic) — confirmed via Lighthouse's bf-cache audit
+  // (CacheControlNoStoreCookieModified). No code in this app reads
+  // NEXT_LOCALE itself; the actual locale always comes from the URL prefix.
+  localeCookie: false,
   // Translates each page's URL segment per locale (e.g. /mapa -> /en/map),
   // instead of only swapping the /en, /br prefix and keeping every segment
   // in Spanish. Keys are the canonical (Spanish/internal) path — matching

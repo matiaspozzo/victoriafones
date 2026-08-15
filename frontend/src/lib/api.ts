@@ -88,6 +88,8 @@ export type HomeContent = {
   about_title: string;
   about_body: string;
   zones_title: string;
+  seo_title: string;
+  seo_description: string;
   cards: HomeZoneCard[];
 };
 

@@ -20,17 +20,20 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Home" });
+  const home = await getHomeContent(locale);
+  const title = home?.seo_title || t("metaTitle");
+  const description = home?.seo_description || t("metaDescription");
 
   return {
-    title: t("metaTitle"),
-    description: t("metaDescription"),
+    title,
+    description,
     alternates: {
       canonical: canonicalFor(locale, "/"),
       languages: buildAlternates("/"),
     },
     openGraph: {
-      title: t("metaTitle"),
-      description: t("metaDescription"),
+      title,
+      description,
       // A child's `openGraph` object isn't deep-merged with the root
       // layout's default — declaring one here without `images` would lose
       // the site's default share image, not just override title/description.
@@ -38,8 +41,8 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: t("metaTitle"),
-      description: t("metaDescription"),
+      title,
+      description,
       images: ["/brand/og.jpg"],
     },
   };

@@ -16,9 +16,9 @@ class HomeSetting extends Model
 {
     use HasTranslations;
 
-    public array $translatable = ['about_title', 'about_body', 'zones_title'];
+    public array $translatable = ['about_title', 'about_body', 'zones_title', 'seo_title', 'seo_description'];
 
-    protected $fillable = ['about_title', 'about_body', 'zones_title'];
+    protected $fillable = ['about_title', 'about_body', 'zones_title', 'seo_title', 'seo_description'];
 
     public function cards(): HasMany
     {

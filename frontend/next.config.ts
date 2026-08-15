@@ -160,6 +160,25 @@ const legacyRedirects: Array<{ source: string; destination: string }> = [
 const apiUrl = process.env.NEXT_PUBLIC_API_URL ? new URL(process.env.NEXT_PUBLIC_API_URL) : null;
 
 const nextConfig: NextConfig = {
+  // Next.js 15 streams <title>/<meta>/<link> metadata in after the initial
+  // HTML shell by default (an optimization for when generateMetadata does
+  // slow work) — the tags get hoisted into <head> by a small client-side
+  // script instead of being literally inside <head> in the raw response.
+  // Next.js already special-cases a hardcoded bot list (Googlebot,
+  // facebookexternalhit, WhatsApp, Twitterbot, Slackbot, etc. — see
+  // node_modules/next/dist/.../html-bots.js) to always get the blocking,
+  // non-streamed version, so real crawlers and social-preview scrapers see
+  // full metadata either way. But generic auditing tools — Lighthouse CLI,
+  // PageSpeed Insights, Chrome DevTools — use a plain Chrome UA that isn't
+  // on that list, so they see the streamed (initially-tag-less) HTML and
+  // flag a false "missing meta description/title" finding. Setting this to
+  // match everything disables streaming entirely, so metadata is always
+  // in the first response for every UA — safe here since our
+  // generateMetadata calls are either near-instant (next-intl translation
+  // lookups) or, for the property detail page, the same backend fetch the
+  // page's own content already has to wait for regardless (deduped via
+  // React's fetch cache, so blocking on it isn't extra latency).
+  htmlLimitedBots: /.*/,
   images: {
     remotePatterns: [
       {

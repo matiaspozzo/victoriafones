@@ -83,6 +83,17 @@ class HomeResource extends Resource
                             ->addActionLabel('Agregar tarjeta')
                             ->columnSpanFull(),
                     ]),
+                Forms\Components\Section::make('SEO')
+                    ->description('Título y descripción para buscadores (Google) y para la vista previa al compartir el link (WhatsApp, redes sociales). Si se dejan vacíos, se usa un texto genérico por defecto.')
+                    ->schema([
+                        Forms\Components\TextInput::make('seo_title')
+                            ->label('SEO Title')
+                            ->columnSpanFull(),
+                        Forms\Components\Textarea::make('seo_description')
+                            ->label('Meta Description')
+                            ->rows(3)
+                            ->columnSpanFull(),
+                    ]),
             ]);
     }
 

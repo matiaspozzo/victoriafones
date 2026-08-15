@@ -20,6 +20,10 @@ class HomeController extends Controller
                 ?: $setting->getTranslation('about_body', 'es', false),
             'zones_title' => $setting->getTranslation('zones_title', $locale, false)
                 ?: $setting->getTranslation('zones_title', 'es', false),
+            'seo_title' => $setting->getTranslation('seo_title', $locale, false)
+                ?: $setting->getTranslation('seo_title', 'es', false),
+            'seo_description' => $setting->getTranslation('seo_description', $locale, false)
+                ?: $setting->getTranslation('seo_description', 'es', false),
             'cards' => $setting->cards->map(fn ($card) => [
                 'label' => $card->label,
                 'link' => $card->link,
