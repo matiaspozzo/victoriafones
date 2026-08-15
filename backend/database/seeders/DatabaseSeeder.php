@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             AmenitySeeder::class,
             PageSettingSeeder::class,
             SiteSettingSeeder::class,
+            HomeSettingSeeder::class,
         ]);
     }
 }

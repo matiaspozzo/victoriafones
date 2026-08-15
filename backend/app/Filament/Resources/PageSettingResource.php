@@ -44,19 +44,16 @@ class PageSettingResource extends Resource
                 Forms\Components\TextInput::make('hero_title')
                     ->label('Título del encabezado')
                     ->helperText('Primera línea del encabezado azul. Para dar formato: **negrita**, __subrayado__, *cursiva* (ej. Todas las propiedades en **Venta**).')
-                    ->visible(fn (?PageSetting $record) => $record?->key !== 'home')
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('hero_subtitle')
                     ->label('Subtítulo')
                     ->helperText('Segunda línea (opcional).')
-                    ->visible(fn (?PageSetting $record) => $record?->key !== 'home')
                     ->columnSpanFull(),
                 Forms\Components\SpatieMediaLibraryFileUpload::make('hero')
                     ->label('Imagen de fondo')
                     ->collection('hero')
                     ->image()
                     ->helperText('Se recorta automáticamente a 1920×1080 en desktop y 828×1104 en mobile (se recorta desde el centro, así que en fotos horizontales conviene que lo importante esté centrado). Se convierte a WebP automáticamente. Si no se sube ninguna, se usa la imagen por defecto.')
-                    ->visible(fn (?PageSetting $record) => $record?->key !== 'home')
                     ->columnSpanFull(),
                 Forms\Components\Select::make('navbar_style')
                     ->label('Color del menú (antes de hacer scroll)')
@@ -64,26 +61,6 @@ class PageSettingResource extends Resource
                     ->default('white')
                     ->required()
                     ->helperText('Elegí azul si la imagen de fondo es clara y el menú blanco no se lee bien. Una vez que se hace scroll, el menú siempre queda azul sólido con texto blanco.')
-                    ->visible(fn (?PageSetting $record) => $record?->key !== 'home')
-                    ->columnSpanFull(),
-                Forms\Components\Section::make('Home')
-                    ->description('Textos de la sección "Acerca de" y del listado de zonas en la página de inicio.')
-                    ->visible(fn (?PageSetting $record) => $record?->key === 'home')
-                    ->schema([
-                        Forms\Components\TextInput::make('about_title')
-                            ->label('Título')
-                            ->helperText('Para dar formato: **negrita**, __subrayado__, *cursiva*.')
-                            ->columnSpanFull(),
-                        Forms\Components\Textarea::make('about_body')
-                            ->label('Texto')
-                            ->rows(4)
-                            ->helperText('Para dar formato: **negrita**, __subrayado__, *cursiva*.')
-                            ->columnSpanFull(),
-                        Forms\Components\TextInput::make('zones_title')
-                            ->label('Título de "Propiedades por zona"')
-                            ->columnSpanFull(),
-                    ])
-                    ->columns(1)
                     ->columnSpanFull(),
                 Forms\Components\Section::make('Alquileres')
                     ->description('Permite ocultar temporalmente el listado de propiedades en alquiler (y el submenú de zonas) y mostrar en su lugar un texto informativo.')

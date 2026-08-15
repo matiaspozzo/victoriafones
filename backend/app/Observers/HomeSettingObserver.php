@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Observers;
+
+use App\Models\HomeSetting;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
+class HomeSettingObserver
+{
+    public function saved(HomeSetting $setting): void
+    {
+        $url = config('services.frontend.url');
+        $secret = config('services.frontend.revalidate_secret');
+
+        if (! $url || ! $secret) {
+            return;
+        }
+
+        try {
+            Http::timeout(5)->post(rtrim($url, '/').'/api/revalidate', [
+                'secret' => $secret,
+                'tags' => ['properties'],
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('Frontend revalidate request failed: '.$e->getMessage());
+        }
+    }
+}

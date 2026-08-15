@@ -27,12 +27,6 @@ class PageController extends Controller
                     'rental_disabled' => $page->rental_disabled,
                     'rental_disabled_message' => $page->getTranslation('rental_disabled_message', $locale, false)
                         ?: $page->getTranslation('rental_disabled_message', 'es', false),
-                    'about_title' => $page->getTranslation('about_title', $locale, false)
-                        ?: $page->getTranslation('about_title', 'es', false),
-                    'about_body' => $page->getTranslation('about_body', $locale, false)
-                        ?: $page->getTranslation('about_body', 'es', false),
-                    'zones_title' => $page->getTranslation('zones_title', $locale, false)
-                        ?: $page->getTranslation('zones_title', 'es', false),
                 ],
             ];
         });

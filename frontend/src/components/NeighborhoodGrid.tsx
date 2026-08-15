@@ -1,42 +1,66 @@
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import type { ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
+import type { HomeZoneCard } from "@/lib/api";
 
-// Real photos captured from the live site's homepage neighborhood-link
-// section (wp-content/uploads/2025/10/home-links-*.webp).
-const ZONES = [
-  { slug: "pueblo-jose-ignacio", image: "/neighborhoods/home-links-jose-ignacio-town.webp" },
-  { slug: "pinar-del-faro", image: "/neighborhoods/home-links-pinar-del-faro.webp" },
-  { slug: "club-de-mar", image: "/neighborhoods/home-links-club-de-mar.webp" },
-  { slug: "laguna-escondida", image: "/neighborhoods/home-links-laguna-escondida-v2.webp" },
-  { slug: "otras-zonas", image: "/neighborhoods/home-links-playa-brava.webp" },
-  { slug: "alrededores", image: "/neighborhoods/home-links-alrededores.webp" },
-];
+const ZONE_LINK_PATTERN = /^\/(propiedades-en-venta|propiedades-en-alquiler)\/([a-z0-9-]+)$/;
 
-export default async function NeighborhoodGrid({ locale }: { locale: string }) {
-  const tZones = await getTranslations({ locale, namespace: "Zones" });
+/**
+ * `card.link` is admin-editable free text (e.g. "/propiedades-en-venta/club-de-mar"),
+ * so it can't be a typed next-intl pathname at compile time. When it matches
+ * the zone-listing pattern, re-resolve it through next-intl's per-locale
+ * routing (this project's URLs are fully translated per locale — see
+ * routing.ts — so a bare Spanish-segment href would otherwise 404 or land on
+ * the wrong locale's page). Anything else (a different static page, an
+ * external URL) renders as a plain, non-translated link.
+ */
+function ZoneCardLink({
+  href,
+  className,
+  children,
+}: {
+  href: string;
+  className: string;
+  children: ReactNode;
+}) {
+  const match = href.match(ZONE_LINK_PATTERN);
+
+  if (match) {
+    const [, operation, barrio] = match;
+    const pathname = operation === "propiedades-en-venta" ? "/propiedades-en-venta/[barrio]" : "/propiedades-en-alquiler/[barrio]";
+
+    return (
+      <Link href={{ pathname, params: { barrio } }} className={className}>
+        {children}
+      </Link>
+    );
+  }
 
   return (
+    <a href={href} className={className}>
+      {children}
+    </a>
+  );
+}
+
+export default function NeighborhoodGrid({ cards }: { cards: HomeZoneCard[] }) {
+  return (
     <div className="grid grid-cols-2 gap-20">
-      {ZONES.map((zone) => (
-        <Link
-          key={zone.slug}
-          href={{ pathname: "/propiedades-en-venta/[barrio]", params: { barrio: zone.slug } }}
-          className="group block"
-        >
+      {cards.map((card, i) => (
+        <ZoneCardLink key={`${card.link}-${i}`} href={card.link} className="group block">
           <div className="relative aspect-video overflow-hidden bg-brand-gray">
-            <Image
-              src={zone.image}
-              alt={tZones(zone.slug)}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-              sizes="50vw"
-            />
+            {card.image ? (
+              <Image
+                src={card.image}
+                alt={card.label}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                sizes="50vw"
+              />
+            ) : null}
           </div>
-          <span className="block py-5 font-heading text-lg font-bold text-brand-primary">
-            {tZones(zone.slug)}
-          </span>
-        </Link>
+          <span className="block py-5 font-heading text-lg font-bold text-brand-primary">{card.label}</span>
+        </ZoneCardLink>
       ))}
     </div>
   );

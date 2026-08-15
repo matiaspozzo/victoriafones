@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AmenityController;
+use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\LeadController;
 use App\Http\Controllers\Api\MapController;
 use App\Http\Controllers\Api\NeighborhoodController;
@@ -15,5 +16,6 @@ Route::get('/map/properties', [MapController::class, 'properties']);
 Route::get('/neighborhoods', [NeighborhoodController::class, 'index']);
 Route::get('/amenities', [AmenityController::class, 'index']);
 Route::get('/pages', [PageController::class, 'index']);
+Route::get('/home', [HomeController::class, 'index']);
 Route::get('/site-settings', [SiteSettingController::class, 'index']);
 Route::post('/leads', [LeadController::class, 'store']);

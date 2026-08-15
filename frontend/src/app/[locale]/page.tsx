@@ -5,7 +5,7 @@ import HeroVideo from "@/components/HeroVideo";
 import FeaturedPropertiesMasonry from "@/components/FeaturedPropertiesMasonry";
 import FeaturedPropertiesSlider from "@/components/FeaturedPropertiesSlider";
 import NeighborhoodGrid from "@/components/NeighborhoodGrid";
-import { getPageHeader, getProperties } from "@/lib/api";
+import { getHomeContent, getProperties } from "@/lib/api";
 import { renderRich } from "@/lib/richText";
 import { buildAlternates, canonicalFor } from "@/lib/seo";
 
@@ -52,10 +52,11 @@ export default async function Home({
 }) {
   const { locale } = await params;
   const t = await getTranslations("Home");
-  const header = await getPageHeader(locale, "home");
-  const aboutTitle = header?.about_title || t("aboutTitle");
-  const aboutBody = header?.about_body || t("aboutBody");
-  const zonesTitle = header?.zones_title || t("salesTitle");
+  const home = await getHomeContent(locale);
+  const aboutTitle = home?.about_title || t("aboutTitle");
+  const aboutBody = home?.about_body || t("aboutBody");
+  const zonesTitle = home?.zones_title || t("salesTitle");
+  const cards = home?.cards ?? [];
 
   const featured = await getProperties(locale, { featured: "1", per_page: "6" }).catch(
     () => ({ data: [], meta: { current_page: 1, last_page: 1, total: 0 } })
@@ -109,17 +110,19 @@ export default async function Home({
         </section>
       ) : null}
 
-      <section className="px-6 py-16">
-        <div className="mx-auto max-w-7xl">
-          <h2 className="font-heading text-2xl font-light tracking-[0.8px] text-brand-primary sm:text-[2rem]">
-            {zonesTitle}
-          </h2>
+      {cards.length > 0 ? (
+        <section className="px-6 py-16">
+          <div className="mx-auto max-w-7xl">
+            <h2 className="font-heading text-2xl font-light tracking-[0.8px] text-brand-primary sm:text-[2rem]">
+              {zonesTitle}
+            </h2>
 
-          <div className="mt-10">
-            <NeighborhoodGrid locale={locale} />
+            <div className="mt-10">
+              <NeighborhoodGrid cards={cards} />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
     </main>
   );
 }

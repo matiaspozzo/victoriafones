@@ -2,10 +2,14 @@
 
 namespace App\Providers;
 
+use App\Models\HomeSetting;
+use App\Models\HomeZoneCard;
 use App\Models\Neighborhood;
 use App\Models\PageSetting;
 use App\Models\Property;
 use App\Models\SiteSetting;
+use App\Observers\HomeSettingObserver;
+use App\Observers\HomeZoneCardObserver;
 use App\Observers\NeighborhoodObserver;
 use App\Observers\PageSettingObserver;
 use App\Observers\PropertyObserver;
@@ -31,5 +35,7 @@ class AppServiceProvider extends ServiceProvider
         PageSetting::observe(PageSettingObserver::class);
         Neighborhood::observe(NeighborhoodObserver::class);
         SiteSetting::observe(SiteSettingObserver::class);
+        HomeSetting::observe(HomeSettingObserver::class);
+        HomeZoneCard::observe(HomeZoneCardObserver::class);
     }
 }

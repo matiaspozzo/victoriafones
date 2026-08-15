@@ -71,15 +71,29 @@ export type PageHeader = {
   navbar_style: "white" | "blue";
   rental_disabled: boolean;
   rental_disabled_message: string;
-  about_title: string;
-  about_body: string;
-  zones_title: string;
 };
 
 export async function getPageHeader(locale: string, key: string): Promise<PageHeader | null> {
   try {
     const pages = await apiFetch<Record<string, PageHeader>>("/pages", locale);
     return pages[key] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export type HomeZoneCard = { label: string; link: string; image: string | null };
+
+export type HomeContent = {
+  about_title: string;
+  about_body: string;
+  zones_title: string;
+  cards: HomeZoneCard[];
+};
+
+export async function getHomeContent(locale: string): Promise<HomeContent | null> {
+  try {
+    return await apiFetch<HomeContent>("/home", locale);
   } catch {
     return null;
   }
