@@ -22,9 +22,24 @@ export async function generateMetadata({
 
   return {
     title: t("metaTitle"),
+    description: t("metaDescription"),
     alternates: {
       canonical: canonicalFor(locale, "/"),
       languages: buildAlternates("/"),
+    },
+    openGraph: {
+      title: t("metaTitle"),
+      description: t("metaDescription"),
+      // A child's `openGraph` object isn't deep-merged with the root
+      // layout's default — declaring one here without `images` would lose
+      // the site's default share image, not just override title/description.
+      images: [{ url: "/brand/og.jpg", width: 1200, height: 675 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("metaTitle"),
+      description: t("metaDescription"),
+      images: ["/brand/og.jpg"],
     },
   };
 }

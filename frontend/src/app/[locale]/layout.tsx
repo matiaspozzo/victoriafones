@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Montserrat, Raleway } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import Header from "@/components/Header";
@@ -25,14 +25,43 @@ const raleway = Raleway({
   weight: ["400", "500", "600"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: "Victoria Fones Real Estate",
-  description: "Inmobiliaria en José Ignacio, Punta del Este, Uruguay.",
-  alternates: {
-    languages: buildAlternates("/"),
-  },
-};
+// Fallback metadata for any route that doesn't set its own (currently none —
+// every page defines its own title/description) and, more importantly, the
+// source every page's <head> inherits `openGraph`/`twitter` from unless it
+// sets those keys itself: only the property detail page and neighborhood
+// zone pages with a custom og_image do, so this default share image is what
+// actually shows up when the home page, listings, Quiénes Somos, Contacto,
+// etc. get shared on WhatsApp/social — those had no image preview before.
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "Home" });
+
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: "Victoria Fones Real Estate",
+    description: t("metaDescription"),
+    alternates: {
+      languages: buildAlternates("/"),
+    },
+    openGraph: {
+      type: "website",
+      siteName: "Victoria Fones Real Estate",
+      title: "Victoria Fones Real Estate",
+      description: t("metaDescription"),
+      images: [{ url: "/brand/og.jpg", width: 1200, height: 675 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Victoria Fones Real Estate",
+      description: t("metaDescription"),
+      images: ["/brand/og.jpg"],
+    },
+  };
+}
 
 const organizationJsonLd = {
   "@context": "https://schema.org",
