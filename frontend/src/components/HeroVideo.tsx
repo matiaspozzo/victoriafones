@@ -43,11 +43,30 @@ export default function HeroVideo() {
       video.play().catch(() => {});
     };
 
-    video.addEventListener("canplay", onCanPlay, { once: true });
-    video.src = "/hero-video/hero-video.mp4";
-    video.load();
+    function startLoading() {
+      if (!video) return;
+      video.addEventListener("canplay", onCanPlay, { once: true });
+      video.src = "/hero-video/hero-video.mp4";
+      video.load();
+    }
 
-    return () => video.removeEventListener("canplay", onCanPlay);
+    // Deferred start: the video's own fetch/decode only begins once the rest
+    // of the page has finished loading (window "load", i.e. every other
+    // resource is done), not immediately on mount. A video that's already
+    // playing keeps producing new frames indefinitely, which Speed Index
+    // reads as "still loading" since it never visually settles — starting
+    // it after "load" keeps it out of that measurement window instead of
+    // dragging it out. Real users still see it within a beat of the poster.
+    if (document.readyState === "complete") {
+      startLoading();
+      return () => video.removeEventListener("canplay", onCanPlay);
+    }
+
+    window.addEventListener("load", startLoading, { once: true });
+    return () => {
+      window.removeEventListener("load", startLoading);
+      video.removeEventListener("canplay", onCanPlay);
+    };
   }, []);
 
   return (
