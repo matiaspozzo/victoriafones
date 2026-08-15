@@ -1,13 +1,13 @@
 // Agency office — shown on the property detail page and the Contacto page.
-// Coordinates match the live site's actual map pin (data-pins on victoriafones.com/contacto/),
-// not just its map's center point — those differ by ~250m.
+// Coordinates are the Google Maps place pin for the address below (provided
+// by the client), not just the map's viewport center.
 export const OFFICE = {
-  addressLine: "Galería Los Caracoles. Sainz Martinez y Los Biguá.",
-  city: "José Ignacio, Uruguay",
-  phone: "+598 9470 7314",
-  phoneHref: "+59894707314",
+  addressLine: "Los Teros 9000, 20000 Faro de José Ignacio, Departamento de Maldonado,",
+  city: "Uruguay",
+  phone: "+598 93 985 888",
+  phoneHref: "+59893985888",
   email: "info@victoriafones.com",
   instagram: "https://www.instagram.com/victoriafones.realestate",
-  lat: -34.8426889,
-  lng: -54.6378671,
+  lat: -34.8457702,
+  lng: -54.637147,
 };

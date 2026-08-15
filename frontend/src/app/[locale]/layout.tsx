@@ -41,12 +41,14 @@ const organizationJsonLd = {
   url: SITE_URL,
   logo: `${SITE_URL}/brand/logo-azul@2x.webp`,
   image: `${SITE_URL}/brand/logo-azul@2x.webp`,
-  telephone: "+598 9470 7314",
+  telephone: "+598 93 985 888",
   email: "info@victoriafones.com",
   address: {
     "@type": "PostalAddress",
-    streetAddress: "Galería Los Caracoles. Sainz Martinez y Los Biguá",
-    addressLocality: "José Ignacio",
+    streetAddress: "Los Teros 9000",
+    postalCode: "20000",
+    addressLocality: "Faro de José Ignacio",
+    addressRegion: "Maldonado",
     addressCountry: "UY",
   },
   geo: {

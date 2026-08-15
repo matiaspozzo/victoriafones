@@ -2,8 +2,8 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
-const PHONE = "+598 9470 7314";
-const PHONE_HREF = "+59894707314";
+const PHONE = "+598 93 985 888";
+const PHONE_HREF = "+59893985888";
 const EMAIL = "info@victoriafones.com";
 const INSTAGRAM_URL = "https://www.instagram.com/victoriafones.realestate";
 
