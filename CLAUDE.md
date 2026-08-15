@@ -63,8 +63,13 @@ Rutas ES actuales que deben seguir existiendo con el mismo path:
 - `/propiedades-en-venta/` y `/propiedades-en-alquiler/` (listados)
 - `/propiedades/{slug}/` (ficha; slug incluye el código, ej. `leg8-laguna-escondida-jose-ignacio`)
 - `/quienes-somos/`, `/contacto/`, `/nuestras-propiedades/`
-- `/en/...` y `/br/...` equivalentes — **verificar los slugs EN/PT reales contra el sitio vivo**
-  antes de fijar `frontend/src/i18n/routing.ts` (hay TODOs marcados).
+- `/en/...` y `/br/...` — cada página tiene su propio slug traducido por idioma (no solo el
+  prefijo), definido en `frontend/src/i18n/routing.ts`'s `pathnames` (ej. `/mapa` → `/en/map`,
+  `/quienes-somos` → `/en/about-us` / `/br/sobre-nos`). Verificado contra los slugs reales
+  del sitio WP pre-migración. Los `<Link>`/`router` tipados de next-intl solo aceptan un
+  `href` que matchee ese mapa — al agregar una ruta nueva, actualizar `pathnames` primero:
+  TypeScript señala automáticamente cada lugar que construye esa URL a mano y necesita el
+  form `{pathname, params}`.
 
 Las URLs de categoría anidadas de WP (ej. `/propiedades-en-venta/punta-del-este/propiedades-en-venta-en-jose-ignacio/propiedades-en-venta-en-pueblo/`)
 se acortan a `/venta/{barrio}` con **redirect 301** definido en `frontend/next.config.ts`.
