@@ -115,6 +115,16 @@ class NeighborhoodResource extends Resource
                 Tables\Columns\TextColumn::make('slug')
                     ->label('Slug')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('seo_title')
+                    ->label('SEO Title')
+                    ->limit(40)
+                    ->tooltip(fn (?string $state): ?string => $state)
+                    ->placeholder('Sin completar'),
+                Tables\Columns\TextColumn::make('seo_description')
+                    ->label('Meta Description')
+                    ->limit(50)
+                    ->tooltip(fn (?string $state): ?string => $state)
+                    ->placeholder('Sin completar'),
                 Tables\Columns\TextColumn::make('order')
                     ->label('Orden')
                     ->sortable(),
