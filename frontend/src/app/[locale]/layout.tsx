@@ -8,7 +8,7 @@ import { routing } from "@/i18n/routing";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import RawScripts from "@/components/RawScripts";
-import { getSiteSettings } from "@/lib/api";
+import { getPageHeader, getSiteSettings } from "@/lib/api";
 import { OFFICE } from "@/lib/office";
 import { buildAlternates, SITE_URL } from "@/lib/seo";
 import "../globals.css";
@@ -77,6 +77,8 @@ export default async function LocaleLayout({
 
   const messages = await getMessages();
   const siteSettings = await getSiteSettings(locale);
+  const alquilerPage = await getPageHeader(locale, "alquiler");
+  const rentalsEnabled = !alquilerPage?.rental_disabled;
 
   return (
     <html lang={locale}>
@@ -138,7 +140,7 @@ export default async function LocaleLayout({
         {siteSettings?.additional_scripts ? <RawScripts html={siteSettings.additional_scripts} /> : null}
 
         <NextIntlClientProvider messages={messages}>
-          <Header />
+          <Header rentalsEnabled={rentalsEnabled} />
           {children}
           <Footer />
         </NextIntlClientProvider>

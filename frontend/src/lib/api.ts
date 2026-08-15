@@ -69,6 +69,8 @@ export type PageHeader = {
   hero_subtitle: string;
   hero_image: { desktop: string | null; mobile: string | null };
   navbar_style: "white" | "blue";
+  rental_disabled: boolean;
+  rental_disabled_message: string;
 };
 
 export async function getPageHeader(locale: string, key: string): Promise<PageHeader | null> {

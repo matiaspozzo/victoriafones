@@ -13,7 +13,7 @@ class PageSetting extends Model implements HasMedia
 {
     use HasTranslations, InteractsWithMedia;
 
-    public array $translatable = ['hero_title', 'hero_subtitle'];
+    public array $translatable = ['hero_title', 'hero_subtitle', 'rental_disabled_message'];
 
     protected $fillable = [
         'key',
@@ -21,6 +21,12 @@ class PageSetting extends Model implements HasMedia
         'hero_title',
         'hero_subtitle',
         'navbar_style',
+        'rental_disabled',
+        'rental_disabled_message',
+    ];
+
+    protected $casts = [
+        'rental_disabled' => 'boolean',
     ];
 
     public function registerMediaCollections(): void

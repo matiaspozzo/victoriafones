@@ -80,6 +80,42 @@ export default async function PropertyListingPage({
   const navbarStyle = navbarStyleOverride ?? header?.navbar_style ?? "white";
   const cta = await getTranslations({ locale, namespace: "SearchCta" });
 
+  const searchCtaSection = (
+    <section className="relative text-brand-primary">
+      <Image src="/brand/search-cta.jpg" alt="" fill className="object-cover grayscale" sizes="100vw" />
+      <div className="absolute inset-0 bg-[#eeeeec]/90" />
+      <div className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-6 py-16 md:grid-cols-2 lg:gap-16 lg:px-12">
+        <div>
+          <h2 className="font-heading text-[2rem] font-bold leading-tight text-brand-primary whitespace-normal xl:whitespace-nowrap">
+            {cta("title")}
+          </h2>
+          <hr className="my-8 max-w-xs border-brand-primary/25" />
+          <p className="max-w-md font-bold text-brand-primary">{cta("text")}</p>
+        </div>
+        <div>
+          <LeadForm />
+        </div>
+      </div>
+    </section>
+  );
+
+  // Client can temporarily hide the alquiler listing from Filament (PageSetting's
+  // rental_disabled toggle) and show an editable static message instead — the
+  // zone submenu is hidden in Header/NavDropdown for the same flag.
+  if (pageKey === "alquiler" && header?.rental_disabled) {
+    return (
+      <main>
+        <SetNavbarStyle style={navbarStyle} />
+        <ResponsiveHero desktop={heroDesktop} mobile={heroMobile} />
+        <PageHeader title={title} subtitle={subtitle} />
+        <div className="mx-auto max-w-3xl px-6 py-16">
+          <p className="whitespace-pre-line text-brand-text">{header.rental_disabled_message}</p>
+        </div>
+        {searchCtaSection}
+      </main>
+    );
+  }
+
   // Marks up the listed properties as a Product ItemList, so search engines
   // can pick up price/availability for each card (see the property detail
   // page's Product markup for why Product rather than RealEstateListing).
@@ -223,24 +259,7 @@ export default async function PropertyListingPage({
         </div>
       ) : null}
 
-      {/* "Didn't find what you were looking for?" CTA + contact form.
-          Grayscale background photo with a 90% light overlay. */}
-      <section className="relative text-brand-primary">
-        <Image src="/brand/search-cta.jpg" alt="" fill className="object-cover grayscale" sizes="100vw" />
-        <div className="absolute inset-0 bg-[#eeeeec]/90" />
-        <div className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-6 py-16 md:grid-cols-2 lg:gap-16 lg:px-12">
-          <div>
-            <h2 className="font-heading text-[2rem] font-bold leading-tight text-brand-primary whitespace-normal xl:whitespace-nowrap">
-              {cta("title")}
-            </h2>
-            <hr className="my-8 max-w-xs border-brand-primary/25" />
-            <p className="max-w-md font-bold text-brand-primary">{cta("text")}</p>
-          </div>
-          <div>
-            <LeadForm />
-          </div>
-        </div>
-      </section>
+      {searchCtaSection}
     </main>
   );
 }

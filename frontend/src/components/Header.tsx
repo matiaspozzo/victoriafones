@@ -18,14 +18,30 @@ function MobileNavGroup({
   label,
   basePath,
   onNavigate,
+  disableZones = false,
 }: {
   label: string;
   basePath: "venta" | "alquiler";
   onNavigate: () => void;
+  /** Hides the zone accordion, rendering a plain link — used while a listing
+      section (e.g. alquiler) is temporarily disabled. */
+  disableZones?: boolean;
 }) {
   const tZones = useTranslations("Zones");
   const [expanded, setExpanded] = useState(false);
   const listingPath = basePath === "venta" ? "/propiedades-en-venta" : "/propiedades-en-alquiler";
+
+  if (disableZones) {
+    return (
+      <Link
+        href={listingPath}
+        className="block border-b border-white/10 py-4 text-base font-medium tracking-wide"
+        onClick={onNavigate}
+      >
+        {label}
+      </Link>
+    );
+  }
 
   return (
     <div className="border-b border-white/10">
@@ -78,7 +94,7 @@ function MobileNavGroup({
   );
 }
 
-export default function Header() {
+export default function Header({ rentalsEnabled = true }: { rentalsEnabled?: boolean }) {
   const t = useTranslations("Nav");
   const pathname = usePathname();
   const navbarStyle = useNavbarStyle();
@@ -148,7 +164,7 @@ export default function Header() {
 
         <nav className="hidden items-center gap-8 pr-6 lg:flex">
           <NavDropdown label={t("sales")} basePath="venta" hoverClassName={hoverText} />
-          <NavDropdown label={t("rentals")} basePath="alquiler" hoverClassName={hoverText} />
+          <NavDropdown label={t("rentals")} basePath="alquiler" hoverClassName={hoverText} disableZones={!rentalsEnabled} />
           <Link href="/quienes-somos" className={`text-sm font-medium tracking-wide ${hoverText}`}>
             {t("about")}
           </Link>
@@ -211,7 +227,12 @@ export default function Header() {
         </div>
 
         <MobileNavGroup label={t("sales")} basePath="venta" onNavigate={() => setMenuOpen(false)} />
-        <MobileNavGroup label={t("rentals")} basePath="alquiler" onNavigate={() => setMenuOpen(false)} />
+        <MobileNavGroup
+          label={t("rentals")}
+          basePath="alquiler"
+          onNavigate={() => setMenuOpen(false)}
+          disableZones={!rentalsEnabled}
+        />
 
         <Link
           href="/quienes-somos"

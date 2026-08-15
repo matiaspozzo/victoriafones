@@ -37,6 +37,12 @@ class PageSettingSeeder extends Seeder
                     'en' => 'Punta del Este.',
                     'pt' => 'Punta del Este.',
                 ],
+                'rental_disabled' => false,
+                'rental_disabled_message' => [
+                    'es' => "Trabajamos alquileres en José Ignacio y alrededores, para quienes buscan pasar sus vacaciones sin preocupaciones y para quienes confían su propiedad a nuestro cuidado.\n\nTenemos un portfolio de casas seleccionadas con criterio. Nos ocupamos de resolver cada detalle con anticipación, para que la experiencia —de quien alquila y de quien es propietario— sea de excelencia.\n\nNuestra forma de gestionar es formal y estructurada, de principio a fin. Así cuidamos cada vínculo, en cada temporada.",
+                    'en' => "We handle rentals in José Ignacio and its surroundings, for those looking to spend their vacation worry-free and for those who trust us with the care of their property.\n\nWe have a portfolio of carefully selected homes. We take care of resolving every detail in advance, so the experience — for both tenant and owner — is one of excellence.\n\nOur way of managing is formal and structured, from start to finish. This is how we take care of every relationship, every season.",
+                    'pt' => "Trabalhamos com aluguéis em José Ignacio e arredores, para quem busca passar as férias sem preocupações e para quem confia sua propriedade aos nossos cuidados.\n\nTemos um portfólio de casas selecionadas com critério. Cuidamos de resolver cada detalhe com antecedência, para que a experiência — de quem aluga e de quem é proprietário — seja de excelência.\n\nNossa forma de gerenciar é formal e estruturada, do início ao fim. Assim cuidamos de cada vínculo, em cada temporada.",
+                ],
             ],
             [
                 'key' => 'nuestras-propiedades',

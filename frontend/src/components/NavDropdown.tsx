@@ -12,14 +12,26 @@ export default function NavDropdown({
   label,
   basePath,
   hoverClassName = "hover:text-brand-secondary",
+  disableZones = false,
 }: {
   label: string;
   basePath: "venta" | "alquiler";
   hoverClassName?: string;
+  /** Hides the zone submenu, rendering a plain link — used while a listing
+      section (e.g. alquiler) is temporarily disabled. */
+  disableZones?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const tZones = useTranslations("Zones");
   const listingPath = basePath === "venta" ? "/propiedades-en-venta" : "/propiedades-en-alquiler";
+
+  if (disableZones) {
+    return (
+      <Link href={listingPath} className={`text-sm font-medium tracking-wide ${hoverClassName}`}>
+        {label}
+      </Link>
+    );
+  }
 
   return (
     <div

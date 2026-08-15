@@ -24,6 +24,9 @@ class PageController extends Controller
                         'mobile' => $page->getFirstMediaUrl('hero', 'mobile') ?: null,
                     ],
                     'navbar_style' => $page->navbar_style,
+                    'rental_disabled' => $page->rental_disabled,
+                    'rental_disabled_message' => $page->getTranslation('rental_disabled_message', $locale, false)
+                        ?: $page->getTranslation('rental_disabled_message', 'es', false),
                 ],
             ];
         });

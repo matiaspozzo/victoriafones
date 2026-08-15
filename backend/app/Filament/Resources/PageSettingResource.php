@@ -62,6 +62,22 @@ class PageSettingResource extends Resource
                     ->required()
                     ->helperText('Elegí azul si la imagen de fondo es clara y el menú blanco no se lee bien. Una vez que se hace scroll, el menú siempre queda azul sólido con texto blanco.')
                     ->columnSpanFull(),
+                Forms\Components\Section::make('Alquileres')
+                    ->description('Permite ocultar temporalmente el listado de propiedades en alquiler (y el submenú de zonas) y mostrar en su lugar un texto informativo.')
+                    ->visible(fn (?PageSetting $record) => $record?->key === 'alquiler')
+                    ->schema([
+                        Forms\Components\Toggle::make('rental_disabled')
+                            ->label('Ocultar propiedades en alquiler')
+                            ->helperText('Al activarlo, "Propiedades en Alquiler" deja de mostrar el listado y el submenú de zonas, y en su lugar se muestra el mensaje de abajo.')
+                            ->inline(false),
+                        Forms\Components\Textarea::make('rental_disabled_message')
+                            ->label('Mensaje a mostrar')
+                            ->rows(6)
+                            ->helperText('Se muestra en lugar del listado mientras el alquiler está oculto. Dejá una línea en blanco entre párrafos.')
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(1)
+                    ->columnSpanFull(),
             ]);
     }
 
