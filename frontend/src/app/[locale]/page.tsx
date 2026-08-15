@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import HeroVideo from "@/components/HeroVideo";
@@ -5,10 +6,28 @@ import FeaturedPropertiesMasonry from "@/components/FeaturedPropertiesMasonry";
 import FeaturedPropertiesSlider from "@/components/FeaturedPropertiesSlider";
 import NeighborhoodGrid from "@/components/NeighborhoodGrid";
 import { getProperties } from "@/lib/api";
+import { buildAlternates, canonicalFor } from "@/lib/seo";
 
 // Masonry needs enough cards to fill the columns without looking sparse;
 // below this threshold a slider reads better.
 const MASONRY_MIN = 5;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "Home" });
+
+  return {
+    title: t("metaTitle"),
+    alternates: {
+      canonical: canonicalFor(locale, "/"),
+      languages: buildAlternates("/"),
+    },
+  };
+}
 
 export default async function Home({
   params,
