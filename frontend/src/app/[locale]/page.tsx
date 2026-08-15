@@ -5,7 +5,8 @@ import HeroVideo from "@/components/HeroVideo";
 import FeaturedPropertiesMasonry from "@/components/FeaturedPropertiesMasonry";
 import FeaturedPropertiesSlider from "@/components/FeaturedPropertiesSlider";
 import NeighborhoodGrid from "@/components/NeighborhoodGrid";
-import { getProperties } from "@/lib/api";
+import { getPageHeader, getProperties } from "@/lib/api";
+import { renderRich } from "@/lib/richText";
 import { buildAlternates, canonicalFor } from "@/lib/seo";
 
 // Masonry needs enough cards to fill the columns without looking sparse;
@@ -51,6 +52,10 @@ export default async function Home({
 }) {
   const { locale } = await params;
   const t = await getTranslations("Home");
+  const header = await getPageHeader(locale, "home");
+  const aboutTitle = header?.about_title || t("aboutTitle");
+  const aboutBody = header?.about_body || t("aboutBody");
+  const zonesTitle = header?.zones_title || t("salesTitle");
 
   const featured = await getProperties(locale, { featured: "1", per_page: "6" }).catch(
     () => ({ data: [], meta: { current_page: 1, last_page: 1, total: 0 } })
@@ -63,7 +68,7 @@ export default async function Home({
       <section className="mx-auto max-w-7xl px-6 py-16">
         <div className="md:w-1/2">
           <h1 className="font-heading text-[32px] font-light leading-[1.2] tracking-[1.2px] text-brand-primary">
-            {t.rich("aboutTitle", { b: (chunks) => <strong className="font-medium">{chunks}</strong> })}
+            {renderRich(aboutTitle)}
           </h1>
           <Link
             href="/propiedades-en-venta"
@@ -73,7 +78,7 @@ export default async function Home({
           </Link>
         </div>
         <div className="mt-10 space-y-4 text-brand-text md:ml-auto md:w-1/2">
-          <p>{t.rich("aboutBody", { b: (chunks) => <strong className="font-semibold">{chunks}</strong> })}</p>
+          <p>{renderRich(aboutBody)}</p>
         </div>
       </section>
 
@@ -107,7 +112,7 @@ export default async function Home({
       <section className="px-6 py-16">
         <div className="mx-auto max-w-7xl">
           <h2 className="font-heading text-2xl font-light tracking-[0.8px] text-brand-primary sm:text-[2rem]">
-            {t("salesTitle")}
+            {zonesTitle}
           </h2>
 
           <div className="mt-10">

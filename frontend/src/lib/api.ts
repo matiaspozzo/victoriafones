@@ -71,6 +71,9 @@ export type PageHeader = {
   navbar_style: "white" | "blue";
   rental_disabled: boolean;
   rental_disabled_message: string;
+  about_title: string;
+  about_body: string;
+  zones_title: string;
 };
 
 export async function getPageHeader(locale: string, key: string): Promise<PageHeader | null> {

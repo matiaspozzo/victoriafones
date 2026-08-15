@@ -11,6 +11,25 @@ class PageSettingSeeder extends Seeder
     {
         $pages = [
             [
+                'key' => 'home',
+                'label' => 'Home',
+                'about_title' => [
+                    'es' => 'Tenemos la propiedad perfecta para cada cliente.',
+                    'en' => 'We have the perfect property for every client.',
+                    'pt' => 'Temos o imóvel perfeito para cada cliente.',
+                ],
+                'about_body' => [
+                    'es' => '**Asesoramiento inmobiliario — para quienes buscan el lugar correcto y la inversión correcta**. En cada operación aplicamos información real, criterio genuino y un conocimiento profundo de José Ignacio, con seriedad y profesionalismo absolutos. José Ignacio es nuestro mercado, nuestra casa y nuestra especialidad.',
+                    'en' => '**Real estate advisory — for those seeking the right place and the right investment**. In every transaction we apply real information, genuine judgment, and a deep knowledge of José Ignacio, with absolute seriousness and professionalism. José Ignacio is our market, our home, and our specialty.',
+                    'pt' => '**Assessoria imobiliária — para quem busca o lugar certo e o investimento certo**. Em cada operação aplicamos informação real, critério genuíno e um profundo conhecimento de José Ignacio, com seriedade e profissionalismo absolutos. José Ignacio é o nosso mercado, a nossa casa e a nossa especialidade.',
+                ],
+                'zones_title' => [
+                    'es' => 'Propiedades en Venta por Zona',
+                    'en' => 'Properties for Sale by Zone',
+                    'pt' => 'Propriedades à Venda por Zona',
+                ],
+            ],
+            [
                 'key' => 'venta',
                 'label' => 'Propiedades en Venta',
                 'hero_title' => [
