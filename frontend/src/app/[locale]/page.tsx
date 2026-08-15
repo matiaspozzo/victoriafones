@@ -39,11 +39,7 @@ export default async function Home({
           </Link>
         </div>
         <div className="mt-10 space-y-4 text-brand-text md:ml-auto md:w-1/2">
-          {t("aboutBody")
-            .split("\n\n")
-            .map((paragraph, i) => (
-              <p key={i}>{paragraph}</p>
-            ))}
+          <p>{t.rich("aboutBody", { b: (chunks) => <strong className="font-medium">{chunks}</strong> })}</p>
         </div>
       </section>
 
