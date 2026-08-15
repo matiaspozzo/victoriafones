@@ -51,7 +51,7 @@ class NeighborhoodResource extends Resource
                     ->unique(ignoreRecord: true),
                 Forms\Components\Textarea::make('description')
                     ->label('Descripción')
-                    ->helperText('Se muestra en la página de listado de este barrio (bloque título + descripción).')
+                    ->helperText('Se muestra en la página de listado de este barrio (bloque título + descripción). Para dar formato: **negrita**, __subrayado__, *cursiva*.')
                     ->rows(4)
                     ->columnSpanFull(),
                 Forms\Components\SpatieMediaLibraryFileUpload::make('hero')

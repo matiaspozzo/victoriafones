@@ -43,7 +43,7 @@ class PageSettingResource extends Resource
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('hero_title')
                     ->label('Título del encabezado')
-                    ->helperText('Primera línea del encabezado azul. Usá **doble asterisco** para poner una palabra en negrita (ej. Todas las propiedades en **Venta**).')
+                    ->helperText('Primera línea del encabezado azul. Para dar formato: **negrita**, __subrayado__, *cursiva* (ej. Todas las propiedades en **Venta**).')
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('hero_subtitle')
                     ->label('Subtítulo')

@@ -2,23 +2,48 @@ import { Fragment, type ReactNode } from "react";
 
 /**
  * Page title block shown below the hero photo on every internal (non-homepage)
- * page. Text is editable from the Filament backend (PageSetting), fetched per
- * page and passed in here.
+ * page. Text is editable from the Filament backend (PageSetting/Neighborhood),
+ * fetched per page and passed in here.
  *
- * Bold segments are configurable from the backend: wrap a word in **double
- * asterisks** (e.g. "Todas las propiedades en **Venta**.") to render it bold,
- * matching the <strong> emphasis the live site uses.
+ * A minimal markdown-style subset lets admins format text from a plain
+ * Textarea/TextInput, no HTML/rich-editor involved: **bold**, __underline__,
+ * *italic*. Bold is checked before italic in the alternation below, so
+ * "**word**" always wins over misreading it as two adjacent "*"s.
  */
 function renderRich(text: string): ReactNode {
-  return text.split(/\*\*(.+?)\*\*/g).map((part, i) =>
-    i % 2 === 1 ? (
-      <strong key={i} className="font-bold">
-        {part}
-      </strong>
-    ) : (
-      <Fragment key={i}>{part}</Fragment>
-    ),
-  );
+  const pattern = /\*\*(.+?)\*\*|__(.+?)__|\*(.+?)\*/g;
+  const nodes: ReactNode[] = [];
+  let lastIndex = 0;
+  let key = 0;
+
+  for (const match of text.matchAll(pattern)) {
+    const [full, bold, underline, italic] = match;
+    const index = match.index ?? 0;
+
+    if (index > lastIndex) {
+      nodes.push(<Fragment key={key++}>{text.slice(lastIndex, index)}</Fragment>);
+    }
+
+    if (bold !== undefined) {
+      nodes.push(
+        <strong key={key++} className="font-bold">
+          {bold}
+        </strong>
+      );
+    } else if (underline !== undefined) {
+      nodes.push(<u key={key++}>{underline}</u>);
+    } else {
+      nodes.push(<em key={key++}>{italic}</em>);
+    }
+
+    lastIndex = index + full.length;
+  }
+
+  if (lastIndex < text.length) {
+    nodes.push(<Fragment key={key++}>{text.slice(lastIndex)}</Fragment>);
+  }
+
+  return nodes;
 }
 
 export default function PageHeader({
@@ -45,7 +70,7 @@ export default function PageHeader({
           ) : null}
         </h1>
         {description ? (
-          <p className="mt-4 whitespace-pre-line text-brand-text md:ml-auto md:w-1/2">{description}</p>
+          <p className="mt-4 whitespace-pre-line text-brand-text md:ml-auto md:w-1/2">{renderRich(description)}</p>
         ) : null}
       </div>
     </section>
