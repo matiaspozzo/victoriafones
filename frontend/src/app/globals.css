@@ -74,6 +74,61 @@ h6 {
   font-family: var(--font-raleway), sans-serif;
 }
 
+/* Property description, from Filament's RichEditor (sanitized server-side —
+   see backend/app/Support/HtmlSanitizer.php) and rendered as real HTML via
+   dangerouslySetInnerHTML. Tailwind's preflight strips default browser
+   spacing/list-style from these tags, so restore just enough to read as
+   formatted prose without pulling in the full typography plugin. */
+.vf-rich-text p {
+  margin-bottom: 1em;
+}
+.vf-rich-text p:last-child {
+  margin-bottom: 0;
+}
+.vf-rich-text strong,
+.vf-rich-text b {
+  font-weight: 700;
+}
+.vf-rich-text em,
+.vf-rich-text i {
+  font-style: italic;
+}
+.vf-rich-text u {
+  text-decoration: underline;
+}
+.vf-rich-text ul,
+.vf-rich-text ol {
+  margin: 0 0 1em;
+  padding-left: 1.25em;
+}
+.vf-rich-text ul {
+  list-style: disc;
+}
+.vf-rich-text ol {
+  list-style: decimal;
+}
+.vf-rich-text li {
+  margin-bottom: 0.25em;
+}
+.vf-rich-text h2,
+.vf-rich-text h3,
+.vf-rich-text h4 {
+  font-family: var(--font-raleway), sans-serif;
+  font-weight: 500;
+  color: var(--color-brand-primary);
+  margin: 1em 0 0.5em;
+}
+.vf-rich-text blockquote {
+  border-left: 2px solid currentColor;
+  padding-left: 1em;
+  opacity: 0.85;
+  margin: 0 0 1em;
+}
+.vf-rich-text a {
+  text-decoration: underline;
+  color: var(--color-brand-primary);
+}
+
 /* Hover card popup on the property map — flush card, no default padding. */
 .vf-card-popup .maplibregl-popup-content {
   padding: 0;

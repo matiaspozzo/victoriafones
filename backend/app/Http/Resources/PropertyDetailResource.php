@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Support\HtmlSanitizer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -40,7 +41,10 @@ class PropertyDetailResource extends JsonResource
             'title' => $t('title'),
             'slug' => $t('slug'),
             'excerpt' => $t('excerpt'),
-            'description' => $t('description'),
+            // description is Filament RichEditor HTML — sanitized here (not just
+            // passed through) since the frontend renders it with
+            // dangerouslySetInnerHTML.
+            'description' => HtmlSanitizer::clean($t('description')),
             'seo_title' => $t('seo_title'),
             'seo_description' => $t('seo_description'),
             'images' => $this->getMedia('images')->map(fn ($media) => [

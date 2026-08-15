@@ -1,3 +1,12 @@
+/** Plain-text summary from RichEditor HTML (property.description) — for
+    contexts that can't render markup, like a JSON-LD "description" field. */
+export function stripHtml(html: string): string {
+  return html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export function priceOnRequestLabel(locale: string): string {
   return locale === "en" ? "Price on request" : locale === "pt" ? "Consultar preço" : "Consultar";
 }

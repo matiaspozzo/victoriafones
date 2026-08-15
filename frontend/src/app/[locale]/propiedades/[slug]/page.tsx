@@ -15,6 +15,7 @@ import {
   formatUsd,
   priceOnRequestLabel,
   propertyMetaDescription,
+  stripHtml,
 } from "@/lib/format";
 import { buildAlternates, canonicalFor } from "@/lib/seo";
 
@@ -107,12 +108,15 @@ export default async function PropertyPage({ params }: Props) {
   }
 
   const relatedProperties = await getRelatedProperties(locale, property);
+  // JSON-LD "description" needs plain text — property.description is
+  // sanitized RichEditor HTML, rendered as markup further down the page.
+  const plainDescription = property.description ? stripHtml(property.description) : (property.excerpt ?? undefined);
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "RealEstateListing",
     name: property.title,
-    description: property.description ?? property.excerpt ?? undefined,
+    description: plainDescription,
     url: canonicalFor(locale, `/propiedades/${property.slug}`),
     image: property.images.map((img) => img.full),
     address: property.neighborhood
@@ -150,7 +154,7 @@ export default async function PropertyPage({ params }: Props) {
         "@context": "https://schema.org",
         "@type": "Product",
         name: property.title,
-        description: property.description ?? property.excerpt ?? undefined,
+        description: plainDescription,
         image: property.images.map((img) => img.full),
         sku: property.code,
         brand: {
@@ -255,9 +259,10 @@ export default async function PropertyPage({ params }: Props) {
           ) : null}
         </div>
 
-        <div className="text-brand-text">
-          <p className="whitespace-pre-line">{property.description}</p>
-        </div>
+        <div
+          className="vf-rich-text text-brand-text"
+          dangerouslySetInnerHTML={{ __html: property.description ?? "" }}
+        />
       </section>
 
       {property.images.length > 0 ? (
