@@ -18,6 +18,65 @@ export const routing = defineRouting({
   // round-trip (~600ms LCP hit, confirmed via Lighthouse) and disabling
   // back/forward cache on every page.
   localeDetection: false,
+  // Translates each page's URL segment per locale (e.g. /mapa -> /en/map),
+  // instead of only swapping the /en, /br prefix and keeping every segment
+  // in Spanish. Keys are the canonical (Spanish/internal) path — matching
+  // the actual app/[locale]/... folder names — used as the `href` passed to
+  // <Link>/redirect/getPathname everywhere in the codebase; next-intl
+  // resolves it to the right localized URL for the active locale, so call
+  // sites don't need to know about this map.
+  //
+  // en/*: verified against the pre-migration WordPress site's real indexed
+  // URLs (see next.config.ts's legacyRedirects source comment, fetched from
+  // its live sitemap 2026-07-04) — properties-for-sale, properties-for-rent,
+  // our-properties, about-us, contact. pt/*: sobre-nos, contato and
+  // nossas-propriedades match the old site too; imoveis-a-venda,
+  // imoveis-para-alugar and imoveis are NEW translations — the old WP site
+  // left "sale" under /br using the Spanish "propiedades-en-venta" slug
+  // (a WPML translation gap) and had no /mapa equivalent at all, so there
+  // was nothing correct to preserve for those. Old URLs (Spanish segments
+  // under /en, /br — live since this site's 2026-08-15 launch, and the
+  // pre-migration WPML gap under /br) both redirect to these via
+  // next.config.ts rather than being silently dropped.
+  pathnames: {
+    '/': '/',
+    '/propiedades-en-venta': {
+      en: '/properties-for-sale',
+      pt: '/imoveis-a-venda',
+    },
+    '/propiedades-en-venta/[barrio]': {
+      en: '/properties-for-sale/[barrio]',
+      pt: '/imoveis-a-venda/[barrio]',
+    },
+    '/propiedades-en-alquiler': {
+      en: '/properties-for-rent',
+      pt: '/imoveis-para-alugar',
+    },
+    '/propiedades-en-alquiler/[barrio]': {
+      en: '/properties-for-rent/[barrio]',
+      pt: '/imoveis-para-alugar/[barrio]',
+    },
+    '/nuestras-propiedades': {
+      en: '/our-properties',
+      pt: '/nossas-propriedades',
+    },
+    '/propiedades/[slug]': {
+      en: '/properties/[slug]',
+      pt: '/imoveis/[slug]',
+    },
+    '/quienes-somos': {
+      en: '/about-us',
+      pt: '/sobre-nos',
+    },
+    '/contacto': {
+      en: '/contact',
+      pt: '/contato',
+    },
+    '/mapa': {
+      en: '/map',
+      pt: '/mapa',
+    },
+  },
 });
 
 export type Locale = (typeof routing.locales)[number];

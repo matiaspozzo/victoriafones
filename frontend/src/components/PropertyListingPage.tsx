@@ -130,7 +130,7 @@ export default async function PropertyListingPage({
             item: {
               "@type": "Product",
               name: property.title,
-              url: canonicalFor(locale, `/propiedades/${property.slug}`),
+              url: canonicalFor(locale, { pathname: "/propiedades/[slug]", params: { slug: property.slug } }),
               image: property.cover_image ?? undefined,
               sku: property.code,
               ...(property.price_usd
@@ -195,7 +195,7 @@ export default async function PropertyListingPage({
               return (
                 <li key={property.id}>
                   <Link
-                    href={`/propiedades/${property.slug}`}
+                    href={{ pathname: "/propiedades/[slug]", params: { slug: property.slug } }}
                     className="group flex items-center gap-4 py-3 text-sm text-brand-text/80 transition-colors hover:bg-brand-accent/40"
                   >
                     <div className="relative h-14 w-20 shrink-0 overflow-hidden bg-brand-gray">

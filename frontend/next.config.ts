@@ -35,59 +35,89 @@ const legacyRedirects: Array<{ source: string; destination: string }> = [
   { source: "/nuestras-propiedades/punta-del-este", destination: "/nuestras-propiedades" },
 
   // --- EN (/en prefix) ---
-  { source: "/en/properties-for-sale/punta-del-este/properties-for-sale-in-jose-ignacio/properties-for-sale-in-town", destination: "/en/propiedades-en-venta/pueblo" },
-  { source: "/en/properties-for-sale/punta-del-este/properties-for-sale-in-jose-ignacio/properties-for-sale-in-club-de-mar", destination: "/en/propiedades-en-venta/club-de-mar" },
-  { source: "/en/properties-for-sale/punta-del-este/properties-for-sale-in-jose-ignacio/properties-for-sale-in-pinar-del-faro", destination: "/en/propiedades-en-venta/pinar-del-faro" },
-  { source: "/en/properties-for-sale/punta-del-este/properties-for-sale-in-jose-ignacio/properties-for-sale-in-laguna-escondida", destination: "/en/propiedades-en-venta/laguna-escondida" },
-  { source: "/en/properties-for-sale/punta-del-este/properties-for-sale-in-jose-ignacio/properties-for-sale-in-the-surroundings-of-jose-ignacio", destination: "/en/propiedades-en-venta/alrededores" },
-  { source: "/en/properties-for-sale/punta-del-este/properties-for-sale-in-jose-ignacio", destination: "/en/propiedades-en-venta/jose-ignacio" },
-  { source: "/en/properties-for-sale/punta-del-este/properties-for-sale-in-other-areas-of-punta-del-este", destination: "/en/propiedades-en-venta/otras-zonas" },
-  { source: "/en/properties-for-sale/punta-del-este", destination: "/en/propiedades-en-venta" },
-  { source: "/en/properties-for-sale", destination: "/en/propiedades-en-venta" },
+  // Segment words below (properties-for-sale, about-us, etc.) are the real
+  // pre-migration WP English slugs (verified against its sitemap, see the
+  // header comment) — since routing.ts's `pathnames` now translates every
+  // page's URL per locale instead of keeping every segment in Spanish, these
+  // ARE the site's real English paths again (see routing.ts's comment for
+  // why), so the old one-off redirects that used to point them at the
+  // Spanish-segment path have been removed; only the deeper nested
+  // zone-archive URLs (which don't correspond to a real page at all) still
+  // need a rewrite, now pointing at the new English zone path instead.
+  { source: "/en/properties-for-sale/punta-del-este/properties-for-sale-in-jose-ignacio/properties-for-sale-in-town", destination: "/en/properties-for-sale/pueblo" },
+  { source: "/en/properties-for-sale/punta-del-este/properties-for-sale-in-jose-ignacio/properties-for-sale-in-club-de-mar", destination: "/en/properties-for-sale/club-de-mar" },
+  { source: "/en/properties-for-sale/punta-del-este/properties-for-sale-in-jose-ignacio/properties-for-sale-in-pinar-del-faro", destination: "/en/properties-for-sale/pinar-del-faro" },
+  { source: "/en/properties-for-sale/punta-del-este/properties-for-sale-in-jose-ignacio/properties-for-sale-in-laguna-escondida", destination: "/en/properties-for-sale/laguna-escondida" },
+  { source: "/en/properties-for-sale/punta-del-este/properties-for-sale-in-jose-ignacio/properties-for-sale-in-the-surroundings-of-jose-ignacio", destination: "/en/properties-for-sale/alrededores" },
+  { source: "/en/properties-for-sale/punta-del-este/properties-for-sale-in-jose-ignacio", destination: "/en/properties-for-sale/jose-ignacio" },
+  { source: "/en/properties-for-sale/punta-del-este/properties-for-sale-in-other-areas-of-punta-del-este", destination: "/en/properties-for-sale/otras-zonas" },
+  { source: "/en/properties-for-sale/punta-del-este", destination: "/en/properties-for-sale" },
 
-  { source: "/en/properties-for-rent/punta-del-este/properties-for-rent-in-jose-ignacio/properties-for-rent-in-town", destination: "/en/propiedades-en-alquiler/pueblo" },
-  { source: "/en/properties-for-rent/punta-del-este/properties-for-rent-in-jose-ignacio/properties-for-rent-in-club-de-mar", destination: "/en/propiedades-en-alquiler/club-de-mar" },
-  { source: "/en/properties-for-rent/punta-del-este/properties-for-rent-in-jose-ignacio/properties-for-rent-in-pinar-del-faro", destination: "/en/propiedades-en-alquiler/pinar-del-faro" },
-  { source: "/en/properties-for-rent/punta-del-este/properties-for-rent-in-jose-ignacio/properties-for-rent-in-laguna-escondida", destination: "/en/propiedades-en-alquiler/laguna-escondida" },
-  { source: "/en/properties-for-rent/punta-del-este/properties-for-rent-in-jose-ignacio/properties-for-rent-in-the-surroundings-of-jose-ignacio", destination: "/en/propiedades-en-alquiler/alrededores" },
-  { source: "/en/properties-for-rent/punta-del-este/properties-for-rent-in-jose-ignacio", destination: "/en/propiedades-en-alquiler/jose-ignacio" },
-  { source: "/en/properties-for-rent/punta-del-este", destination: "/en/propiedades-en-alquiler" },
-  { source: "/en/properties-for-rent", destination: "/en/propiedades-en-alquiler" },
+  { source: "/en/properties-for-rent/punta-del-este/properties-for-rent-in-jose-ignacio/properties-for-rent-in-town", destination: "/en/properties-for-rent/pueblo" },
+  { source: "/en/properties-for-rent/punta-del-este/properties-for-rent-in-jose-ignacio/properties-for-rent-in-club-de-mar", destination: "/en/properties-for-rent/club-de-mar" },
+  { source: "/en/properties-for-rent/punta-del-este/properties-for-rent-in-jose-ignacio/properties-for-rent-in-pinar-del-faro", destination: "/en/properties-for-rent/pinar-del-faro" },
+  { source: "/en/properties-for-rent/punta-del-este/properties-for-rent-in-jose-ignacio/properties-for-rent-in-laguna-escondida", destination: "/en/properties-for-rent/laguna-escondida" },
+  { source: "/en/properties-for-rent/punta-del-este/properties-for-rent-in-jose-ignacio/properties-for-rent-in-the-surroundings-of-jose-ignacio", destination: "/en/properties-for-rent/alrededores" },
+  { source: "/en/properties-for-rent/punta-del-este/properties-for-rent-in-jose-ignacio", destination: "/en/properties-for-rent/jose-ignacio" },
+  { source: "/en/properties-for-rent/punta-del-este", destination: "/en/properties-for-rent" },
 
-  { source: "/en/our-properties/punta-del-este/properties-in-jose-ignacio", destination: "/en/nuestras-propiedades" },
-  { source: "/en/our-properties/punta-del-este/properties-in-other-areas-of-punta-del-este", destination: "/en/nuestras-propiedades" },
-  { source: "/en/our-properties/punta-del-este", destination: "/en/nuestras-propiedades" },
-  { source: "/en/our-properties", destination: "/en/nuestras-propiedades" },
+  { source: "/en/our-properties/punta-del-este/properties-in-jose-ignacio", destination: "/en/our-properties" },
+  { source: "/en/our-properties/punta-del-este/properties-in-other-areas-of-punta-del-este", destination: "/en/our-properties" },
+  { source: "/en/our-properties/punta-del-este", destination: "/en/our-properties" },
 
-  { source: "/en/about-us", destination: "/en/quienes-somos" },
-  { source: "/en/contact", destination: "/en/contacto" },
+  // Current site's own Spanish-segment English URLs (live since the
+  // 2026-08-15 launch, before routing.ts's `pathnames` translated these) —
+  // real indexed/shared links, not just a historical WP artifact.
+  { source: "/en/propiedades-en-venta/:barrio", destination: "/en/properties-for-sale/:barrio" },
+  { source: "/en/propiedades-en-venta", destination: "/en/properties-for-sale" },
+  { source: "/en/propiedades-en-alquiler/:barrio", destination: "/en/properties-for-rent/:barrio" },
+  { source: "/en/propiedades-en-alquiler", destination: "/en/properties-for-rent" },
+  { source: "/en/nuestras-propiedades", destination: "/en/our-properties" },
+  { source: "/en/propiedades/:slug", destination: "/en/properties/:slug" },
+  { source: "/en/quienes-somos", destination: "/en/about-us" },
+  { source: "/en/contacto", destination: "/en/contact" },
+  { source: "/en/mapa", destination: "/en/map" },
 
   // --- PT/BR (/br prefix) ---
-  { source: "/br/propiedades-en-venta/punta-del-este/propriedades-a-venda-em-jose-ignacio/propriedades-a-venda-na-cidade", destination: "/br/propiedades-en-venta/pueblo" },
-  { source: "/br/propiedades-en-venta/punta-del-este/propriedades-a-venda-em-jose-ignacio/propriedades-a-venda-em-club-de-mar", destination: "/br/propiedades-en-venta/club-de-mar" },
-  { source: "/br/propiedades-en-venta/punta-del-este/propriedades-a-venda-em-jose-ignacio/propriedades-a-venda-em-pinar-del-faro", destination: "/br/propiedades-en-venta/pinar-del-faro" },
-  { source: "/br/propiedades-en-venta/punta-del-este/propriedades-a-venda-em-jose-ignacio/propriedades-a-venda-em-laguna-escondida", destination: "/br/propiedades-en-venta/laguna-escondida" },
-  { source: "/br/propiedades-en-venta/punta-del-este/propriedades-a-venda-em-jose-ignacio/propriedades-a-venda-nos-arredores-de-jose-ignacio", destination: "/br/propiedades-en-venta/alrededores" },
-  { source: "/br/propiedades-en-venta/punta-del-este/propriedades-a-venda-em-jose-ignacio", destination: "/br/propiedades-en-venta/jose-ignacio" },
-  { source: "/br/propiedades-en-venta/punta-del-este/propriedades-a-venda-em-outras-areas-de-punta-del-este", destination: "/br/propiedades-en-venta/otras-zonas" },
-  { source: "/br/propiedades-en-venta/punta-del-este", destination: "/br/propiedades-en-venta" },
+  // "sale" and "rent" get NEW Portuguese translations here (imoveis-a-venda,
+  // imoveis-para-alugar) — the old WP site left "sale" under /br using the
+  // Spanish "propiedades-en-venta" slug (a WPML translation gap, not a real
+  // Portuguese phrase) and "rent"'s old slug (propriedades-para-aluguel)
+  // wasn't reused either, for consistency with the new "imoveis-*" pattern.
+  // "our-properties"/"about-us"/"contact" reuse the old site's real
+  // Portuguese slugs (nossas-propriedades, sobre-nos, contato) — those ARE
+  // now the live pathnames.pt values in routing.ts, so the redirects that
+  // used to point them at the Spanish-segment path have been removed.
+  { source: "/br/propiedades-en-venta/punta-del-este/propriedades-a-venda-em-jose-ignacio/propriedades-a-venda-na-cidade", destination: "/br/imoveis-a-venda/pueblo" },
+  { source: "/br/propiedades-en-venta/punta-del-este/propriedades-a-venda-em-jose-ignacio/propriedades-a-venda-em-club-de-mar", destination: "/br/imoveis-a-venda/club-de-mar" },
+  { source: "/br/propiedades-en-venta/punta-del-este/propriedades-a-venda-em-jose-ignacio/propriedades-a-venda-em-pinar-del-faro", destination: "/br/imoveis-a-venda/pinar-del-faro" },
+  { source: "/br/propiedades-en-venta/punta-del-este/propriedades-a-venda-em-jose-ignacio/propriedades-a-venda-em-laguna-escondida", destination: "/br/imoveis-a-venda/laguna-escondida" },
+  { source: "/br/propiedades-en-venta/punta-del-este/propriedades-a-venda-em-jose-ignacio/propriedades-a-venda-nos-arredores-de-jose-ignacio", destination: "/br/imoveis-a-venda/alrededores" },
+  { source: "/br/propiedades-en-venta/punta-del-este/propriedades-a-venda-em-jose-ignacio", destination: "/br/imoveis-a-venda/jose-ignacio" },
+  { source: "/br/propiedades-en-venta/punta-del-este/propriedades-a-venda-em-outras-areas-de-punta-del-este", destination: "/br/imoveis-a-venda/otras-zonas" },
+  { source: "/br/propiedades-en-venta/punta-del-este", destination: "/br/imoveis-a-venda" },
+  { source: "/br/propiedades-en-venta/:barrio", destination: "/br/imoveis-a-venda/:barrio" },
+  { source: "/br/propiedades-en-venta", destination: "/br/imoveis-a-venda" },
 
-  { source: "/br/propriedades-para-aluguel/punta-del-este/propriedades-para-alugar-em-jose-ignacio/propriedades-para-alugar-na-cidade", destination: "/br/propiedades-en-alquiler/pueblo" },
-  { source: "/br/propriedades-para-aluguel/punta-del-este/propriedades-para-alugar-em-jose-ignacio/propriedades-para-alugar-no-club-de-mar", destination: "/br/propiedades-en-alquiler/club-de-mar" },
-  { source: "/br/propriedades-para-aluguel/punta-del-este/propriedades-para-alugar-em-jose-ignacio/propriedades-para-alugar-em-pinar-del-faro", destination: "/br/propiedades-en-alquiler/pinar-del-faro" },
-  { source: "/br/propriedades-para-aluguel/punta-del-este/propriedades-para-alugar-em-jose-ignacio/propriedades-para-alugar-em-laguna-escondida", destination: "/br/propiedades-en-alquiler/laguna-escondida" },
-  { source: "/br/propriedades-para-aluguel/punta-del-este/propriedades-para-alugar-em-jose-ignacio/propriedades-para-alugar-nos-arredores-de-jose-ignacio", destination: "/br/propiedades-en-alquiler/alrededores" },
-  { source: "/br/propriedades-para-aluguel/punta-del-este/propriedades-para-alugar-em-jose-ignacio", destination: "/br/propiedades-en-alquiler/jose-ignacio" },
-  { source: "/br/propriedades-para-aluguel/punta-del-este", destination: "/br/propiedades-en-alquiler" },
-  { source: "/br/propriedades-para-aluguel", destination: "/br/propiedades-en-alquiler" },
+  { source: "/br/propriedades-para-aluguel/punta-del-este/propriedades-para-alugar-em-jose-ignacio/propriedades-para-alugar-na-cidade", destination: "/br/imoveis-para-alugar/pueblo" },
+  { source: "/br/propriedades-para-aluguel/punta-del-este/propriedades-para-alugar-em-jose-ignacio/propriedades-para-alugar-no-club-de-mar", destination: "/br/imoveis-para-alugar/club-de-mar" },
+  { source: "/br/propriedades-para-aluguel/punta-del-este/propriedades-para-alugar-em-jose-ignacio/propriedades-para-alugar-em-pinar-del-faro", destination: "/br/imoveis-para-alugar/pinar-del-faro" },
+  { source: "/br/propriedades-para-aluguel/punta-del-este/propriedades-para-alugar-em-jose-ignacio/propriedades-para-alugar-em-laguna-escondida", destination: "/br/imoveis-para-alugar/laguna-escondida" },
+  { source: "/br/propriedades-para-aluguel/punta-del-este/propriedades-para-alugar-em-jose-ignacio/propriedades-para-alugar-nos-arredores-de-jose-ignacio", destination: "/br/imoveis-para-alugar/alrededores" },
+  { source: "/br/propriedades-para-aluguel/punta-del-este/propriedades-para-alugar-em-jose-ignacio", destination: "/br/imoveis-para-alugar/jose-ignacio" },
+  { source: "/br/propriedades-para-aluguel/punta-del-este", destination: "/br/imoveis-para-alugar" },
+  { source: "/br/propriedades-para-aluguel", destination: "/br/imoveis-para-alugar" },
+  { source: "/br/propiedades-en-alquiler/:barrio", destination: "/br/imoveis-para-alugar/:barrio" },
+  { source: "/br/propiedades-en-alquiler", destination: "/br/imoveis-para-alugar" },
 
-  { source: "/br/nossas-propriedades/punta-del-este/propriedades-em-jose-ignacio", destination: "/br/nuestras-propiedades" },
-  { source: "/br/nossas-propriedades/punta-del-este/propriedades-em-outras-areas-de-punta-del-este", destination: "/br/nuestras-propiedades" },
-  { source: "/br/nossas-propriedades/punta-del-este", destination: "/br/nuestras-propiedades" },
-  { source: "/br/nossas-propriedades", destination: "/br/nuestras-propiedades" },
+  { source: "/br/nossas-propriedades/punta-del-este/propriedades-em-jose-ignacio", destination: "/br/nossas-propriedades" },
+  { source: "/br/nossas-propriedades/punta-del-este/propriedades-em-outras-areas-de-punta-del-este", destination: "/br/nossas-propriedades" },
+  { source: "/br/nossas-propriedades/punta-del-este", destination: "/br/nossas-propriedades" },
+  { source: "/br/nuestras-propiedades", destination: "/br/nossas-propriedades" },
 
-  { source: "/br/sobre-nos", destination: "/br/quienes-somos" },
-  { source: "/br/contato", destination: "/br/contacto" },
+  { source: "/br/propiedades/:slug", destination: "/br/imoveis/:slug" },
+  { source: "/br/quienes-somos", destination: "/br/sobre-nos" },
+  { source: "/br/contacto", destination: "/br/contato" },
 
   // --- Flat taxonomy archives (tipo-de-operacion-sitemap.xml, tipo-de-propiedad-
   // sitemap.xml, zona-sitemap.xml) — only indexed in `es`, no /en or /br versions

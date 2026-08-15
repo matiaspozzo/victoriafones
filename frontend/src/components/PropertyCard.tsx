@@ -31,7 +31,10 @@ export default function PropertyCard({
   const isRelated = variant === "related";
 
   return (
-    <Link href={`/propiedades/${property.slug}`} className="group block min-w-0">
+    <Link
+      href={{ pathname: "/propiedades/[slug]", params: { slug: property.slug } }}
+      className="group block min-w-0"
+    >
       <div
         className={`relative w-full overflow-hidden bg-brand-gray ${isRelated ? "aspect-video" : "h-[360px]"}`}
       >

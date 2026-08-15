@@ -19,7 +19,11 @@ export default async function NeighborhoodGrid({ locale }: { locale: string }) {
   return (
     <div className="grid grid-cols-2 gap-20">
       {ZONES.map((zone) => (
-        <Link key={zone.slug} href={`/propiedades-en-venta/${zone.slug}`} className="group block">
+        <Link
+          key={zone.slug}
+          href={{ pathname: "/propiedades-en-venta/[barrio]", params: { barrio: zone.slug } }}
+          className="group block"
+        >
           <div className="relative aspect-video overflow-hidden bg-brand-gray">
             <Image
               src={zone.image}

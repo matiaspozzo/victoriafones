@@ -1,24 +1,20 @@
 import type { MetadataRoute } from "next";
+import { getPathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { getNeighborhoods, getProperties } from "@/lib/api";
 import { SITE_URL } from "@/lib/seo";
 
-const STATIC_PATHS = [
-  "",
+const STATIC_PATHNAMES = [
+  "/",
   "/propiedades-en-venta",
   "/propiedades-en-alquiler",
   "/nuestras-propiedades",
   "/quienes-somos",
   "/contacto",
   "/mapa",
-];
+] as const;
 
-function prefixFor(locale: string): string {
-  if (locale === "en") return "/en";
-  if (locale === "pt") return "/br";
-
-  return "";
-}
+const ZONE_LISTING_PATHNAMES = ["/propiedades-en-venta/[barrio]", "/propiedades-en-alquiler/[barrio]"] as const;
 
 type NeighborhoodNode = { slug: string; children?: NeighborhoodNode[] };
 
@@ -36,11 +32,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
   for (const locale of routing.locales) {
-    for (const path of STATIC_PATHS) {
+    for (const pathname of STATIC_PATHNAMES) {
       entries.push({
-        url: `${SITE_URL}${prefixFor(locale)}${path}`,
-        changeFrequency: path === "" ? "daily" : "weekly",
-        priority: path === "" ? 1 : 0.7,
+        url: `${SITE_URL}${getPathname({ href: pathname, locale })}`,
+        changeFrequency: pathname === "/" ? "daily" : "weekly",
+        priority: pathname === "/" ? 1 : 0.7,
       });
     }
   }
@@ -51,7 +47,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const property of properties) {
       for (const locale of routing.locales) {
         entries.push({
-          url: `${SITE_URL}${prefixFor(locale)}/propiedades/${property.slug}`,
+          url: `${SITE_URL}${getPathname({
+            href: { pathname: "/propiedades/[slug]", params: { slug: property.slug } },
+            locale,
+          })}`,
           changeFrequency: "weekly",
           priority: 0.9,
         });
@@ -66,9 +65,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     for (const slug of leafSlugs(neighborhoods)) {
       for (const locale of routing.locales) {
-        for (const pageKey of ["propiedades-en-venta", "propiedades-en-alquiler"]) {
+        for (const pathname of ZONE_LISTING_PATHNAMES) {
           entries.push({
-            url: `${SITE_URL}${prefixFor(locale)}/${pageKey}/${slug}`,
+            url: `${SITE_URL}${getPathname({ href: { pathname, params: { barrio: slug } }, locale })}`,
             changeFrequency: "weekly",
             priority: 0.8,
           });

@@ -16,7 +16,7 @@ function FeaturedCard({ property, hero = false }: { property: PropertySummary; h
 
   return (
     <Link
-      href={`/propiedades/${property.slug}`}
+      href={{ pathname: "/propiedades/[slug]", params: { slug: property.slug } }}
       className={`group relative block overflow-hidden bg-brand-gray ${
         hero ? "aspect-[4/3] lg:aspect-auto lg:h-full" : "aspect-[4/3]"
       }`}

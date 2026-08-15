@@ -13,6 +13,18 @@ import NavDropdown, { ZONES } from "./NavDropdown";
 // plain page background.
 const HEROLESS_PATHS = new Set(["/contacto", "/mapa"]);
 
+// `as const` keeps these as literal pathname types (matching routing.ts's
+// `pathnames` keys) rather than widening to `string`, which next-intl's
+// typed <Link>/router require.
+const LISTING_PATHNAME = {
+  venta: "/propiedades-en-venta",
+  alquiler: "/propiedades-en-alquiler",
+} as const;
+const ZONE_PATHNAME = {
+  venta: "/propiedades-en-venta/[barrio]",
+  alquiler: "/propiedades-en-alquiler/[barrio]",
+} as const;
+
 /** Offcanvas accordion group: main listing link + expandable zone submenu. */
 function MobileNavGroup({
   label,
@@ -29,7 +41,7 @@ function MobileNavGroup({
 }) {
   const tZones = useTranslations("Zones");
   const [expanded, setExpanded] = useState(false);
-  const listingPath = basePath === "venta" ? "/propiedades-en-venta" : "/propiedades-en-alquiler";
+  const listingPath = LISTING_PATHNAME[basePath];
 
   if (disableZones) {
     return (
@@ -79,7 +91,7 @@ function MobileNavGroup({
           {ZONES.map((zone) => (
             <li key={zone}>
               <Link
-                href={`${listingPath}/${zone}`}
+                href={{ pathname: ZONE_PATHNAME[basePath], params: { barrio: zone } }}
                 className="block py-2.5 pl-4 text-sm text-white/80 hover:text-white"
                 onClick={onNavigate}
               >

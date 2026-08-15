@@ -1,9 +1,12 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
+// Plain next/navigation, not next-intl's typed one: this component only
+// ever pushes "current pathname + updated query string" — it never
+// navigates to a different (translatable) route, so it just needs the
+// real, already-localized browser pathname, not the canonical one.
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
-import { usePathname, useRouter } from "@/i18n/navigation";
 import { formatUsd } from "@/lib/format";
 
 const TYPES = ["house", "apartment", "land", "chacra", "commercial"] as const;

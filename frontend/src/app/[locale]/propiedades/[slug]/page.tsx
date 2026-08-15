@@ -71,7 +71,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   try {
     const { data: property } = await getProperty(locale, slug);
-    const pathname = `/propiedades/${property.slug}`;
+    const href = { pathname: "/propiedades/[slug]", params: { slug: property.slug } } as const;
     // Manual copy first; auto-generated fallback last, since ~all listings
     // today have neither seo_description nor excerpt written (May SEO audit).
     const description =
@@ -83,8 +83,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         : `${property.title} | Victoria Fones Real Estate`,
       description,
       alternates: {
-        canonical: canonicalFor(locale, pathname),
-        languages: buildAlternates(pathname),
+        canonical: canonicalFor(locale, href),
+        languages: buildAlternates(href),
       },
       openGraph: {
         title: property.title,
@@ -119,7 +119,7 @@ export default async function PropertyPage({ params }: Props) {
     "@type": "RealEstateListing",
     name: property.title,
     description: plainDescription,
-    url: canonicalFor(locale, `/propiedades/${property.slug}`),
+    url: canonicalFor(locale, { pathname: "/propiedades/[slug]", params: { slug: property.slug } }),
     image: property.images.map((img) => img.full),
     address: property.neighborhood
       ? {
@@ -165,7 +165,7 @@ export default async function PropertyPage({ params }: Props) {
         },
         offers: {
           "@type": "Offer",
-          url: canonicalFor(locale, `/propiedades/${property.slug}`),
+          url: canonicalFor(locale, { pathname: "/propiedades/[slug]", params: { slug: property.slug } }),
           priceCurrency: "USD",
           price: property.price_usd,
           availability: "https://schema.org/InStock",

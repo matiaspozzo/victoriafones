@@ -139,7 +139,7 @@ export default function PropertyMap({ locale, query = "" }: { locale: string; qu
               const price = Number.isFinite(rawPrice) && rawPrice > 0 ? rawPrice : null;
               const el = priceEl(formatUsd(price, uiLocale));
               el.addEventListener("click", () => {
-                router.push(`/propiedades/${props.slug}`);
+                router.push({ pathname: "/propiedades/[slug]", params: { slug: String(props.slug) } });
               });
               el.addEventListener("mouseenter", () => {
                 hoverPopup.setLngLat(coords).setHTML(cardPopupHTML(props)).addTo(map);
@@ -228,7 +228,9 @@ export default function PropertyMap({ locale, query = "" }: { locale: string; qu
               type="button"
               onMouseEnter={() => setHoveredId(feature.properties.id)}
               onMouseLeave={() => setHoveredId(null)}
-              onClick={() => router.push(`/propiedades/${feature.properties.slug}`)}
+              onClick={() =>
+                router.push({ pathname: "/propiedades/[slug]", params: { slug: feature.properties.slug } })
+              }
               className={`flex w-full gap-4 border-b border-brand-text/10 p-3 text-left transition-colors ${
                 feature.properties.id === hoveredId ? "bg-brand-accent/50" : "hover:bg-brand-accent/30"
               }`}

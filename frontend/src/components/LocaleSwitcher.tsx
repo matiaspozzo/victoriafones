@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 import { routing } from "@/i18n/routing";
 import { usePathname, useRouter } from "@/i18n/navigation";
@@ -16,6 +17,12 @@ export default function LocaleSwitcher({ variant = "dropdown" }: { variant?: "dr
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  // For a dynamic route (e.g. the property detail or a zone page), the
+  // canonical pathname alone isn't enough to build the target locale's URL —
+  // next-intl also needs the current params (barrio/slug) to fill in the
+  // translated template. See next-intl's docs on pathnames + locale
+  // switching for this exact `{pathname, params}` pattern.
+  const params = useParams();
   const [open, setOpen] = useState(false);
 
   // Inline variant for the mobile offcanvas: a plain row of the three
@@ -27,7 +34,10 @@ export default function LocaleSwitcher({ variant = "dropdown" }: { variant?: "dr
           <button
             key={loc}
             type="button"
-            onClick={() => router.replace(pathname, { locale: loc })}
+            // @ts-expect-error -- next-intl can't statically verify that
+            // `params` matches whichever pathname `usePathname()` returns at
+            // runtime; they always correspond to the same route in practice.
+            onClick={() => router.replace({ pathname, params }, { locale: loc })}
             className={`text-sm tracking-wide ${
               loc === locale ? "font-semibold text-white underline underline-offset-4" : "text-white/70"
             }`}
@@ -69,7 +79,8 @@ export default function LocaleSwitcher({ variant = "dropdown" }: { variant?: "dr
                   type="button"
                   onClick={() => {
                     setOpen(false);
-                    router.replace(pathname, { locale: loc });
+                    // @ts-expect-error -- see the inline-variant onClick above.
+                    router.replace({ pathname, params }, { locale: loc });
                   }}
                   className={`block w-full px-5 py-2.5 text-left hover:bg-white ${
                     loc === locale ? "font-semibold" : ""

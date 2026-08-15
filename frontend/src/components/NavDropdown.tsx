@@ -8,6 +8,18 @@ import { Link } from "@/i18n/navigation";
 // Ventas/Alquileres submenu order. Shared with the mobile offcanvas menu.
 export const ZONES = ["pueblo-jose-ignacio", "club-de-mar", "pinar-del-faro", "laguna-escondida", "alrededores", "otras-zonas"];
 
+// `as const` keeps these as literal pathname types (matching routing.ts's
+// `pathnames` keys) rather than widening to `string`, which next-intl's
+// typed <Link> requires.
+const LISTING_PATHNAME = {
+  venta: "/propiedades-en-venta",
+  alquiler: "/propiedades-en-alquiler",
+} as const;
+const ZONE_PATHNAME = {
+  venta: "/propiedades-en-venta/[barrio]",
+  alquiler: "/propiedades-en-alquiler/[barrio]",
+} as const;
+
 export default function NavDropdown({
   label,
   basePath,
@@ -23,7 +35,7 @@ export default function NavDropdown({
 }) {
   const [open, setOpen] = useState(false);
   const tZones = useTranslations("Zones");
-  const listingPath = basePath === "venta" ? "/propiedades-en-venta" : "/propiedades-en-alquiler";
+  const listingPath = LISTING_PATHNAME[basePath];
 
   if (disableZones) {
     return (
@@ -59,7 +71,10 @@ export default function NavDropdown({
           <ul className="min-w-[230px] overflow-hidden rounded-lg bg-brand-accent py-2 text-sm text-brand-primary shadow-xl">
             {ZONES.map((zone) => (
               <li key={zone}>
-                <Link href={`${listingPath}/${zone}`} className="block px-5 py-2.5 hover:bg-white">
+                <Link
+                  href={{ pathname: ZONE_PATHNAME[basePath], params: { barrio: zone } }}
+                  className="block px-5 py-2.5 hover:bg-white"
+                >
                   {tZones(zone)}
                 </Link>
               </li>

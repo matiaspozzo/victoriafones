@@ -39,7 +39,7 @@ export default function FeaturedPropertiesSlider({ properties }: { properties: P
           return (
             <Link
               key={property.id}
-              href={`/propiedades/${property.slug}`}
+              href={{ pathname: "/propiedades/[slug]", params: { slug: property.slug } }}
               className="group relative aspect-[4/3] w-full flex-shrink-0 snap-start overflow-hidden bg-brand-gray sm:aspect-auto sm:h-[520px]"
             >
               {property.cover_image ? (

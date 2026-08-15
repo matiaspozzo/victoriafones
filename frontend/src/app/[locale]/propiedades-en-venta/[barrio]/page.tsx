@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: MetaProps): Promise<Metadata>
   const { locale, barrio } = await params;
   const t = await getTranslations({ locale, namespace: "Listing" });
   const tZones = await getTranslations({ locale, namespace: "Zones" });
-  const pathname = `/propiedades-en-venta/${barrio}`;
+  const href = { pathname: "/propiedades-en-venta/[barrio]", params: { barrio } } as const;
   const zoneName = tZones.has(barrio) ? tZones(barrio) : undefined;
 
   const { data: neighborhoods } = await getNeighborhoods(locale).catch(() => ({ data: [] }));
@@ -35,8 +35,8 @@ export async function generateMetadata({ params }: MetaProps): Promise<Metadata>
     // would otherwise render with none at all instead of falling back.
     ...(description ? { description } : {}),
     alternates: {
-      canonical: canonicalFor(locale, pathname),
-      languages: buildAlternates(pathname),
+      canonical: canonicalFor(locale, href),
+      languages: buildAlternates(href),
     },
     ...(neighborhood?.og_image
       ? { openGraph: { title, description, images: [neighborhood.og_image] } }

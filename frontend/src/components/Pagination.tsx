@@ -1,5 +1,9 @@
 import { getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
+// Plain next/link, not next-intl's typed one: these hrefs are always a bare
+// "?query=string" relative to the current (already-localized) page — no
+// pathname translation needed, and next-intl's <Link> only accepts hrefs
+// from routing.ts's `pathnames` map.
+import Link from "next/link";
 
 /** Builds `?key=value&...&page=N` from the current search params, preserving
     every filter already applied (zona, type, price range, etc). */
