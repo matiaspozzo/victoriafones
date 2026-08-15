@@ -78,7 +78,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       property.seo_description || property.excerpt || propertyMetaDescription(property, locale);
 
     return {
-      title: property.seo_title || `${property.title} | Victoria Fones Real Estate`,
+      title: property.seo_title
+        ? `${property.seo_title} - Victoria Fones Real Estate`
+        : `${property.title} | Victoria Fones Real Estate`,
       description,
       alternates: {
         canonical: canonicalFor(locale, pathname),

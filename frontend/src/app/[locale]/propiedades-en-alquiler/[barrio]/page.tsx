@@ -19,9 +19,11 @@ export async function generateMetadata({ params }: MetaProps): Promise<Metadata>
   const { data: neighborhoods } = await getNeighborhoods(locale).catch(() => ({ data: [] }));
   const neighborhood = findNeighborhoodBySlug(neighborhoods, barrio);
 
-  const title =
-    neighborhood?.seo_title ||
-    (zoneName ? t("rentMetaTitle", { zone: zoneName }) : `${t("rentTitle")} | Victoria Fones Real Estate`);
+  const title = neighborhood?.seo_title
+    ? `${neighborhood.seo_title} - Victoria Fones Real Estate`
+    : zoneName
+      ? t("rentMetaTitle", { zone: zoneName })
+      : `${t("rentTitle")} | Victoria Fones Real Estate`;
   const description = neighborhood?.seo_description ?? undefined;
 
   return {
