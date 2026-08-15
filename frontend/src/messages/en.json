@@ -88,30 +88,30 @@
     "personName": "Victoria Fones",
     "personRole": "CEO & Founder. Sales",
     "missionTitle": "Mission",
-    "mission": "To provide an excellent service based on professionalism, transparency and efficiency, building trusting relationships with our clients and exceeding quality standards.",
+    "mission": "To guide those who choose José Ignacio with real information, genuine judgment and deep knowledge of every area. We stay involved in every transaction with professionalism, full dedication and attention to every detail — building relationships that go beyond each deal.",
     "visionTitle": "Vision",
-    "vision": "To be a benchmark in the José Ignacio real estate market, standing out for our ethics, quality and a reliable experience in every transaction.",
+    "vision": "To lead the José Ignacio real estate market by redefining what excellence in service means — with seriousness, ethics and professionalism, with depth and real impact on every person and every transaction.",
     "valuesTitle": "Values",
     "values": [
       {
-        "term": "Trust",
-        "desc": "Solid relationships based on truth and commitment."
+        "term": "Local knowledge",
+        "desc": "Every neighborhood, every area, every property has its own character, dynamics and place within the market. We know it from the inside — because we're part of this place."
       },
       {
-        "term": "Integrity",
-        "desc": "Honesty and consistency in everything we do."
+        "term": "Honest information",
+        "desc": "We work with real data and a transparent view of the market. We prioritize clarity in every conversation, even when that means recommending you wait."
       },
       {
-        "term": "Transparency",
-        "desc": "Clarity and sincerity in every communication."
+        "term": "Judgment and perception",
+        "desc": "We understand what makes sense for each client. We listen, observe and read every situation with genuine attention — because truly understanding both who's searching and what's available is what makes the right match possible."
       },
       {
-        "term": "Excellence",
-        "desc": "High standards, professionalism and use of technology."
+        "term": "Ethics in how we work",
+        "desc": "How we do things matters. We handle every relationship, every conversation and every transaction with professionalism, discretion and respect for all parties."
       },
       {
-        "term": "Efficiency",
-        "desc": "Optimal results and fulfillment of objectives."
+        "term": "Long-term relationships",
+        "desc": "Most of the people who come to us do so through referrals. To us, that means more than any other form of growth — and it's the most honest reflection of trust built over time."
       }
     ]
   },

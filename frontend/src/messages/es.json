@@ -88,30 +88,30 @@
     "personName": "Victoria Fones",
     "personRole": "CEO & Founder. Sales",
     "missionTitle": "Misión",
-    "mission": "Brindar un servicio de excelencia basado en profesionalismo, transparencia y eficacia, construyendo relaciones de confianza con nuestros clientes y superando los estándares de calidad.",
+    "mission": "Acompañar a quienes eligen José Ignacio con información real, criterio genuino y conocimiento profundo de cada zona. Nos involucramos en cada operación con profesionalismo, dedicación total y atención a cada detalle — construyendo vínculos que trascienden cada transacción.",
     "visionTitle": "Visión",
-    "vision": "Ser referentes en el mercado inmobiliario de José Ignacio, destacándonos por la ética, calidad y una experiencia confiable en cada operación.",
+    "vision": "Liderar el mercado inmobiliario de José Ignacio redefiniendo lo que significa un servicio de excelencia — con seriedad, ética y profesionalismo, con profundidad e impacto real en cada persona y en cada operación.",
     "valuesTitle": "Valores",
     "values": [
       {
-        "term": "Confianza",
-        "desc": "Relaciones sólidas basadas en la verdad y el compromiso."
+        "term": "Conocimiento de la zona",
+        "desc": "Cada barrio, cada zona, cada propiedad tiene su carácter, su dinámica y su lugar dentro del mercado. Lo conocemos desde adentro — porque somos parte del lugar."
       },
       {
-        "term": "Integridad",
-        "desc": "Honestidad y coherencia en todas nuestras acciones."
+        "term": "Información honesta",
+        "desc": "Trabajamos con datos reales y una mirada transparente sobre el mercado. Priorizamos la claridad en cada conversación, incluso cuando eso implica recomendar esperar."
       },
       {
-        "term": "Transparencia",
-        "desc": "Claridad y sinceridad en cada comunicación."
+        "term": "Criterio y percepción",
+        "desc": "Entendemos qué hace sentido para cada cliente. Escuchamos, observamos y leemos cada situación con atención genuina — porque conocer en profundidad tanto a quien busca como lo que está disponible es lo que hace posible la conexión correcta."
       },
       {
-        "term": "Excelencia",
-        "desc": "Altos estándares, profesionalismo y uso de tecnología."
+        "term": "Ética en la manera de trabajar",
+        "desc": "La forma en que hacemos las cosas importa. Cuidamos cada vínculo, cada conversación y cada operación con profesionalismo, discreción y respeto por todas las partes."
       },
       {
-        "term": "Eficacia",
-        "desc": "Resultados óptimos y cumplimiento de objetivos."
+        "term": "Relaciones de largo plazo",
+        "desc": "Gran parte de quienes llegan a nosotros lo hacen a través de recomendaciones. Para nosotros, eso tiene más valor que cualquier otra forma de crecimiento — y es el reflejo más honesto de la confianza construida con el tiempo."
       }
     ]
   },
