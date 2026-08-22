@@ -4,15 +4,18 @@ import { useLocale, useTranslations } from "next-intl";
 import { useId, useState } from "react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const WHATSAPP_PHONE = "59893985888";
 
 export default function LeadForm({
   propertyId,
   defaultSubject,
   variant = "light",
+  whatsapp = false,
 }: {
   propertyId?: number;
   defaultSubject?: string;
   variant?: "light" | "onDark" | "underline";
+  whatsapp?: boolean;
 }) {
   const t = useTranslations("Contact");
   const locale = useLocale();
@@ -53,6 +56,25 @@ export default function LeadForm({
     }
   }
 
+  function handleWhatsApp(e: React.MouseEvent<HTMLButtonElement>) {
+    const form = e.currentTarget.form;
+    if (!form) return;
+
+    const data = new FormData(form);
+    const lines = [
+      `${t("name")}: ${data.get("name") || "-"}`,
+      `${t("email")}: ${data.get("email") || "-"}`,
+      data.get("subject") ? `${t("subject")}: ${data.get("subject")}` : null,
+      data.get("message") ? `${t("message")}: ${data.get("message")}` : null,
+    ].filter(Boolean);
+
+    window.open(
+      `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(lines.join("\n"))}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  }
+
   if (status === "sent") {
     return (
       <p className={onDark ? "text-white" : "text-brand-primary"}>
@@ -86,17 +108,32 @@ export default function LeadForm({
         <label htmlFor={`${id}-message`} className={labelClass}>{t("message")}</label>
         <textarea id={`${id}-message`} name="message" rows={5} placeholder={onDark ? t("message") : undefined} className={inputClass} />
       </div>
-      <button
-        type="submit"
-        disabled={status === "sending"}
-        className={
-          onDark
-            ? "border border-white px-8 py-3 text-sm font-medium uppercase tracking-wide text-white hover:bg-white hover:text-brand-primary disabled:opacity-50"
-            : "bg-brand-primary px-10 py-3 text-sm font-medium uppercase tracking-wide text-white hover:bg-brand-primary/90 disabled:opacity-50"
-        }
-      >
-        {t("submit")}
-      </button>
+      <div className="flex flex-wrap gap-3">
+        <button
+          type="submit"
+          disabled={status === "sending"}
+          className={
+            onDark
+              ? "border border-white px-8 py-3 text-sm font-medium uppercase tracking-wide text-white hover:bg-white hover:text-brand-primary disabled:opacity-50"
+              : "bg-brand-primary px-10 py-3 text-sm font-medium uppercase tracking-wide text-white hover:bg-brand-primary/90 disabled:opacity-50"
+          }
+        >
+          {t("submit")}
+        </button>
+        {whatsapp ? (
+          <button
+            type="button"
+            onClick={handleWhatsApp}
+            className={
+              onDark
+                ? "border border-white px-8 py-3 text-sm font-medium uppercase tracking-wide text-white hover:bg-white hover:text-brand-primary"
+                : "border border-brand-primary px-10 py-3 text-sm font-medium uppercase tracking-wide text-brand-primary hover:bg-brand-primary hover:text-white"
+            }
+          >
+            {t("submitWhatsApp")}
+          </button>
+        ) : null}
+      </div>
       {status === "error" ? (
         <p className={onDark ? "text-sm text-red-200" : "text-sm text-red-600"}>
           {locale === "en" ? "Something went wrong, please try again." : locale === "pt" ? "Algo deu errado, tente novamente." : "Ocurrió un error, intentá de nuevo."}

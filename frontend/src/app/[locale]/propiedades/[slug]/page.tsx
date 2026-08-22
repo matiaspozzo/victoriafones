@@ -312,7 +312,7 @@ export default async function PropertyPage({ params }: Props) {
             {t("contactHeading")}
           </h2>
           <div className="mt-6">
-            <LeadForm propertyId={property.id} defaultSubject={property.title} variant="underline" />
+            <LeadForm propertyId={property.id} defaultSubject={property.title} variant="underline" whatsapp />
           </div>
         </div>
 

@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import WhatsAppFloatButton from "@/components/WhatsAppFloatButton";
 import RawScripts from "@/components/RawScripts";
 import { getPageHeader, getSiteSettings } from "@/lib/api";
 import { OFFICE } from "@/lib/office";
@@ -174,6 +175,7 @@ export default async function LocaleLayout({
           <Header rentalsEnabled={rentalsEnabled} />
           {children}
           <Footer />
+          <WhatsAppFloatButton />
         </NextIntlClientProvider>
       </body>
     </html>

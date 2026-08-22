@@ -35,6 +35,10 @@
     "instagramLabel": "Visit our Instagram",
     "rights": "Copyright ©{year} Victoria Fones Real Estate. Todos los derechos reservados. Prohibida su reproducción total o parcial."
   },
+  "WhatsAppButton": {
+    "ariaLabel": "Contactar por WhatsApp",
+    "message": "Hola! Te escribo desde {url}"
+  },
   "Contact": {
     "title": "Estamos aquí para escuchar sus necesidades.",
     "subtitle": "No deje de consultarnos sobre cualquier inquietud",
@@ -43,6 +47,7 @@
     "subject": "Asunto",
     "message": "Mensaje",
     "submit": "Enviar",
+    "submitWhatsApp": "Enviar por WhatsApp",
     "metaDescription": "Contactá a Victoria Fones Real Estate para asesoramiento inmobiliario en José Ignacio y Punta del Este. Te ayudamos a encontrar la propiedad ideal."
   },
   "Listing": {
