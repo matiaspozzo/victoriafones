@@ -355,6 +355,13 @@ class PropertyResource extends Resource
                         }
                     })
                     ->after(function (Property $record, Property $replica): void {
+                        // Properties can carry dozens of photos, and each copied media
+                        // item re-renders 3 non-queued webp conversions synchronously —
+                        // easily over a minute for a large gallery, well past PHP-FPM's
+                        // 30s max_execution_time, which was silently truncating the copy
+                        // loop partway through (images "not copied" on duplicate).
+                        set_time_limit(300);
+
                         $replica->amenities()->sync($record->amenities->pluck('id'));
 
                         foreach (['hero', 'images'] as $collection) {
