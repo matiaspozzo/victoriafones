@@ -34,6 +34,19 @@ const legacyRedirects: Array<{ source: string; destination: string }> = [
   { source: "/nuestras-propiedades/punta-del-este/propiedades-en-otras-zonas-de-punta-del-este", destination: "/nuestras-propiedades" },
   { source: "/nuestras-propiedades/punta-del-este", destination: "/nuestras-propiedades" },
 
+  // Individual property slugs renamed since the WP migration (property still
+  // exists, just under different slug text) — cross-referenced against the
+  // 2026-09-02 Search Console 404 report and the live sitemap by matching
+  // each old slug's property code to its current slug.
+  { source: "/propiedades/ji073-jose-ignacio", destination: "/propiedades/ji073-terreno-jose-ignacio" },
+  { source: "/propiedades/lb021-palcos-de-la-posta", destination: "/propiedades/lb021-palcos-de-la-posta-la-barra" },
+  { source: "/propiedades/len19", destination: "/propiedades/len19-laguna-escondida-jose-ignacio" },
+  { source: "/propiedades/pfa1-pinar-del-faro-jose-ignacio-2", destination: "/propiedades/pfa1-pinar-del-faro-jose-ignacio" },
+  { source: "/propiedades/pfa8-pinar-del-faro-jose-ignacio", destination: "/propiedades/pfa8-terreno-pinar-del-faro" },
+  { source: "/propiedades/pfg23-pinar-del-faro-jose-ignacio", destination: "/propiedades/pfg23-terreno-pinar-del-faro" },
+  { source: "/propiedades/pfi10-pinar-del-faro-jose-ignacio", destination: "/propiedades/pfi10-pinar-del-faro-jose-ignacio-2" },
+  { source: "/propiedades/pfq11-pinar-del-faro-jose-ignacio", destination: "/propiedades/pfq11-pinar-del-faro-jose-ignacio-2" },
+
   // --- EN (/en prefix) ---
   // Segment words below (properties-for-sale, about-us, etc.) are the real
   // pre-migration WP English slugs (verified against its sitemap, see the
@@ -78,6 +91,18 @@ const legacyRedirects: Array<{ source: string; destination: string }> = [
   { source: "/en/contacto", destination: "/en/contact" },
   { source: "/en/mapa", destination: "/en/map" },
 
+  // Individual property slugs renamed since the WP migration (property still
+  // exists, just under different slug text) — see the `es` section above for
+  // how these were sourced.
+  { source: "/en/properties/ar727-lot-arenas-de-jose-ignacio", destination: "/en/properties/ar727-terreno-arenas-de-jose-ignacio" },
+  { source: "/en/properties/cmu99-terreno-club-de-mar", destination: "/en/properties/cmu99-club-de-mar-jose-ignacio" },
+  { source: "/en/properties/lb008-delamar-building-la-barra", destination: "/en/properties/lb008-edificio-delamar-la-barra" },
+  { source: "/en/properties/led12-lot-laguna-escondida", destination: "/en/properties/led12-terreno-laguna-escondida" },
+  { source: "/en/properties/leh10-lot-laguna-escondida", destination: "/en/properties/leh10-terreno-laguna-escondida" },
+  { source: "/en/properties/lj689-lot-la-juanita", destination: "/en/properties/lj689-terreno-la-juanita" },
+  { source: "/en/properties/lj995-lot-la-juanita", destination: "/en/properties/lj995-terreno-la-juanita" },
+  { source: "/en/properties/pfq11-pinar-del-faro-jose-ignacio", destination: "/en/properties/pfq11-pinar-del-faro-jose-ignacio-2" },
+
   // --- PT/BR (/br prefix) ---
   // "sale" and "rent" get NEW Portuguese translations here (imoveis-a-venda,
   // imoveis-para-alugar) — the old WP site left "sale" under /br using the
@@ -115,7 +140,21 @@ const legacyRedirects: Array<{ source: string; destination: string }> = [
   { source: "/br/nossas-propriedades/punta-del-este", destination: "/br/nossas-propriedades" },
   { source: "/br/nuestras-propiedades", destination: "/br/nossas-propriedades" },
 
-  { source: "/br/propiedades/:slug", destination: "/br/imoveis/:slug" },
+  // Individual property slugs renamed since the WP migration (property still
+  // exists, just under different slug text) — these must come before the
+  // generic :slug rule below since it would otherwise redirect them straight
+  // to the old, now 404-ing slug under /br/imoveis/.
+  { source: "/br/propriedades/lb008-delamar-la-barra", destination: "/br/imoveis/lb008-edificio-delamar-la-barra" },
+  { source: "/br/propriedades/lb021-palcos-de-la-posta", destination: "/br/imoveis/lb021-palcos-de-la-posta-la-barra" },
+  { source: "/br/propriedades/lj1249-terreno-la-juanita", destination: "/br/imoveis/lj1249-lot-la-juanita" },
+  { source: "/br/propriedades/pfa1-pinar-del-faro-jose-ignacio-2", destination: "/br/imoveis/pfa1-pinar-del-faro-jose-ignacio" },
+  { source: "/br/propriedades/pfg23-pinar-del-faro-jose-ignacio", destination: "/br/imoveis/pfg23-terreno-pinar-del-faro" },
+  { source: "/br/propriedades/pfk30-pinar-del-faro-jose-ignacio-2", destination: "/br/imoveis/pfk30-pinar-del-faro-jose-ignacio" },
+
+  // NB: real WP Portuguese URLs are spelled "propriedades" (double r), like
+  // every other BR rule above — this generic slug redirect must match that
+  // spelling too, or it silently never fires for actual legacy links.
+  { source: "/br/propriedades/:slug", destination: "/br/imoveis/:slug" },
   { source: "/br/quienes-somos", destination: "/br/sobre-nos" },
   { source: "/br/contacto", destination: "/br/contato" },
 
