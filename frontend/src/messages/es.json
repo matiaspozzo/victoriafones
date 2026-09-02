@@ -146,5 +146,12 @@
   "SearchCta": {
     "title": "¿No encontraste lo que buscabas?",
     "text": "Podemos ayudarte a encontrar la propiedad que necesitás. Realizamos búsquedas personalizadas en Uruguay."
+  },
+  "NotFound": {
+    "eyebrow": "Error 404",
+    "title": "Esta página no existe",
+    "text": "Puede que el enlace esté roto o que la propiedad ya no esté disponible. Te invitamos a seguir explorando.",
+    "ctaProperties": "Ver Propiedades",
+    "ctaHome": "Volver al inicio"
   }
 }

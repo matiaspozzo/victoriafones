@@ -146,5 +146,12 @@
   "SearchCta": {
     "title": "Não encontrou o que procurava?",
     "text": "Podemos ajudar você a encontrar o imóvel que precisa. Realizamos buscas personalizadas no Uruguai."
+  },
+  "NotFound": {
+    "eyebrow": "Erro 404",
+    "title": "Esta página não existe",
+    "text": "O link pode estar quebrado, ou o imóvel pode não estar mais disponível. Convidamos você a continuar explorando.",
+    "ctaProperties": "Ver Propriedades",
+    "ctaHome": "Voltar para o início"
   }
 }

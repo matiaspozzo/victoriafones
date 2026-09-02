@@ -146,5 +146,12 @@
   "SearchCta": {
     "title": "Didn't find what you were looking for?",
     "text": "We can help you find the property you need. We carry out personalized searches in Uruguay."
+  },
+  "NotFound": {
+    "eyebrow": "Error 404",
+    "title": "This page doesn't exist",
+    "text": "The link may be broken, or the property may no longer be available. Feel free to keep exploring.",
+    "ctaProperties": "View Properties",
+    "ctaHome": "Back to home"
   }
 }
