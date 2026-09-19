@@ -31,6 +31,8 @@ class NeighborhoodSeeder extends Seeder
         }
 
         $this->create('Otras Zonas', null, 0, null, self::DESCRIPTIONS['otras-zonas']);
+
+        $this->call(AlrededoresSubzonesSeeder::class);
     }
 
     /**

@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
+import { ZONES } from "@/lib/zones";
 import { getPathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { getNeighborhoods, getProperties } from "@/lib/api";
+import { getProperties } from "@/lib/api";
 import { SITE_URL } from "@/lib/seo";
 
 const STATIC_PATHNAMES = [
@@ -15,18 +16,6 @@ const STATIC_PATHNAMES = [
 ] as const;
 
 const ZONE_LISTING_PATHNAMES = ["/propiedades-en-venta/[barrio]", "/propiedades-en-alquiler/[barrio]"] as const;
-
-type NeighborhoodNode = { slug: string; children?: NeighborhoodNode[] };
-
-// Only leaf neighborhoods (no children) have their own /propiedades-en-venta|alquiler/{barrio}
-// listing page — intermediate nodes like "José Ignacio" or "Punta del Este" are
-// grouping labels only, never a property's direct neighborhood, so a listing
-// page for one would always be empty and isn't linked from anywhere in the UI.
-function leafSlugs(nodes: NeighborhoodNode[]): string[] {
-  return nodes.flatMap((node) =>
-    node.children && node.children.length > 0 ? leafSlugs(node.children) : [node.slug]
-  );
-}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
@@ -60,22 +49,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Backend unreachable at build time — sitemap still includes static pages.
   }
 
-  try {
-    const { data: neighborhoods } = await getNeighborhoods("es");
-
-    for (const slug of leafSlugs(neighborhoods)) {
-      for (const locale of routing.locales) {
-        for (const pathname of ZONE_LISTING_PATHNAMES) {
-          entries.push({
-            url: `${SITE_URL}${getPathname({ href: { pathname, params: { barrio: slug } }, locale })}`,
-            changeFrequency: "weekly",
-            priority: 0.8,
-          });
-        }
+  // Zone listing pages are the same fixed set the zone filter/nav dropdown
+  // use (see ZONES), not derived from the neighborhood tree — that tree can
+  // have deeper nodes (e.g. Alrededores' sub-zones) that are internal
+  // tagging only and never got their own listing page or nav entry.
+  for (const slug of ZONES) {
+    for (const locale of routing.locales) {
+      for (const pathname of ZONE_LISTING_PATHNAMES) {
+        entries.push({
+          url: `${SITE_URL}${getPathname({ href: { pathname, params: { barrio: slug } }, locale })}`,
+          changeFrequency: "weekly",
+          priority: 0.8,
+        });
       }
     }
-  } catch {
-    // Backend unreachable at build time — sitemap still includes everything else.
   }
 
   return entries;

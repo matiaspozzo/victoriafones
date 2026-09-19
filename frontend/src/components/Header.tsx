@@ -6,7 +6,8 @@ import { useEffect, useState } from "react";
 import { Link, usePathname } from "@/i18n/navigation";
 import LocaleSwitcher from "./LocaleSwitcher";
 import { useNavbarStyle } from "./NavbarStyleContext";
-import NavDropdown, { ZONES } from "./NavDropdown";
+import { ZONES } from "@/lib/zones";
+import NavDropdown from "./NavDropdown";
 
 // Pages with no hero photo behind the nav — the header stays solid on these
 // instead of starting transparent, otherwise it'd be illegible against the

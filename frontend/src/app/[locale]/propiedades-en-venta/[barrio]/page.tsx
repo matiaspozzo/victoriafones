@@ -64,6 +64,9 @@ export default async function SalesByNeighborhoodPage({
       locale={locale}
       operation="sale"
       neighborhood={barrio}
+      subzones={neighborhood?.children
+        .filter((child) => child.properties_count > 0)
+        .map((child) => ({ slug: child.slug, name: child.name }))}
       pageKey="venta"
       heroImage={ventaZoneHero(barrio)}
       heroImageOverride={{

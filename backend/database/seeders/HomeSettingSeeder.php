@@ -62,7 +62,7 @@ class HomeSettingSeeder extends Seeder
             ['label' => 'Club de Mar', 'link' => '/propiedades-en-venta/club-de-mar', 'file' => 'home-links-club-de-mar.webp'],
             ['label' => 'Laguna Escondida', 'link' => '/propiedades-en-venta/laguna-escondida', 'file' => 'home-links-laguna-escondida-v2.webp'],
             ['label' => 'Otras Zonas', 'link' => '/propiedades-en-venta/otras-zonas', 'file' => 'home-links-playa-brava.webp'],
-            ['label' => 'Alrededores', 'link' => '/propiedades-en-venta/alrededores', 'file' => 'home-links-alrededores.webp'],
+            ['label' => 'Alrededores Casco José Ignacio', 'link' => '/propiedades-en-venta/alrededores', 'file' => 'home-links-alrededores.webp'],
         ];
 
         foreach ($cards as $i => $data) {

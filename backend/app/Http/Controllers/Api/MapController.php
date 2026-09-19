@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Neighborhood;
 use App\Models\Property;
 use Illuminate\Http\Request;
 
@@ -34,7 +35,8 @@ class MapController extends Controller
         }
 
         if ($request->filled('neighborhood')) {
-            $query->whereHas('neighborhood', fn ($q) => $q->where('slug', $request->string('neighborhood')));
+            $slugs = Neighborhood::slugWithDescendants($request->string('neighborhood'));
+            $query->whereHas('neighborhood', fn ($q) => $q->whereIn('slug', $slugs));
         }
 
         if ($request->filled('bedrooms')) {

@@ -27,6 +27,7 @@ class NeighborhoodResource extends JsonResource
             'og_image' => $this->getFirstMediaUrl('og_image', 'og') ?: null,
             'center_lat' => $this->center_lat,
             'center_lng' => $this->center_lng,
+            'properties_count' => $this->properties_count,
             'children' => NeighborhoodResource::collection($this->whenLoaded('children')),
         ];
     }

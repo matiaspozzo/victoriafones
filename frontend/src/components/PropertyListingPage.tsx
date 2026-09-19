@@ -10,14 +10,43 @@ import PropertyFilters from "@/components/PropertyFilters";
 import PropertyMap from "@/components/PropertyMap";
 import { iconArea, iconBath, iconBed, iconCalendar } from "@/components/PropertyStats";
 import ResponsiveHero from "@/components/ResponsiveHero";
-import { getPageHeader, getProperties } from "@/lib/api";
+import { getPageHeader, getProperties, type PropertySummary } from "@/lib/api";
 import { formatUsd } from "@/lib/format";
 import { canonicalFor } from "@/lib/seo";
+
+// Splits properties into one group per sub-zone (in the given order), plus a
+// trailing group for anything not tagged with one of them — used only on
+// zone pages whose neighborhood has sub-zones (e.g. Alrededores).
+function groupBySubzone(
+  properties: PropertySummary[],
+  subzones: { slug: string; name: string }[],
+  otherLabel: string,
+) {
+  const bySlug = new Map(subzones.map((s) => [s.slug, [] as PropertySummary[]]));
+  const other: PropertySummary[] = [];
+
+  for (const property of properties) {
+    const slug = property.neighborhood?.slug;
+    const bucket = slug ? bySlug.get(slug) : undefined;
+    (bucket ?? other).push(property);
+  }
+
+  const groups = subzones
+    .map((s) => ({ key: s.slug, name: s.name, properties: bySlug.get(s.slug) ?? [] }))
+    .filter((g) => g.properties.length > 0);
+
+  if (other.length > 0) {
+    groups.push({ key: "__other", name: otherLabel, properties: other });
+  }
+
+  return groups;
+}
 
 export default async function PropertyListingPage({
   locale,
   operation,
   neighborhood,
+  subzones,
   pageKey,
   heroImage,
   heroImageOverride,
@@ -30,6 +59,10 @@ export default async function PropertyListingPage({
   locale: string;
   operation?: "sale" | "rent";
   neighborhood?: string;
+  /** Sub-zones of a fixed `neighborhood` (e.g. Alrededores' 16 zones) — when
+      given, adds a sub-zone filter select and groups the card grid by
+      sub-zone instead of a flat list. */
+  subzones?: { slug: string; name: string }[];
   pageKey: "venta" | "alquiler" | "nuestras-propiedades";
   /** Static fallback used until the client uploads a custom hero photo in Filament. */
   heroImage: string;
@@ -50,8 +83,11 @@ export default async function PropertyListingPage({
   const t = await getTranslations({ locale, namespace: "Listing" });
 
   // Fixed-zone pages (venta/[barrio]) pin the neighborhood; the general
-  // listings let the user pick a zone via the filter (?zona=).
-  const effectiveNeighborhood = neighborhood ?? params.zona;
+  // listings let the user pick a zone via the filter (?zona=). On a fixed
+  // zone page with sub-zones (e.g. Alrededores), ?subzona= narrows further
+  // to one specific sub-zone instead.
+  const selectedSubzone = subzones?.find((s) => s.slug === params.subzona)?.slug;
+  const effectiveNeighborhood = neighborhood ? (selectedSubzone ?? neighborhood) : params.zona;
   const view = params.view === "list" || params.view === "map" ? params.view : "cards";
 
   const [listing, header] = await Promise.all([
@@ -177,6 +213,8 @@ export default async function PropertyListingPage({
           currentBedrooms={params.bedrooms}
           currentBathrooms={params.bathrooms}
           currentZone={params.zona}
+          currentSubzone={selectedSubzone}
+          subzones={subzones}
           currentSort={params.sort}
           currentView={view}
           currentPriceMin={params.price_min}
@@ -235,6 +273,19 @@ export default async function PropertyListingPage({
               );
             })}
           </ul>
+        ) : subzones && subzones.length > 0 && !selectedSubzone ? (
+          <div className="mt-10 flex flex-col gap-16">
+            {groupBySubzone(properties, subzones, t("otherProperties")).map((group) => (
+              <section key={group.key}>
+                <h2 className="mb-6 font-heading text-2xl font-bold text-brand-primary">{group.name}</h2>
+                <div className="grid grid-cols-1 gap-20 sm:grid-cols-2">
+                  {group.properties.map((property) => (
+                    <PropertyCard key={property.id} property={property} />
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
         ) : (
           <div className="mt-10 grid grid-cols-1 gap-20 sm:grid-cols-2">
             {properties.map((property) => (

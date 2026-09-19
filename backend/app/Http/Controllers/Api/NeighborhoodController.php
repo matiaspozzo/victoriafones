@@ -10,12 +10,29 @@ class NeighborhoodController extends Controller
 {
     public function index()
     {
-        $tree = Neighborhood::query()
-            ->whereNull('parent_id')
-            ->with('children.children')
+        // One flat query + in-memory tree assembly, rather than a fixed-depth
+        // `with('children.children...')` chain — the table is tiny (~30
+        // rows) and this way the tree isn't hardcoded to 3 levels deep.
+        $all = Neighborhood::query()
+            ->withCount(['properties as properties_count' => fn ($q) => $q->where('status', 'published')])
             ->orderBy('order')
             ->get();
 
-        return NeighborhoodResource::collection($tree);
+        $byParent = $all->groupBy('parent_id');
+
+        $attachChildren = function (Neighborhood $node) use (&$attachChildren, $byParent) {
+            $children = $byParent->get($node->id, collect());
+            foreach ($children as $child) {
+                $attachChildren($child);
+            }
+            $node->setRelation('children', $children->values());
+        };
+
+        $roots = $byParent->get(null, collect());
+        foreach ($roots as $root) {
+            $attachChildren($root);
+        }
+
+        return NeighborhoodResource::collection($roots->values());
     }
 }

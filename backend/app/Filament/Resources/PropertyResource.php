@@ -100,7 +100,7 @@ class PropertyResource extends Resource
                             ->required(),
                         Forms\Components\Select::make('neighborhood_id')
                             ->label('Barrio')
-                            ->options(fn () => Neighborhood::query()->pluck('name', 'id')->map(fn ($name) => is_array($name) ? ($name['es'] ?? reset($name)) : $name))
+                            ->options(fn () => Neighborhood::indentedOptions())
                             ->searchable()
                             ->required(),
                     ]),

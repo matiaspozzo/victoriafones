@@ -37,7 +37,7 @@ class NeighborhoodResource extends Resource
             ->schema([
                 Forms\Components\Select::make('parent_id')
                     ->label('Barrio padre')
-                    ->relationship('parent', 'slug')
+                    ->options(fn () => Neighborhood::indentedOptions())
                     ->searchable(),
                 Forms\Components\TextInput::make('name')
                     ->label('Nombre')

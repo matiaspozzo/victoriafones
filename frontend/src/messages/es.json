@@ -86,7 +86,10 @@
     "bathrooms": "Baños",
     "labelZone": "Zona",
     "labelType": "Tipo",
-    "labelSort": "Ordenar por"
+    "labelSort": "Ordenar por",
+    "labelSubzone": "Subzona",
+    "allSubzones": "Todas",
+    "otherProperties": "Otras propiedades"
   },
   "About": {
     "title": "Acerca de Victoria Fones Real Estate",

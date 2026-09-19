@@ -60,6 +60,9 @@ export default async function RentalsByNeighborhoodPage({
       locale={locale}
       operation="rent"
       neighborhood={barrio}
+      subzones={neighborhood?.children
+        .filter((child) => child.properties_count > 0)
+        .map((child) => ({ slug: child.slug, name: child.name }))}
       pageKey="alquiler"
       heroImage={ALQUILER_HERO}
       heroImageOverride={{

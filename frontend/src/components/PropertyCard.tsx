@@ -14,7 +14,15 @@ export default function PropertyCard({
   const locale = useLocale();
   const area = property.built_area_m2 ?? property.lot_area_m2;
   const typeLabel = TYPE_LABELS[locale]?.[property.type] ?? property.type;
-  const title = [property.neighborhood?.name, typeLabel].filter(Boolean).join(" · ");
+  // Sub-zones of a grouping zone (e.g. "La Juanita" under "Alrededores Casco
+  // José Ignacio") are ambiguous with just "Zona · Tipo" — the client asked
+  // for the sub-zone on its own line, then "Tipo – Nombre real" below it,
+  // instead of the generic label used everywhere else.
+  const isSubzone = property.neighborhood?.is_subzone ?? false;
+  const title = isSubzone
+    ? property.neighborhood!.name
+    : [property.neighborhood?.name, typeLabel].filter(Boolean).join(" · ");
+  const subtitle = isSubzone ? `${typeLabel} – ${property.title}` : null;
 
   const stats = [
     area ? `${area}m2` : null,
@@ -60,6 +68,7 @@ export default function PropertyCard({
 
       <div className="pt-5 font-heading text-brand-primary">
         <h2 className="text-2xl font-bold leading-snug">{title}</h2>
+        {subtitle ? <p className="text-2xl font-bold leading-snug">{subtitle}</p> : null}
         {stats ? <p className="mt-2 text-base">{stats}</p> : null}
         <p className="mt-2 text-base">{price}</p>
         {property.code ? <p className="mt-2 text-base">{property.code}</p> : null}

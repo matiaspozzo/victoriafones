@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PropertyDetailResource;
 use App\Http\Resources\PropertyResource;
+use App\Models\Neighborhood;
 use App\Models\Property;
 use Illuminate\Http\Request;
 
@@ -34,7 +35,8 @@ class PropertyController extends Controller
         }
 
         if ($request->filled('neighborhood')) {
-            $base->whereHas('neighborhood', fn ($q) => $q->where('slug', $request->string('neighborhood')));
+            $slugs = Neighborhood::slugWithDescendants($request->string('neighborhood'));
+            $base->whereHas('neighborhood', fn ($q) => $q->whereIn('slug', $slugs));
         }
 
         if ($request->filled('bedrooms')) {
@@ -56,7 +58,7 @@ class PropertyController extends Controller
             'max' => (int) (clone $base)->max('price_usd'),
         ];
 
-        $query = $base->with('neighborhood');
+        $query = $base->with('neighborhood.parent.parent');
 
         if ($request->filled('price_min')) {
             $query->where('price_usd', '>=', (int) $request->input('price_min'));
@@ -95,7 +97,7 @@ class PropertyController extends Controller
                     $query->orWhere("slug->{$fallbackLocale}", $slug);
                 }
             })
-            ->with(['neighborhood.parent', 'amenities', 'rentalPrices'])
+            ->with(['neighborhood.parent.parent', 'amenities', 'rentalPrices'])
             ->firstOrFail();
 
         return new PropertyDetailResource($property);

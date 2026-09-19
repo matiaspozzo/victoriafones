@@ -3,10 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-
-// Sub-neighborhoods of José Ignacio + Otras Zonas, matching the live site's
-// Ventas/Alquileres submenu order. Shared with the mobile offcanvas menu.
-export const ZONES = ["pueblo-jose-ignacio", "club-de-mar", "pinar-del-faro", "laguna-escondida", "alrededores", "otras-zonas"];
+import { ZONES } from "@/lib/zones";
 
 // `as const` keeps these as literal pathname types (matching routing.ts's
 // `pathnames` keys) rather than widening to `string`, which next-intl's

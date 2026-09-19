@@ -5,7 +5,7 @@ export type PropertySummary = {
   code: string;
   operation: "sale" | "rent" | "sale_and_rent";
   type: "house" | "apartment" | "land" | "chacra" | "commercial";
-  neighborhood: { id: number; slug: string; name: string } | null;
+  neighborhood: { id: number; slug: string; name: string; is_subzone: boolean } | null;
   price_usd: number | null;
   bedrooms: number | null;
   bathrooms: number | null;
@@ -126,9 +126,10 @@ export type Neighborhood = {
   seo_title: string | null;
   seo_description: string | null;
   og_image: string | null;
-  // Absent entirely (not []) past the API's 2-level eager-load depth — leaf
-  // nodes have no "children" key at all in the JSON.
-  children?: Neighborhood[];
+  /** Published properties assigned directly to this node (not its
+      descendants) — used to hide a sub-zone's filter pill when empty. */
+  properties_count: number;
+  children: Neighborhood[];
 };
 
 export async function getNeighborhoods(locale: string) {

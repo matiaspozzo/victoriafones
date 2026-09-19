@@ -20,6 +20,7 @@ class PropertyResource extends JsonResource
                 'id' => $this->neighborhood->id,
                 'slug' => $this->neighborhood->slug,
                 'name' => $this->neighborhood->getTranslation('name', $locale, false) ?: $this->neighborhood->getTranslation('name', 'es'),
+                'is_subzone' => $this->neighborhood->isSubzone(),
             ]),
             'price_usd' => $this->price_usd,
             'bedrooms' => $this->bedrooms,
