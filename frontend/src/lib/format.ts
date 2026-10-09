@@ -98,3 +98,39 @@ export function propertyMetaDescription(
     .filter(Boolean)
     .join(" ");
 }
+
+/**
+ * Auto-generated, semantic title for a property — used only where there's
+ * no manually-written seo_title for it, instead of falling back to the raw
+ * `property.title`. That raw title is the "CODE – Neighborhood – City"
+ * naming convention carried over from the old WordPress site (e.g. "PFH13 –
+ * Pinar del Faro – Jose Ignacio") — fine for an agent who already knows the
+ * code, but not something Google or an LLM can read as "what is this".
+ * e.g. "Casa de 4 dormitorios en Pinar del Faro, José Ignacio — USD
+ * 1,300,000". Deliberately doesn't mention venta/alquiler (unlike
+ * propertyMetaDescription above) — that's already clear from the page
+ * it's on, and keeping this shorter matters more for a <title> tag.
+ */
+export function propertyMetaTitle(
+  property: {
+    type: string;
+    neighborhood: { slug: string; name: string } | null;
+    bedrooms: number | null;
+    price_usd: number | null;
+  },
+  locale: string,
+): string {
+  const typeLabel = TYPE_LABELS[locale]?.[property.type] ?? property.type;
+  const connector = LOCATION_CONNECTOR[locale] ?? LOCATION_CONNECTOR.es;
+  const region = property.neighborhood?.slug === "otras-zonas" ? "Punta del Este" : "José Ignacio";
+  const location = property.neighborhood ? `${connector} ${property.neighborhood.name}, ${region}` : region;
+  const bedroomsWord = locale === "pt" ? "quartos" : "dormitorios";
+  const subject = property.bedrooms
+    ? locale === "en"
+      ? `${property.bedrooms}-Bedroom ${typeLabel}`
+      : `${typeLabel} de ${property.bedrooms} ${bedroomsWord}`
+    : typeLabel;
+  const price = property.price_usd ? `USD ${formatNumber(property.price_usd, locale)}` : null;
+
+  return [`${subject} ${location}`, price].filter(Boolean).join(" — ");
+}

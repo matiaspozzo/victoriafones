@@ -11,7 +11,7 @@ import PropertyMap from "@/components/PropertyMap";
 import { iconArea, iconBath, iconBed, iconCalendar } from "@/components/PropertyStats";
 import ResponsiveHero from "@/components/ResponsiveHero";
 import { getPageHeader, getProperties, type PropertySummary } from "@/lib/api";
-import { formatUsd } from "@/lib/format";
+import { formatUsd, propertyMetaTitle } from "@/lib/format";
 import { breadcrumbJsonLd, canonicalFor } from "@/lib/seo";
 
 // Splits properties into one group per sub-zone (in the given order), plus a
@@ -167,7 +167,12 @@ export default async function PropertyListingPage({
             position: index + 1,
             item: {
               "@type": "Product",
-              name: property.title,
+              // PropertySummary has no seo_title to prefer over this (that
+              // manual override only exists on the full PropertyDetail), so
+              // this is always the computed semantic name on listing pages —
+              // see propertyMetaTitle's own comment for why not the raw
+              // property.title.
+              name: propertyMetaTitle(property, locale),
               url: canonicalFor(locale, { pathname: "/propiedades/[slug]", params: { slug: property.slug } }),
               image: property.cover_image ?? undefined,
               sku: property.code,

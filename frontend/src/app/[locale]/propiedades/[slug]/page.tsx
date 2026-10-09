@@ -15,6 +15,7 @@ import {
   formatUsd,
   priceOnRequestLabel,
   propertyMetaDescription,
+  propertyMetaTitle,
   stripHtml,
   TYPE_LABELS,
 } from "@/lib/format";
@@ -77,18 +78,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     // today have neither seo_description nor excerpt written (May SEO audit).
     const description =
       property.seo_description || property.excerpt || propertyMetaDescription(property, locale);
+    // Same reasoning for the title: seo_title is also unset on ~all listings
+    // today, and the raw property.title (the "CODE – Neighborhood – City"
+    // WordPress-era naming convention) reads as a reference code to an
+    // agent, not as a description of the property to Google or an LLM.
+    // " - " vs. " | " matches the convention the other pages already use to
+    // distinguish a human-written seo_title from a computed fallback title.
+    const metaTitle = property.seo_title || propertyMetaTitle(property, locale);
+    const titleSuffix = property.seo_title ? "-" : "|";
 
     return {
-      title: property.seo_title
-        ? `${property.seo_title} - Victoria Fones Real Estate`
-        : `${property.title} | Victoria Fones Real Estate`,
+      title: `${metaTitle} ${titleSuffix} Victoria Fones Real Estate`,
       description,
       alternates: {
         canonical: canonicalFor(locale, href),
         languages: buildAlternates(href),
       },
       openGraph: {
-        title: property.title,
+        title: metaTitle,
         description,
         images: property.images[0] ? [property.images[0].card] : undefined,
       },
@@ -120,6 +127,10 @@ export default async function PropertyPage({ params }: Props) {
   const propertyUrl = canonicalFor(locale, { pathname: "/propiedades/[slug]", params: { slug: property.slug } });
   const typeLabel = TYPE_LABELS[locale]?.[property.type] ?? property.type;
   const areaValue = property.built_area_m2 ?? property.lot_area_m2;
+  // Same semantic fallback as generateMetadata's <title> — a search engine
+  // or LLM reading this page's JSON-LD "name" sees "Casa de 4 dormitorios en
+  // Pinar del Faro, José Ignacio", not the raw internal reference code.
+  const semanticTitle = property.seo_title || propertyMetaTitle(property, locale);
   // Slim reference to the agency, reused on both offers below — not the full
   // RealEstateAgent block (that one, with address/geo/sameAs, is only
   // emitted once site-wide by the root layout).
@@ -150,7 +161,7 @@ export default async function PropertyPage({ params }: Props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "RealEstateListing",
-    name: property.title,
+    name: semanticTitle,
     description: plainDescription,
     url: propertyUrl,
     image: property.images.map((img) => img.full),
@@ -196,7 +207,7 @@ export default async function PropertyPage({ params }: Props) {
     ? {
         "@context": "https://schema.org",
         "@type": "Product",
-        name: property.title,
+        name: semanticTitle,
         description: plainDescription,
         image: property.images.map((img) => img.full),
         sku: property.code,
@@ -245,7 +256,7 @@ export default async function PropertyPage({ params }: Props) {
     ...(property.neighborhood && neighborhoodHref
       ? [{ name: property.neighborhood.name, url: canonicalFor(locale, neighborhoodHref) }]
       : []),
-    { name: property.title, url: propertyUrl },
+    { name: semanticTitle, url: propertyUrl },
   ];
 
   // Same "area | bedrooms | bathrooms" formula as PropertyCard, plus lot size
