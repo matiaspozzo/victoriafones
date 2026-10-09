@@ -77,6 +77,7 @@ export default async function SalesByNeighborhoodPage({
       titleOverride={zoneName ? tListing("saleInZone", { zone: zoneName }) : undefined}
       subtitleOverride=""
       neighborhoodDescription={neighborhood?.description ?? undefined}
+      faqs={neighborhood?.faqs}
       searchParams={searchParams}
     />
   );

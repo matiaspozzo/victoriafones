@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import FaqSection from "@/components/FaqSection";
 import LeadForm from "@/components/LeadForm";
 import { SetNavbarStyle, type NavbarStyle } from "@/components/NavbarStyleContext";
 import PageHeader from "@/components/PageHeader";
@@ -12,7 +13,7 @@ import { iconArea, iconBath, iconBed, iconCalendar } from "@/components/Property
 import ResponsiveHero from "@/components/ResponsiveHero";
 import { getPageHeader, getProperties, type PropertySummary } from "@/lib/api";
 import { formatUsd, propertyMetaTitle } from "@/lib/format";
-import { breadcrumbJsonLd, canonicalFor } from "@/lib/seo";
+import { breadcrumbJsonLd, canonicalFor, faqPageJsonLd } from "@/lib/seo";
 
 // Splits properties into one group per sub-zone (in the given order), plus a
 // trailing group for anything not tagged with one of them — used only on
@@ -54,6 +55,7 @@ export default async function PropertyListingPage({
   titleOverride,
   subtitleOverride,
   neighborhoodDescription,
+  faqs,
   searchParams,
 }: {
   locale: string;
@@ -77,6 +79,10 @@ export default async function PropertyListingPage({
   titleOverride?: string;
   subtitleOverride?: string;
   neighborhoodDescription?: string;
+  /** This zone's FAQ content (Filament's NeighborhoodFaq, already resolved
+      to the current locale) — only ever set on a fixed [barrio] page, same
+      as `neighborhood` itself. */
+  faqs?: { question: string; answer: string }[];
   searchParams: Promise<Record<string, string | undefined>>;
 }) {
   const params = await searchParams;
@@ -220,6 +226,8 @@ export default async function PropertyListingPage({
       : []),
   ];
 
+  const faqPageJsonLdData = faqs && faqs.length > 0 ? faqPageJsonLd(faqs) : null;
+
   // GeoJSON query for the map view (same filters as the list).
   const mapParams = new URLSearchParams();
   if (operation) mapParams.set("operation", operation);
@@ -349,6 +357,14 @@ export default async function PropertyListingPage({
           <PropertyMap locale={locale} query={mapParams.toString()} />
         </div>
       ) : null}
+
+      {faqPageJsonLdData ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqPageJsonLdData) }}
+        />
+      ) : null}
+      <FaqSection title={t("faqTitle")} faqs={faqs ?? []} />
 
       {searchCtaSection}
     </main>

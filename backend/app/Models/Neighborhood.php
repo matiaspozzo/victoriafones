@@ -52,6 +52,11 @@ class Neighborhood extends Model implements HasMedia
         return $this->hasMany(Property::class);
     }
 
+    public function faqs(): HasMany
+    {
+        return $this->hasMany(NeighborhoodFaq::class)->orderBy('order');
+    }
+
     // True for a zone nested two levels below a top region (e.g. a sub-zone of
     // "Alrededores", itself a child of "José Ignacio", itself a child of
     // "Punta del Este") — used to switch the property card to the

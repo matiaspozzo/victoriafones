@@ -73,6 +73,7 @@ export default async function RentalsByNeighborhoodPage({
       titleOverride={zoneName ? tListing("rentInZone", { zone: zoneName }) : undefined}
       subtitleOverride=""
       neighborhoodDescription={neighborhood?.description ?? undefined}
+      faqs={neighborhood?.faqs}
       searchParams={searchParams}
     />
   );

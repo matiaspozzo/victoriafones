@@ -15,6 +15,7 @@ class NeighborhoodController extends Controller
         // rows) and this way the tree isn't hardcoded to 3 levels deep.
         $all = Neighborhood::query()
             ->withCount(['properties as properties_count' => fn ($q) => $q->where('status', 'published')])
+            ->with('faqs')
             ->orderBy('order')
             ->get();
 

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\NeighborhoodResource\Pages;
+use App\Filament\Resources\NeighborhoodResource\RelationManagers\FaqsRelationManager;
 use App\Models\Neighborhood;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -139,6 +140,13 @@ class NeighborhoodResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            FaqsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

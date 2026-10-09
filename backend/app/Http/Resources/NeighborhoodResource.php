@@ -28,6 +28,10 @@ class NeighborhoodResource extends JsonResource
             'center_lat' => $this->center_lat,
             'center_lng' => $this->center_lng,
             'properties_count' => $this->properties_count,
+            'faqs' => $this->whenLoaded('faqs', fn () => $this->faqs->map(fn ($faq) => [
+                'question' => $faq->getTranslation('question', $locale, false) ?: $faq->getTranslation('question', 'es', false),
+                'answer' => $faq->getTranslation('answer', $locale, false) ?: $faq->getTranslation('answer', 'es', false),
+            ])->values()),
             'children' => NeighborhoodResource::collection($this->whenLoaded('children')),
         ];
     }

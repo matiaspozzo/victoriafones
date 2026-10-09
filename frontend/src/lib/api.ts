@@ -129,6 +129,7 @@ export type Neighborhood = {
   /** Published properties assigned directly to this node (not its
       descendants) — used to hide a sub-zone's filter pill when empty. */
   properties_count: number;
+  faqs: { question: string; answer: string }[];
   children: Neighborhood[];
 };
 
