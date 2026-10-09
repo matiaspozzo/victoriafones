@@ -90,6 +90,17 @@ const organizationJsonLd = {
   sameAs: ["https://www.instagram.com/victoriafones.realestate"],
 };
 
+// No `potentialAction: SearchAction` here — the site has no actual search
+// endpoint (the map/listing filters are query-param navigation, not a single
+// search box/URL template), so claiming one would be inaccurate structured
+// data rather than a real sitelinks-search-box candidate.
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Victoria Fones Real Estate",
+  url: SITE_URL,
+};
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
@@ -125,6 +136,10 @@ export default async function LocaleLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
 
         {siteSettings?.google_analytics_id ? (

@@ -12,7 +12,7 @@ import { iconArea, iconBath, iconBed, iconCalendar } from "@/components/Property
 import ResponsiveHero from "@/components/ResponsiveHero";
 import { getPageHeader, getProperties, type PropertySummary } from "@/lib/api";
 import { formatUsd } from "@/lib/format";
-import { canonicalFor } from "@/lib/seo";
+import { breadcrumbJsonLd, canonicalFor } from "@/lib/seo";
 
 // Splits properties into one group per sub-zone (in the given order), plus a
 // trailing group for anything not tagged with one of them — used only on
@@ -81,6 +81,8 @@ export default async function PropertyListingPage({
 }) {
   const params = await searchParams;
   const t = await getTranslations({ locale, namespace: "Listing" });
+  const tNav = await getTranslations({ locale, namespace: "Nav" });
+  const tZones = await getTranslations({ locale, namespace: "Zones" });
 
   // Fixed-zone pages (venta/[barrio]) pin the neighborhood; the general
   // listings let the user pick a zone via the filter (?zona=). On a fixed
@@ -184,6 +186,35 @@ export default async function PropertyListingPage({
         }
       : null;
 
+  // Home > Propiedades en Venta/Alquiler/Nuestras Propiedades > Barrio (only
+  // on a fixed [barrio] page, which is the only case `neighborhood` is set —
+  // "nuestras-propiedades" never passes it, so there's no third pathname
+  // variant to branch on here).
+  const zoneName = neighborhood && tZones.has(neighborhood) ? tZones(neighborhood) : undefined;
+  const breadcrumbCrumbs = [
+    { name: tNav("home"), url: canonicalFor(locale, "/") },
+    {
+      name: pageKey === "alquiler" ? t("rentTitle") : pageKey === "venta" ? t("saleTitle") : t("allTitle"),
+      url: canonicalFor(
+        locale,
+        pageKey === "alquiler" ? "/propiedades-en-alquiler" : pageKey === "venta" ? "/propiedades-en-venta" : "/nuestras-propiedades",
+      ),
+    },
+    ...(neighborhood && zoneName
+      ? [
+          {
+            name: zoneName,
+            url: canonicalFor(
+              locale,
+              pageKey === "alquiler"
+                ? { pathname: "/propiedades-en-alquiler/[barrio]" as const, params: { barrio: neighborhood } }
+                : { pathname: "/propiedades-en-venta/[barrio]" as const, params: { barrio: neighborhood } },
+            ),
+          },
+        ]
+      : []),
+  ];
+
   // GeoJSON query for the map view (same filters as the list).
   const mapParams = new URLSearchParams();
   if (operation) mapParams.set("operation", operation);
@@ -203,6 +234,10 @@ export default async function PropertyListingPage({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
         />
       ) : null}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd(breadcrumbCrumbs)) }}
+      />
       <ResponsiveHero desktop={heroDesktop} mobile={heroMobile} />
 
       <PageHeader title={title} subtitle={subtitle} description={neighborhoodDescription} />

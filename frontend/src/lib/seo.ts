@@ -28,4 +28,23 @@ export function canonicalFor(locale: string, href: Href): string {
   return `${SITE_URL}${getPathname({ href, locale: locale as Locale })}`;
 }
 
+/**
+ * Builds a schema.org BreadcrumbList from an ordered list of crumbs. The
+ * last crumb is normally the current page — schema.org allows (and Google's
+ * own examples include) a `item` URL on it too, so callers don't need to
+ * special-case it.
+ */
+export function breadcrumbJsonLd(crumbs: { name: string; url: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: crumbs.map((crumb, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: crumb.name,
+      item: crumb.url,
+    })),
+  };
+}
+
 export { SITE_URL };

@@ -16,8 +16,9 @@ import {
   priceOnRequestLabel,
   propertyMetaDescription,
   stripHtml,
+  TYPE_LABELS,
 } from "@/lib/format";
-import { buildAlternates, canonicalFor } from "@/lib/seo";
+import { breadcrumbJsonLd, buildAlternates, canonicalFor, SITE_URL } from "@/lib/seo";
 
 // Same neighborhood first (most relevant); if that's too thin, top up with
 // same-type listings so the section never renders with just one or two cards.
@@ -100,6 +101,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PropertyPage({ params }: Props) {
   const { locale, slug } = await params;
   const t = await getTranslations({ locale, namespace: "Property" });
+  const tNav = await getTranslations({ locale, namespace: "Nav" });
+  const tListing = await getTranslations({ locale, namespace: "Listing" });
 
   let property;
 
@@ -114,17 +117,48 @@ export default async function PropertyPage({ params }: Props) {
   // sanitized RichEditor HTML, rendered as markup further down the page.
   const plainDescription = property.description ? stripHtml(property.description) : (property.excerpt ?? undefined);
 
+  const propertyUrl = canonicalFor(locale, { pathname: "/propiedades/[slug]", params: { slug: property.slug } });
+  const typeLabel = TYPE_LABELS[locale]?.[property.type] ?? property.type;
+  const areaValue = property.built_area_m2 ?? property.lot_area_m2;
+  // Slim reference to the agency, reused on both offers below — not the full
+  // RealEstateAgent block (that one, with address/geo/sameAs, is only
+  // emitted once site-wide by the root layout).
+  const seller = { "@type": "Organization", name: "Victoria Fones Real Estate", url: SITE_URL };
+  // GoodRelations business function, folded into schema.org's Offer — the
+  // standard way to say "for sale" vs. "for rent" on an Offer.
+  const businessFunction =
+    property.operation === "rent"
+      ? "http://purl.org/goodrelations/v1#LeaseOut"
+      : "http://purl.org/goodrelations/v1#Sell";
+  // amenityFeature/floorSize/numberOfBedrooms are schema.org properties of
+  // Accommodation/Place, not of Product/RealEstateListing — attached here
+  // anyway (flat, same pragmatic approach the existing geo/offers fields
+  // already took) since there's no dedicated rich-result consuming them and
+  // the goal is machine-readable data, not passing a strict type validator.
+  const amenityFeature = property.amenities.map((amenity) => ({
+    "@type": "LocationFeatureSpecification",
+    name: amenity.name,
+    value: true,
+  }));
+  // yearBuilt isn't a schema.org property at all (checked: no such term in
+  // the vocabulary) — additionalProperty/PropertyValue is the standard
+  // escape hatch for a real attribute with no dedicated schema.org field.
+  const additionalProperty = property.year_built
+    ? [{ "@type": "PropertyValue", name: "yearBuilt", value: property.year_built }]
+    : undefined;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "RealEstateListing",
     name: property.title,
     description: plainDescription,
-    url: canonicalFor(locale, { pathname: "/propiedades/[slug]", params: { slug: property.slug } }),
+    url: propertyUrl,
     image: property.images.map((img) => img.full),
     address: property.neighborhood
       ? {
           "@type": "PostalAddress",
           addressLocality: property.neighborhood.name,
+          addressRegion: "Maldonado",
           addressCountry: "UY",
         }
       : undefined,
@@ -137,12 +171,19 @@ export default async function PropertyPage({ params }: Props) {
           },
         }
       : {}),
+    ...(property.bedrooms ? { numberOfBedrooms: property.bedrooms } : {}),
+    ...(property.bathrooms ? { numberOfBathroomsTotal: property.bathrooms } : {}),
+    ...(areaValue ? { floorSize: { "@type": "QuantitativeValue", value: areaValue, unitCode: "MTK" } } : {}),
+    ...(amenityFeature.length > 0 ? { amenityFeature } : {}),
+    ...(additionalProperty ? { additionalProperty } : {}),
     ...(property.price_usd
       ? {
           offers: {
             "@type": "Offer",
             price: property.price_usd,
             priceCurrency: "USD",
+            businessFunction,
+            seller,
           },
         }
       : {}),
@@ -159,19 +200,53 @@ export default async function PropertyPage({ params }: Props) {
         description: plainDescription,
         image: property.images.map((img) => img.full),
         sku: property.code,
+        category: typeLabel,
         brand: {
           "@type": "Organization",
           name: "Victoria Fones Real Estate",
         },
+        ...(property.bedrooms ? { numberOfBedrooms: property.bedrooms } : {}),
+        ...(property.bathrooms ? { numberOfBathroomsTotal: property.bathrooms } : {}),
+        ...(areaValue ? { floorSize: { "@type": "QuantitativeValue", value: areaValue, unitCode: "MTK" } } : {}),
+        ...(amenityFeature.length > 0 ? { amenityFeature } : {}),
+        ...(additionalProperty ? { additionalProperty } : {}),
         offers: {
           "@type": "Offer",
-          url: canonicalFor(locale, { pathname: "/propiedades/[slug]", params: { slug: property.slug } }),
+          url: propertyUrl,
           priceCurrency: "USD",
           price: property.price_usd,
           availability: "https://schema.org/InStock",
+          businessFunction,
+          seller,
         },
       }
     : null;
+
+  // Home > Propiedades en Venta/Alquiler > Barrio (if any) > this property.
+  // sale_and_rent properties default to the venta trail — same arbitrary but
+  // defensible pick as elsewhere; this is additional structured data, not a
+  // visible UI breadcrumb, so there's no user-facing ambiguity either way.
+  const isRental = property.operation === "rent";
+  const listingLabel = isRental ? tListing("rentTitle") : tListing("saleTitle");
+  const neighborhoodHref = property.neighborhood
+    ? isRental
+      ? {
+          pathname: "/propiedades-en-alquiler/[barrio]" as const,
+          params: { barrio: property.neighborhood.slug },
+        }
+      : {
+          pathname: "/propiedades-en-venta/[barrio]" as const,
+          params: { barrio: property.neighborhood.slug },
+        }
+    : null;
+  const breadcrumbCrumbs = [
+    { name: tNav("home"), url: canonicalFor(locale, "/") },
+    { name: listingLabel, url: canonicalFor(locale, isRental ? "/propiedades-en-alquiler" : "/propiedades-en-venta") },
+    ...(property.neighborhood && neighborhoodHref
+      ? [{ name: property.neighborhood.name, url: canonicalFor(locale, neighborhoodHref) }]
+      : []),
+    { name: property.title, url: propertyUrl },
+  ];
 
   // Same "area | bedrooms | bathrooms" formula as PropertyCard, plus lot size
   // (when it's not already the primary area figure) and year built, since the
@@ -203,6 +278,10 @@ export default async function PropertyPage({ params }: Props) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
         />
       ) : null}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd(breadcrumbCrumbs)) }}
+      />
       <PropertyHero
         images={property.hero_images?.length ? property.hero_images : property.images}
         title={property.title}
