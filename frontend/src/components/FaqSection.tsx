@@ -12,7 +12,7 @@ export default function FaqSection({
   if (faqs.length === 0) return null;
 
   return (
-    <section className="mx-auto max-w-3xl px-6 pb-16">
+    <section className="mx-auto max-w-7xl px-6 pb-16">
       <h2 className="mb-6 font-heading text-2xl font-bold text-brand-primary">{title}</h2>
       <div className="divide-y divide-brand-text/10 border-y border-brand-text/10">
         {faqs.map((faq, index) => (
