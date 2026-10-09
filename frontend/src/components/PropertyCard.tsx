@@ -15,14 +15,17 @@ export default function PropertyCard({
   const area = property.built_area_m2 ?? property.lot_area_m2;
   const typeLabel = TYPE_LABELS[locale]?.[property.type] ?? property.type;
   // Sub-zones of a grouping zone (e.g. "La Juanita" under "Alrededores Casco
-  // José Ignacio") are ambiguous with just "Zona · Tipo" — the client asked
-  // for the sub-zone on its own line, then "Tipo – Nombre real" below it,
-  // instead of the generic label used everywhere else.
+  // José Ignacio") are ambiguous with just a neighborhood name — the client
+  // asked for the sub-zone on its own line, then "Tipo • Código" below it.
+  // Regular (non-subzone) neighborhoods just show "Tipo • Código" as the
+  // title — the neighborhood/barrio name is intentionally hidden from the
+  // card (the client didn't notice the per-zone section titles/pills either,
+  // so it's not worth repeating on every card). Either way the code only
+  // shows once, up here — not repeated at the bottom of the card.
   const isSubzone = property.neighborhood?.is_subzone ?? false;
-  const title = isSubzone
-    ? property.neighborhood!.name
-    : [property.neighborhood?.name, typeLabel].filter(Boolean).join(" · ");
-  const subtitle = isSubzone ? `${typeLabel} – ${property.title}` : null;
+  const typeAndCode = [typeLabel, property.code].filter(Boolean).join(" • ");
+  const title = isSubzone ? property.neighborhood!.name : typeAndCode;
+  const subtitle = isSubzone ? typeAndCode : null;
 
   const stats = [
     area ? `${area}m2` : null,
@@ -71,7 +74,6 @@ export default function PropertyCard({
         {subtitle ? <p className="text-2xl font-bold leading-snug">{subtitle}</p> : null}
         {stats ? <p className="mt-2 text-base">{stats}</p> : null}
         <p className="mt-2 text-base">{price}</p>
-        {property.code ? <p className="mt-2 text-base">{property.code}</p> : null}
       </div>
     </Link>
   );

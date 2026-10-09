@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 // navigates to a different (translatable) route, so it just needs the
 // real, already-localized browser pathname, not the canonical one.
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { formatUsd } from "@/lib/format";
 
 const TYPES = ["house", "apartment", "land", "chacra", "commercial"] as const;
@@ -123,6 +123,24 @@ export default function PropertyFilters({
   const [maxPrice, setMaxPrice] = useState(() =>
     currentPriceMax ? Number(currentPriceMax) : ceil,
   );
+
+  // minPrice/maxPrice only read their initial value from props once (lazy
+  // useState init, above) — they don't drop out of sync on their own when a
+  // sub-zone pill changes the available properties (and so `priceBounds`/
+  // `ceil`) without unmounting this component. Without this, the slider
+  // keeps rendering against a stale ceil (e.g. still 100% at an old
+  // 5,000,000 max after switching to a sub-zone whose most expensive listing
+  // is 400,000), pushing the handles off-scale and sending a price filter
+  // that no longer matches what's on screen. Re-sync whenever the bounds or
+  // the URL's own price params move — clamped into the new [floor, ceil],
+  // in case a stale price_min/price_max from a different sub-zone's range
+  // is still sitting in the URL (e.g. the back button) rather than cleared.
+  useEffect(() => {
+    const nextMin = currentPriceMin ? Number(currentPriceMin) : floor;
+    const nextMax = currentPriceMax ? Number(currentPriceMax) : ceil;
+    setMinPrice(Math.min(Math.max(nextMin, floor), ceil));
+    setMaxPrice(Math.max(Math.min(nextMax, ceil), floor));
+  }, [currentPriceMin, currentPriceMax, floor, ceil]);
 
   const priceTouched = minPrice > floor || maxPrice < ceil;
 
@@ -369,7 +387,16 @@ export default function PropertyFilters({
         <div className="mt-10 flex flex-wrap gap-x-2.5 gap-y-3 sm:mt-12">
           <button
             type="button"
-            onClick={() => pushWith({ subzona: undefined })}
+            onClick={() =>
+              pushWith({
+                subzona: undefined,
+                // Clear any active price filter too — see the useEffect
+                // above resyncing minPrice/maxPrice for why a stale filter
+                // from a different sub-zone's price range breaks the slider.
+                price_min: undefined,
+                price_max: undefined,
+              })
+            }
             aria-pressed={!currentSubzone}
             className={pillClass(!currentSubzone)}
           >
@@ -379,7 +406,13 @@ export default function PropertyFilters({
             <button
               key={subzone.slug}
               type="button"
-              onClick={() => pushWith({ subzona: subzone.slug })}
+              onClick={() =>
+                pushWith({
+                  subzona: subzone.slug,
+                  price_min: undefined,
+                  price_max: undefined,
+                })
+              }
               aria-pressed={currentSubzone === subzone.slug}
               className={pillClass(currentSubzone === subzone.slug)}
             >
