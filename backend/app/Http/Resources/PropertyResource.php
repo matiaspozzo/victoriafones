@@ -35,6 +35,8 @@ class PropertyResource extends JsonResource
             'cover_image' => $this->getFirstMediaUrl('images', 'card') ?: null,
             'lat' => $this->lat,
             'lng' => $this->lng,
+            'created_at' => $this->created_at?->toISOString(),
+            'updated_at' => $this->updated_at?->toISOString(),
         ];
     }
 }

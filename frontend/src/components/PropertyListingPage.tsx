@@ -163,11 +163,27 @@ export default async function PropertyListingPage({
   // Marks up the listed properties as a Product ItemList, so search engines
   // can pick up price/availability for each card (see the property detail
   // page's Product markup for why Product rather than RealEstateListing).
+  // Price range across this page's own results (not the whole zone/site) —
+  // lets an AI answer engine answer "price range in X" straight from
+  // structured data instead of having to read every card's text.
+  const pricedProperties = properties.filter((p): p is typeof p & { price_usd: number } => p.price_usd != null);
+  const aggregateOffer =
+    pricedProperties.length > 0
+      ? {
+          "@type": "AggregateOffer",
+          priceCurrency: "USD",
+          lowPrice: Math.min(...pricedProperties.map((p) => p.price_usd)),
+          highPrice: Math.max(...pricedProperties.map((p) => p.price_usd)),
+          offerCount: pricedProperties.length,
+        }
+      : undefined;
+
   const itemListJsonLd =
     properties.length > 0
       ? {
           "@context": "https://schema.org",
           "@type": "ItemList",
+          ...(aggregateOffer ? { offers: aggregateOffer } : {}),
           itemListElement: properties.map((property, index) => ({
             "@type": "ListItem",
             position: index + 1,

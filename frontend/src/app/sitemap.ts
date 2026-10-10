@@ -42,6 +42,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           })}`,
           changeFrequency: "weekly",
           priority: 0.9,
+          ...(property.updated_at ? { lastModified: new Date(property.updated_at) } : {}),
         });
       }
     }

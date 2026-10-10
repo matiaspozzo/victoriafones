@@ -66,6 +66,8 @@ class PropertyDetailResource extends JsonResource
                 'label' => $rp->getTranslation('label', $locale, false) ?: $rp->getTranslation('label', 'es'),
                 'price_usd' => $rp->price_usd,
             ])),
+            'created_at' => $this->created_at?->toISOString(),
+            'updated_at' => $this->updated_at?->toISOString(),
         ];
     }
 }

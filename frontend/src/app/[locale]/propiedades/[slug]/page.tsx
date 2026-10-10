@@ -165,6 +165,8 @@ export default async function PropertyPage({ params }: Props) {
     description: plainDescription,
     url: propertyUrl,
     image: property.images.map((img) => img.full),
+    ...(property.created_at ? { datePublished: property.created_at } : {}),
+    ...(property.updated_at ? { dateModified: property.updated_at } : {}),
     address: property.neighborhood
       ? {
           "@type": "PostalAddress",
@@ -212,6 +214,7 @@ export default async function PropertyPage({ params }: Props) {
         image: property.images.map((img) => img.full),
         sku: property.code,
         category: typeLabel,
+        ...(property.created_at ? { releaseDate: property.created_at } : {}),
         brand: {
           "@type": "Organization",
           name: "Victoria Fones Real Estate",
