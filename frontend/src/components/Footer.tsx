@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { trackEvent } from "@/lib/analytics";
 
 const PHONE = "+598 93 985 888";
 const PHONE_HREF = "+59893985888";
@@ -58,6 +59,7 @@ export default function Footer() {
             href={`https://wa.me/${PHONE_HREF.replace("+", "")}`}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackEvent("whatsapp_click", { source: "footer" })}
             className="flex h-12 w-12 items-center justify-center text-brand-primary"
             aria-label="WhatsApp"
           >

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { trackEvent } from "@/lib/analytics";
 
 const PHONE_HREF = "59893985888";
 
@@ -26,6 +27,7 @@ export default function WhatsAppFloatButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={t("ariaLabel")}
+      onClick={() => trackEvent("whatsapp_click", { source: "float_button", page_path: pathname })}
       className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-brand-primary text-white shadow-lg transition-transform hover:scale-110"
     >
       {/* Font Awesome's "whatsapp" brand glyph, same technique as Footer.tsx. */}

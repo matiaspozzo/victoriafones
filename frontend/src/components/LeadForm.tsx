@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useId, useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 const WHATSAPP_PHONE = "59893985888";
@@ -51,6 +52,12 @@ export default function LeadForm({
       });
 
       setStatus(res.ok ? "sent" : "error");
+      if (res.ok) {
+        trackEvent("lead_form_submit", {
+          property_id: propertyId ?? null,
+          form_location: propertyId ? "property_detail" : "contact_page",
+        });
+      }
     } catch {
       setStatus("error");
     }
@@ -67,6 +74,11 @@ export default function LeadForm({
       data.get("subject") ? `${t("subject")}: ${data.get("subject")}` : null,
       data.get("message") ? `${t("message")}: ${data.get("message")}` : null,
     ].filter(Boolean);
+
+    trackEvent("whatsapp_click", {
+      source: "lead_form",
+      property_id: propertyId ?? null,
+    });
 
     window.open(
       `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(lines.join("\n"))}`,
