@@ -18,8 +18,24 @@ export default function ResponsiveHero({
 }) {
   return (
     <div className={`relative w-full overflow-hidden ${className}`}>
-      <Image src={mobile} alt="" fill priority className="object-cover md:hidden" sizes="100vw" />
-      <Image src={desktop} alt="" fill priority className="hidden object-cover md:block" sizes="100vw" />
+      <Image
+        src={mobile}
+        alt=""
+        fill
+        priority
+        fetchPriority="high"
+        className="object-cover md:hidden"
+        sizes="100vw"
+      />
+      <Image
+        src={desktop}
+        alt=""
+        fill
+        priority
+        fetchPriority="high"
+        className="hidden object-cover md:block"
+        sizes="100vw"
+      />
     </div>
   );
 }

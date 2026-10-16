@@ -17,7 +17,15 @@ export default function PageHero({
   return (
     <section className="relative w-full overflow-hidden">
       <div className="relative h-[60vh] w-full">
-        <Image src={image} alt="" fill priority className="object-cover" sizes="100vw" />
+        <Image
+          src={image}
+          alt=""
+          fill
+          priority
+          fetchPriority="high"
+          className="object-cover"
+          sizes="100vw"
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-brand-primary/85 via-brand-primary/40 to-brand-primary/30" />
         <div className="absolute inset-0 flex items-center">
           <div className="mx-auto w-full max-w-7xl px-6">

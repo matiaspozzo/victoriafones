@@ -76,6 +76,7 @@ export default function HeroVideo() {
         alt=""
         fill
         priority
+        fetchPriority="high"
         className={`object-cover ${revealVideo ? "" : "z-10"}`}
         sizes="100vw"
       />
