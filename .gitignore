@@ -2,3 +2,7 @@
 
 # Claude Code local settings (personal permission history, not shared config)
 .claude/settings.local.json
+
+# Local backups and env copies (contain secrets / dumps)
+backups/
+backend/.env.bak-*

@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import HeroVideo from "@/components/HeroVideo";
+import FeaturedDevelopments from "@/components/FeaturedDevelopments";
 import FeaturedPropertiesMasonry from "@/components/FeaturedPropertiesMasonry";
 import FeaturedPropertiesSlider from "@/components/FeaturedPropertiesSlider";
+import HomeMapSection from "@/components/HomeMapSection";
 import NeighborhoodGrid from "@/components/NeighborhoodGrid";
-import { getHomeContent, getProperties } from "@/lib/api";
+import { getDevelopments, getHomeContent, getProperties } from "@/lib/api";
 import { renderRich } from "@/lib/richText";
 import { buildAlternates, canonicalFor } from "@/lib/seo";
 
@@ -65,6 +67,11 @@ export default async function Home({
     () => ({ data: [], meta: { current_page: 1, last_page: 1, total: 0 } })
   );
 
+  // Developments are their own block, shown right below the featured properties.
+  const { data: developments } = await getDevelopments(locale, { limit: "6" }).catch(() => ({
+    data: [],
+  }));
+
   return (
     <main>
       <HeroVideo />
@@ -112,6 +119,39 @@ export default async function Home({
           </div>
         </section>
       ) : null}
+
+      {developments.length > 0 ? (
+        <section className="px-6 py-14">
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-8 flex items-end justify-between gap-4">
+              <div>
+                <h2 className="font-heading text-2xl font-light tracking-[0.8px] text-brand-primary sm:text-[2rem]">
+                  {t("developmentsTitle")}
+                </h2>
+                <p className="mt-1 text-brand-text/80">{t("developmentsSubtitle")}</p>
+              </div>
+              <Link
+                href="/desarrollos"
+                className="hidden flex-shrink-0 items-center gap-1 text-sm font-medium text-brand-primary hover:text-brand-secondary sm:flex"
+              >
+                {t("developmentsViewAll")} ›
+              </Link>
+            </div>
+
+            <FeaturedDevelopments developments={developments} />
+          </div>
+        </section>
+      ) : null}
+
+      <section className="px-6 py-14">
+        <div className="mx-auto max-w-7xl">
+          <h2 className="font-heading text-2xl font-light tracking-[0.8px] text-brand-primary sm:text-[2rem]">
+            {t("mapTitle")}
+          </h2>
+          <p className="mb-8 mt-1 text-brand-text/80">{t("mapSubtitle")}</p>
+          <HomeMapSection />
+        </div>
+      </section>
 
       {cards.length > 0 ? (
         <section className="px-6 py-16">

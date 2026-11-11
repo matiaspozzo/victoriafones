@@ -107,7 +107,13 @@ function MobileNavGroup({
   );
 }
 
-export default function Header({ rentalsEnabled = true }: { rentalsEnabled?: boolean }) {
+export default function Header({
+  rentalsEnabled = true,
+  developmentsEnabled = false,
+}: {
+  rentalsEnabled?: boolean;
+  developmentsEnabled?: boolean;
+}) {
   const t = useTranslations("Nav");
   const pathname = usePathname();
   const navbarStyle = useNavbarStyle();
@@ -178,6 +184,11 @@ export default function Header({ rentalsEnabled = true }: { rentalsEnabled?: boo
         <nav className="hidden items-center gap-8 pr-6 lg:flex">
           <NavDropdown label={t("sales")} basePath="venta" hoverClassName={hoverText} />
           <NavDropdown label={t("rentals")} basePath="alquiler" hoverClassName={hoverText} disableZones={!rentalsEnabled} />
+          {developmentsEnabled ? (
+            <Link href="/desarrollos" className={`text-sm font-medium tracking-wide ${hoverText}`}>
+              {t("developments")}
+            </Link>
+          ) : null}
           <Link href="/quienes-somos" className={`text-sm font-medium tracking-wide ${hoverText}`}>
             {t("about")}
           </Link>
@@ -247,6 +258,15 @@ export default function Header({ rentalsEnabled = true }: { rentalsEnabled?: boo
           disableZones={!rentalsEnabled}
         />
 
+        {developmentsEnabled ? (
+          <Link
+            href="/desarrollos"
+            className="border-b border-white/10 py-4 text-base font-medium tracking-wide"
+            onClick={() => setMenuOpen(false)}
+          >
+            {t("developments")}
+          </Link>
+        ) : null}
         <Link
           href="/quienes-somos"
           className="border-b border-white/10 py-4 text-base font-medium tracking-wide"

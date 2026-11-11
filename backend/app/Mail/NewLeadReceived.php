@@ -13,14 +13,16 @@ class NewLeadReceived extends Mailable
 
     public function __construct(public Lead $lead)
     {
-        $this->lead->loadMissing('property');
+        $this->lead->loadMissing(['property', 'development']);
     }
 
     public function build(): self
     {
-        $subject = $this->lead->property
-            ? "Nueva consulta — {$this->lead->property->code}"
-            : 'Nueva consulta';
+        $subject = match (true) {
+            $this->lead->property !== null => "Nueva consulta — {$this->lead->property->code}",
+            $this->lead->development !== null => 'Nueva consulta — Desarrollo '.$this->lead->development->getTranslation('title', 'es'),
+            default => 'Nueva consulta',
+        };
 
         return $this
             ->subject($subject)

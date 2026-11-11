@@ -134,3 +134,32 @@ export function propertyMetaTitle(
 
   return [`${subject} ${location}`, price].filter(Boolean).join(" — ");
 }
+
+const LOTS_LABELS: Record<string, { of: string; to: string; from: string }> = {
+  es: { of: "Lotes de", to: "a", from: "desde" },
+  en: { of: "Lots of", to: "to", from: "from" },
+  pt: { of: "Lotes de", to: "a", from: "a partir de" },
+};
+
+/** "Lotes de 1.300 a 3.000 m² desde USD 120.000" — the development card summary
+    line. A single "Lotes de X m²" when min and max match (or only one is
+    known). Falls back gracefully when there is no price or no area yet. */
+export function developmentLotsLine(
+  dev: { area_min_m2: number | null; area_max_m2?: number | null; price_from_usd: number | null },
+  locale: string,
+): string {
+  const l = LOTS_LABELS[locale] ?? LOTS_LABELS.es;
+  const min = dev.area_min_m2;
+  const max = dev.area_max_m2 ?? null;
+  let area: string | null = null;
+
+  if (min && max && max !== min) {
+    area = `${l.of} ${formatNumber(min, locale)} ${l.to} ${formatNumber(max, locale)} m²`;
+  } else if (min || max) {
+    area = `${l.of} ${formatNumber((min ?? max) as number, locale)} m²`;
+  }
+
+  const price = dev.price_from_usd ? `${l.from} USD ${formatNumber(dev.price_from_usd, locale)}` : null;
+
+  return [area, price].filter(Boolean).join(" ");
+}

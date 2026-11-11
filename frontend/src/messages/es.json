@@ -8,7 +8,8 @@
     "language": "Español",
     "viewAll": "Ver todas",
     "home": "Inicio",
-    "mapDescription": "Explorá propiedades en venta y alquiler en José Ignacio y Punta del Este en nuestro mapa interactivo."
+    "mapDescription": "Explorá propiedades en venta y alquiler en José Ignacio y Punta del Este en nuestro mapa interactivo.",
+    "developments": "Desarrollos"
   },
   "Zones": {
     "pueblo-jose-ignacio": "Pueblo José Ignacio",
@@ -27,7 +28,15 @@
     "salesTitle": "Propiedades en Venta por Zona",
     "featuredTitle": "Propiedades destacadas",
     "featuredSubtitle": "Seleccionamos las mejores propiedades para vos",
-    "featuredViewAll": "Ver todas"
+    "featuredViewAll": "Ver todas",
+    "developmentsTitle": "Desarrollos",
+    "developmentsSubtitle": "Proyectos exclusivos en José Ignacio y alrededores",
+    "developmentsViewAll": "Ver todos",
+    "mapTitle": "Explorá el mapa",
+    "mapSubtitle": "Propiedades, desarrollos y barrios privados en un solo lugar",
+    "mapOpen": "Ver mapa interactivo",
+    "mapLoading": "Cargando mapa…",
+    "mapFull": "Ver mapa completo"
   },
   "Footer": {
     "addressLine": "Los Teros 9000, 20000 Faro de José Ignacio, Departamento de Maldonado,",
@@ -158,5 +167,35 @@
     "text": "Puede que el enlace esté roto o que la propiedad ya no esté disponible. Te invitamos a seguir explorando.",
     "ctaProperties": "Ver Propiedades",
     "ctaHome": "Volver al inicio"
+  },
+  "Developments": {
+    "title": "Desarrollos",
+    "metaDescription": "Desarrollos y loteos en José Ignacio y Punta del Este: barrios privados con servicios y amenities, de la mano de Victoria Fones Real Estate.",
+    "intro": "Conocé los proyectos que desarrollamos en José Ignacio y alrededores.",
+    "empty": "Pronto vas a encontrar nuevos desarrollos acá.",
+    "project": "Conocé el proyecto",
+    "amenities": "Servicios y Amenities",
+    "masterplan": "Masterplan",
+    "location": "Ubicación",
+    "contactHeading": "Consultá por este desarrollo",
+    "back": "Ver todos los desarrollos",
+    "related": "Otros desarrollos",
+    "lots": "Lotes",
+    "lot": "Lote",
+    "area": "Superficie",
+    "price": "Precio",
+    "status": "Estado",
+    "available": "Disponible",
+    "reserved": "Reservado",
+    "sold": "Vendido",
+    "checkAvailability": "Consultar disponibilidad",
+    "surfaces": "Superficies",
+    "amenitiesGeneral": "Servicios"
+  },
+  "Map": {
+    "development": "desarrollo",
+    "developments": "desarrollos",
+    "inThisArea": "en esta zona",
+    "lotsPopup": "Ver desarrollo"
   }
 }

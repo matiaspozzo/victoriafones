@@ -9,7 +9,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppFloatButton from "@/components/WhatsAppFloatButton";
 import RawScripts from "@/components/RawScripts";
-import { getPageHeader, getSiteSettings } from "@/lib/api";
+import { getDevelopments, getPageHeader, getSiteSettings } from "@/lib/api";
 import { OFFICE } from "@/lib/office";
 import { buildAlternates, SITE_URL } from "@/lib/seo";
 import "../globals.css";
@@ -122,6 +122,11 @@ export default async function LocaleLayout({
   const siteSettings = await getSiteSettings(locale);
   const alquilerPage = await getPageHeader(locale, "alquiler");
   const rentalsEnabled = !alquilerPage?.rental_disabled;
+  // The "Desarrollos" menu entry only shows once there is at least one
+  // published development (otherwise it would lead to an empty page).
+  const developmentsEnabled = await getDevelopments(locale, { limit: "1" })
+    .then(({ data }) => data.length > 0)
+    .catch(() => false);
 
   return (
     <html lang={locale}>
@@ -187,7 +192,7 @@ export default async function LocaleLayout({
         {siteSettings?.additional_scripts ? <RawScripts html={siteSettings.additional_scripts} /> : null}
 
         <NextIntlClientProvider messages={messages}>
-          <Header rentalsEnabled={rentalsEnabled} />
+          <Header rentalsEnabled={rentalsEnabled} developmentsEnabled={developmentsEnabled} />
           {children}
           <Footer />
           <WhatsAppFloatButton />

@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { ZONES } from "@/lib/zones";
 import { getPathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { getProperties } from "@/lib/api";
+import { getDevelopments, getProperties } from "@/lib/api";
 import { SITE_URL } from "@/lib/seo";
 
 const STATIC_PATHNAMES = [
@@ -48,6 +48,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   } catch {
     // Backend unreachable at build time — sitemap still includes static pages.
+  }
+
+  try {
+    const { data: developments } = await getDevelopments("es");
+
+    if (developments.length > 0) {
+      for (const locale of routing.locales) {
+        entries.push({
+          url: `${SITE_URL}${getPathname({ href: "/desarrollos", locale })}`,
+          changeFrequency: "weekly",
+          priority: 0.8,
+        });
+      }
+    }
+
+    for (const development of developments) {
+      for (const locale of routing.locales) {
+        entries.push({
+          url: `${SITE_URL}${getPathname({
+            href: { pathname: "/desarrollos/[slug]", params: { slug: development.slug } },
+            locale,
+          })}`,
+          changeFrequency: "weekly",
+          priority: 0.8,
+        });
+      }
+    }
+  } catch {
+    // Same as above: backend unreachable at build time.
   }
 
   // Zone listing pages are the same fixed set the zone filter/nav dropdown

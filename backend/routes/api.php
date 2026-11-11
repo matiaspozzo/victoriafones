@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AmenityController;
+use App\Http\Controllers\Api\DevelopmentController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\LeadController;
 use App\Http\Controllers\Api\MapController;
@@ -13,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/properties', [PropertyController::class, 'index']);
 Route::get('/properties/{slug}', [PropertyController::class, 'show']);
 Route::get('/map/properties', [MapController::class, 'properties']);
+Route::get('/map/developments', [MapController::class, 'developments']);
+Route::get('/map/neighborhoods', [MapController::class, 'neighborhoods']);
+Route::get('/developments', [DevelopmentController::class, 'index']);
+Route::get('/developments/{slug}', [DevelopmentController::class, 'show']);
 Route::get('/neighborhoods', [NeighborhoodController::class, 'index']);
 Route::get('/amenities', [AmenityController::class, 'index']);
 Route::get('/pages', [PageController::class, 'index']);

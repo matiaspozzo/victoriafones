@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\NeighborhoodResource\Pages;
 use App\Filament\Resources\NeighborhoodResource\RelationManagers\FaqsRelationManager;
 use App\Models\Neighborhood;
+use Dotswan\MapPicker\Fields\Map;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Concerns\Translatable;
@@ -78,6 +79,55 @@ class NeighborhoodResource extends Resource
                 Forms\Components\TextInput::make('center_lng')
                     ->label('Longitud central')
                     ->numeric(),
+                Forms\Components\Section::make('Área en el mapa')
+                    ->description('Dibujá el contorno del barrio. Si está activado, el mapa público muestra el área sombreada con el nombre del barrio.')
+                    ->schema([
+                        Forms\Components\Toggle::make('show_on_map')
+                            ->label('Mostrar área y nombre en el mapa')
+                            ->helperText('Necesita un polígono dibujado o, al menos, latitud/longitud central (en ese caso solo se muestra el nombre).')
+                            ->inline(false),
+                        Map::make('polygon_map')
+                            ->label('Contorno del barrio')
+                            ->columnSpanFull()
+                            ->dehydrated(false)
+                            ->defaultLocation(latitude: -34.83, longitude: -54.66) // José Ignacio
+                            ->zoom(13)
+                            ->showMarker(false)
+                            ->clickable(false)
+                            ->geoMan(true)
+                            ->geoManEditable(true)
+                            ->drawPolygon(true)
+                            ->drawMarker(false)
+                            ->drawCircleMarker(false)
+                            ->drawCircle(false)
+                            ->drawPolyline(false)
+                            ->drawRectangle(true)
+                            ->drawText(false)
+                            ->rotateMode(false)
+                            ->cutPolygon(false)
+                            ->editPolygon(true)
+                            ->deleteLayer(true)
+                            ->dragMode(true)
+                            ->setColor('#183c5a')
+                            ->setFilledColor('#183c5a')
+                            ->afterStateHydrated(function (Map $component, $state, $record) {
+                                if ($record && $record->center_lat && $record->center_lng) {
+                                    $component->state([
+                                        'lat' => (float) $record->center_lat,
+                                        'lng' => (float) $record->center_lng,
+                                        'geojson' => $record->polygon,
+                                    ]);
+                                } elseif ($record && $record->polygon) {
+                                    $component->state(['geojson' => $record->polygon]);
+                                }
+                            })
+                            ->afterStateUpdated(function (callable $set, $state) {
+                                $geojson = $state['geojson'] ?? null;
+                                $set('polygon', filled($geojson['features'] ?? null) ? $geojson : null);
+                            })
+                            ->live(),
+                        Forms\Components\Hidden::make('polygon'),
+                    ]),
                 Forms\Components\Section::make('SEO')
                     ->description('Metadatos para buscadores y para la vista previa al compartir el link (WhatsApp, redes sociales).')
                     ->schema([

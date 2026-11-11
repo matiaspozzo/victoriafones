@@ -3,10 +3,10 @@
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { PropertyStatRow } from "@/components/PropertyStats";
-import { formatUsd } from "@/lib/format";
+import { developmentLotsLine, formatUsd } from "@/lib/format";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
@@ -17,6 +17,7 @@ const STYLE_URL = "https://tiles.openfreemap.org/styles/positron";
 const DEFAULT_CENTER: [number, number] = [-54.66, -34.83];
 
 const BRAND = "#03071c";
+const ACCENT = "#eecab3"; // brand-secondary — development pins & neighborhood areas
 
 type FeatureProps = {
   id: number;
@@ -37,14 +38,46 @@ type FeatureProps = {
 
 type PropertyFeature = GeoJSON.Feature<GeoJSON.Point, FeatureProps>;
 
-export default function PropertyMap({ locale, query = "" }: { locale: string; query?: string }) {
+type DevelopmentProps = {
+  id: number;
+  title: string;
+  slug: string;
+  lots_count: number;
+  area_min_m2: number | null;
+  area_max_m2: number | null;
+  price_from_usd: number | null;
+  cover_image: string | null;
+  neighborhood: string | null;
+};
+
+type DevelopmentFeature = GeoJSON.Feature<GeoJSON.Point, DevelopmentProps>;
+
+type AreaProps = { kind: "area" | "label"; slug: string; name: string };
+
+// Developments have no type/bedrooms/bathrooms, so those filters can only
+// ever exclude them — hide the pins instead of showing non-matching results.
+const DEVELOPMENT_INCOMPATIBLE_FILTERS = ["type", "bedrooms", "bathrooms"];
+
+export default function PropertyMap({
+  locale,
+  query = "",
+  embedded = false,
+}: {
+  locale: string;
+  query?: string;
+  /** Map only (no listing sidebar), fixed height — used by the home block. */
+  embedded?: boolean;
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const featuresRef = useRef<PropertyFeature[]>([]);
   const router = useRouter();
   const uiLocale = useLocale();
+  const tMap = useTranslations("Map");
 
+  const developmentsRef = useRef<DevelopmentFeature[]>([]);
   const [visible, setVisible] = useState<PropertyFeature[]>([]);
+  const [visibleDevelopments, setVisibleDevelopments] = useState<DevelopmentFeature[]>([]);
   const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -67,6 +100,17 @@ export default function PropertyMap({ locale, query = "" }: { locale: string; qu
     map.addControl(new maplibregl.AttributionControl({ compact: true }));
     mapRef.current = map;
 
+    // Floating card shown on marker hover (styled like the listing cards).
+    const hoverPopup = new maplibregl.Popup({
+      closeButton: false,
+      closeOnClick: false,
+      offset: 26,
+      maxWidth: "260px",
+      className: "vf-card-popup",
+    });
+    const areaLabelMarkers: maplibregl.Marker[] = [];
+    const developmentMarkers: maplibregl.Marker[] = [];
+
     const markers: Record<string, maplibregl.Marker> = {};
     let markersOnScreen: Record<string, maplibregl.Marker> = {};
 
@@ -82,6 +126,80 @@ export default function PropertyMap({ locale, query = "" }: { locale: string; qu
       featuresRef.current = geojson.features as PropertyFeature[];
       setVisible(featuresRef.current);
 
+      // Developments + neighborhood areas are best-effort extras: a failure
+      // here must never take the property map down with it.
+      const params = new URLSearchParams(query);
+      const developmentsAllowed = !DEVELOPMENT_INCOMPATIBLE_FILTERS.some((key) => params.has(key));
+      const developmentQuery = new URLSearchParams();
+      for (const key of ["neighborhood", "price_min", "price_max"]) {
+        const value = params.get(key);
+        if (value) developmentQuery.set(key, value);
+      }
+      developmentQuery.set("locale", locale);
+
+      const [developmentsResult, areasResult] = await Promise.allSettled([
+        developmentsAllowed
+          ? fetch(`${API_URL}/api/map/developments?${developmentQuery}`).then((r) => r.json())
+          : Promise.resolve({ features: [] }),
+        fetch(`${API_URL}/api/map/neighborhoods?locale=${locale}`).then((r) => r.json()),
+      ]);
+
+      developmentsRef.current =
+        developmentsResult.status === "fulfilled" ? (developmentsResult.value.features ?? []) : [];
+      setVisibleDevelopments(developmentsRef.current);
+
+      const areaFeatures: GeoJSON.Feature<GeoJSON.Geometry, AreaProps>[] =
+        areasResult.status === "fulfilled" ? (areasResult.value.features ?? []) : [];
+
+      if (areaFeatures.length > 0) {
+        map.addSource("areas", {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features: areaFeatures.filter((f) => f.properties.kind === "area"),
+          },
+        });
+        map.addLayer({
+          id: "areas-fill",
+          type: "fill",
+          source: "areas",
+          paint: { "fill-color": ACCENT, "fill-opacity": 0.35 },
+        });
+        map.addLayer({
+          id: "areas-line",
+          type: "line",
+          source: "areas",
+          paint: { "line-color": BRAND, "line-width": 1.2, "line-opacity": 0.55, "line-dasharray": [2, 2] },
+        });
+
+        // Names as HTML markers (brand font, no dependency on the basemap's glyph set).
+        for (const label of areaFeatures.filter((f) => f.properties.kind === "label")) {
+          const marker = new maplibregl.Marker({ element: areaLabelEl(label.properties.name) }).setLngLat(
+            (label.geometry as GeoJSON.Point).coordinates as [number, number],
+          );
+          marker.addTo(map);
+          areaLabelMarkers.push(marker);
+        }
+      }
+
+      // Development pins: not clustered (there are only a handful) and styled
+      // differently from the navy property price pins.
+      for (const feature of developmentsRef.current) {
+        const coords = feature.geometry.coordinates as [number, number];
+        const props = feature.properties;
+        const el = developmentEl(props.title);
+        el.addEventListener("click", () => {
+          router.push({ pathname: "/desarrollos/[slug]", params: { slug: props.slug } });
+        });
+        el.addEventListener("mouseenter", () => {
+          hoverPopup.setLngLat(coords).setHTML(developmentPopupHTML(props, uiLocale)).addTo(map);
+        });
+        el.addEventListener("mouseleave", () => hoverPopup.remove());
+        const marker = new maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat(coords);
+        marker.addTo(map);
+        developmentMarkers.push(marker);
+      }
+
       map.addSource("properties", {
         type: "geojson",
         data: geojson,
@@ -95,15 +213,6 @@ export default function PropertyMap({ locale, query = "" }: { locale: string; qu
         type: "circle",
         source: "properties",
         paint: { "circle-radius": 0, "circle-opacity": 0 },
-      });
-
-      // Floating card shown on marker hover (styled like the listing cards).
-      const hoverPopup = new maplibregl.Popup({
-        closeButton: false,
-        closeOnClick: false,
-        offset: 26,
-        maxWidth: "260px",
-        className: "vf-card-popup",
       });
 
       const updateMarkers = () => {
@@ -166,6 +275,9 @@ export default function PropertyMap({ locale, query = "" }: { locale: string; qu
           return b.contains([lng, lat]);
         });
         setVisible(inView);
+        setVisibleDevelopments(
+          developmentsRef.current.filter((f) => b.contains(f.geometry.coordinates as [number, number])),
+        );
       };
 
       map.on("render", () => {
@@ -174,9 +286,10 @@ export default function PropertyMap({ locale, query = "" }: { locale: string; qu
       });
       map.on("moveend", syncList);
 
-      if (featuresRef.current.length > 0) {
+      const allPoints = [...featuresRef.current, ...developmentsRef.current];
+      if (allPoints.length > 0) {
         const bounds = new maplibregl.LngLatBounds();
-        featuresRef.current.forEach((f) => bounds.extend(f.geometry.coordinates as [number, number]));
+        allPoints.forEach((f) => bounds.extend(f.geometry.coordinates as [number, number]));
         map.fitBounds(bounds, { padding: 80, maxZoom: 14, duration: 0 });
       }
       syncList();
@@ -184,6 +297,8 @@ export default function PropertyMap({ locale, query = "" }: { locale: string; qu
 
     return () => {
       Object.values(markers).forEach((m) => m.remove());
+      areaLabelMarkers.forEach((m) => m.remove());
+      developmentMarkers.forEach((m) => m.remove());
       map.remove();
       mapRef.current = null;
     };
@@ -204,6 +319,10 @@ export default function PropertyMap({ locale, query = "" }: { locale: string; qu
         ? "Nenhuma propriedade na área visível. Afaste ou mova o mapa."
         : "No hay propiedades en el área visible. Alejá el mapa o movételo.";
 
+  if (embedded) {
+    return <div ref={containerRef} className="relative h-[480px] w-full bg-brand-accent lg:h-[620px]" />;
+  }
+
   return (
     // Mobile: plain stack, map gets an explicit height (a "grid row" here would
     // be auto-sized, and the map container has no intrinsic content of its own
@@ -216,10 +335,51 @@ export default function PropertyMap({ locale, query = "" }: { locale: string; qu
         <div className="sticky top-0 z-10 border-b border-brand-text/10 bg-white px-4 py-3">
           <p className="text-sm text-brand-text/80">
             <span className="font-semibold text-brand-primary">{visible.length}</span> {unit}
+            {visibleDevelopments.length > 0 ? (
+              <>
+                {" · "}
+                <span className="font-semibold text-brand-primary">{visibleDevelopments.length}</span>{" "}
+                {tMap(visibleDevelopments.length === 1 ? "development" : "developments")}
+              </>
+            ) : null}
           </p>
         </div>
 
-        {visible.length === 0 ? (
+        {visibleDevelopments.map((feature) => (
+          <button
+            key={`d${feature.properties.id}`}
+            type="button"
+            onClick={() =>
+              router.push({ pathname: "/desarrollos/[slug]", params: { slug: feature.properties.slug } })
+            }
+            className="flex w-full gap-4 border-b border-brand-text/10 bg-brand-secondary/20 p-3 text-left transition-colors hover:bg-brand-secondary/40"
+          >
+            <div className="h-24 w-32 shrink-0 overflow-hidden bg-brand-gray">
+              {feature.properties.cover_image ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={feature.properties.cover_image}
+                  alt={feature.properties.title}
+                  className="h-full w-full object-cover"
+                />
+              ) : null}
+            </div>
+            <div className="flex min-w-0 flex-1 flex-col">
+              <span className="text-[11px] font-medium uppercase tracking-wide text-brand-text/80">
+                {tMap("development")}
+                {feature.properties.neighborhood ? ` · ${feature.properties.neighborhood}` : ""}
+              </span>
+              <h3 className="truncate font-heading text-base font-semibold text-brand-primary">
+                {feature.properties.title}
+              </h3>
+              <span className="mt-auto pt-2 font-price text-sm font-bold text-brand-primary">
+                {developmentLotsLine(feature.properties, uiLocale)}
+              </span>
+            </div>
+          </button>
+        ))}
+
+        {visible.length === 0 && visibleDevelopments.length === 0 ? (
           <p className="p-6 text-center text-sm text-brand-text/50">{emptyLabel}</p>
         ) : (
           visible.map((feature) => (
@@ -338,6 +498,41 @@ function cardPopupHTML(p: Record<string, unknown>): string {
       <h3 style="font-size:15px;font-weight:500;color:${BRAND};line-height:1.25;margin:0">${escapeHtml(String(p.title ?? ""))}</h3>
       <p style="font-family:var(--font-raleway),sans-serif;font-weight:700;font-size:13px;letter-spacing:.02em;color:${BRAND};margin:8px 0 0">${popupPrice(p.price_usd)}</p>
       <div style="display:flex;flex-wrap:nowrap;white-space:nowrap;gap:10px;margin-top:8px">${stats}</div>
+    </div>
+  </div>`;
+}
+
+// --- neighborhood name labels & development pins ---
+
+function areaLabelEl(name: string): HTMLElement {
+  const el = document.createElement("div");
+  el.style.cssText = "pointer-events:none;text-align:center;";
+  el.innerHTML = `<span style="font-family:var(--font-raleway),sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:${BRAND};text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 6px #fff;white-space:nowrap">${escapeHtml(name)}</span>`;
+  return el;
+}
+
+function developmentEl(title: string): HTMLElement {
+  const el = document.createElement("div");
+  el.className = "cursor-pointer";
+  el.innerHTML = `
+    <div style="position:relative;display:inline-block">
+      <div style="background:${ACCENT};color:${BRAND};border:1.5px solid ${BRAND};font-family:var(--font-raleway),sans-serif;font-size:12px;font-weight:700;padding:5px 10px;border-radius:6px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.3)">${escapeHtml(title)}</div>
+      <div style="position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:6px solid ${BRAND}"></div>
+    </div>`;
+  return el;
+}
+
+function developmentPopupHTML(p: DevelopmentProps, locale: string): string {
+  const cover = p.cover_image ? String(p.cover_image) : null;
+  const img = cover
+    ? `<div style="height:140px;background:#e9e9e9;overflow:hidden"><img src="${cover}" alt="" style="width:100%;height:100%;object-fit:cover"/></div>`
+    : `<div style="height:140px;background:#e9e9e9"></div>`;
+  const line = developmentLotsLine(p, locale);
+  return `<div style="width:240px">${img}
+    <div style="padding:10px 12px 12px">
+      <h3 style="font-size:15px;font-weight:500;color:${BRAND};line-height:1.25;margin:0">${escapeHtml(p.title)}</h3>
+      ${p.neighborhood ? `<p style="font-size:12px;color:#4b4b57;margin:4px 0 0">${escapeHtml(p.neighborhood)}</p>` : ""}
+      ${line ? `<p style="font-family:var(--font-raleway),sans-serif;font-weight:700;font-size:13px;color:${BRAND};margin:8px 0 0">${escapeHtml(line)}</p>` : ""}
     </div>
   </div>`;
 }

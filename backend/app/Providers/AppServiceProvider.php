@@ -2,12 +2,15 @@
 
 namespace App\Providers;
 
+use App\Models\Development;
+use App\Models\DevelopmentLot;
 use App\Models\HomeSetting;
 use App\Models\HomeZoneCard;
 use App\Models\Neighborhood;
 use App\Models\PageSetting;
 use App\Models\Property;
 use App\Models\SiteSetting;
+use App\Observers\DevelopmentObserver;
 use App\Observers\HomeSettingObserver;
 use App\Observers\HomeZoneCardObserver;
 use App\Observers\NeighborhoodObserver;
@@ -32,6 +35,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Property::observe(PropertyObserver::class);
+        Development::observe(DevelopmentObserver::class);
+        DevelopmentLot::observe(DevelopmentObserver::class);
         PageSetting::observe(PageSettingObserver::class);
         Neighborhood::observe(NeighborhoodObserver::class);
         SiteSetting::observe(SiteSettingObserver::class);

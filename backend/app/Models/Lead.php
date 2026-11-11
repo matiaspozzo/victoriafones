@@ -9,6 +9,7 @@ class Lead extends Model
 {
     protected $fillable = [
         'property_id',
+        'development_id',
         'type',
         'name',
         'email',
@@ -27,5 +28,10 @@ class Lead extends Model
     public function property(): BelongsTo
     {
         return $this->belongsTo(Property::class);
+    }
+
+    public function development(): BelongsTo
+    {
+        return $this->belongsTo(Development::class);
     }
 }

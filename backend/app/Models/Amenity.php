@@ -23,4 +23,9 @@ class Amenity extends Model
     {
         return $this->belongsToMany(Property::class);
     }
+
+    public function developments(): BelongsToMany
+    {
+        return $this->belongsToMany(Development::class);
+    }
 }

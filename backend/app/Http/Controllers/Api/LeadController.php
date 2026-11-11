@@ -15,6 +15,7 @@ class LeadController extends Controller
     {
         $data = $request->validate([
             'property_id' => ['nullable', 'exists:properties,id'],
+            'development_id' => ['nullable', 'exists:developments,id'],
             'type' => ['required', 'in:form,whatsapp'],
             'name' => ['nullable', 'string', 'max:255'],
             'email' => ['nullable', 'email', 'max:255'],

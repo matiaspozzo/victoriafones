@@ -8,7 +8,8 @@
     "language": "English",
     "viewAll": "View all",
     "home": "Home",
-    "mapDescription": "Explore properties for sale and rent in José Ignacio and Punta del Este on our interactive map."
+    "mapDescription": "Explore properties for sale and rent in José Ignacio and Punta del Este on our interactive map.",
+    "developments": "Developments"
   },
   "Zones": {
     "pueblo-jose-ignacio": "Pueblo José Ignacio",
@@ -27,7 +28,15 @@
     "salesTitle": "Properties for Sale by Zone",
     "featuredTitle": "Featured properties",
     "featuredSubtitle": "We selected the best properties for you",
-    "featuredViewAll": "View all"
+    "featuredViewAll": "View all",
+    "developmentsTitle": "Developments",
+    "developmentsSubtitle": "Exclusive projects in José Ignacio and surroundings",
+    "developmentsViewAll": "View all",
+    "mapTitle": "Explore the map",
+    "mapSubtitle": "Properties, developments and private neighborhoods in one place",
+    "mapOpen": "Open interactive map",
+    "mapLoading": "Loading map…",
+    "mapFull": "Open full map"
   },
   "Footer": {
     "addressLine": "Los Teros 9000, 20000 Faro de José Ignacio, Departamento de Maldonado,",
@@ -158,5 +167,35 @@
     "text": "The link may be broken, or the property may no longer be available. Feel free to keep exploring.",
     "ctaProperties": "View Properties",
     "ctaHome": "Back to home"
+  },
+  "Developments": {
+    "title": "Developments",
+    "metaDescription": "Developments and gated communities in José Ignacio and Punta del Este: private neighborhoods with services and amenities, by Victoria Fones Real Estate.",
+    "intro": "Discover the projects we develop in José Ignacio and surroundings.",
+    "empty": "New developments are coming soon.",
+    "project": "Get to know the project",
+    "amenities": "Services & Amenities",
+    "masterplan": "Masterplan",
+    "location": "Location",
+    "contactHeading": "Ask about this development",
+    "back": "See all developments",
+    "related": "Other developments",
+    "lots": "Lots",
+    "lot": "Lot",
+    "area": "Area",
+    "price": "Price",
+    "status": "Status",
+    "available": "Available",
+    "reserved": "Reserved",
+    "sold": "Sold",
+    "checkAvailability": "Check availability",
+    "surfaces": "Surface areas",
+    "amenitiesGeneral": "Services"
+  },
+  "Map": {
+    "development": "development",
+    "developments": "developments",
+    "inThisArea": "in this area",
+    "lotsPopup": "View development"
   }
 }

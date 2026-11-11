@@ -28,11 +28,13 @@ class Neighborhood extends Model implements HasMedia
         'center_lat',
         'center_lng',
         'polygon',
+        'show_on_map',
         'order',
     ];
 
     protected $casts = [
         'polygon' => 'array',
+        'show_on_map' => 'boolean',
         'center_lat' => 'decimal:7',
         'center_lng' => 'decimal:7',
     ];
@@ -50,6 +52,11 @@ class Neighborhood extends Model implements HasMedia
     public function properties(): HasMany
     {
         return $this->hasMany(Property::class);
+    }
+
+    public function developments(): HasMany
+    {
+        return $this->hasMany(Development::class);
     }
 
     public function faqs(): HasMany

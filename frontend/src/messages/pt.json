@@ -8,7 +8,8 @@
     "language": "Português",
     "viewAll": "Ver todas",
     "home": "Início",
-    "mapDescription": "Explore propriedades à venda e para alugar em José Ignacio e Punta del Este em nosso mapa interativo."
+    "mapDescription": "Explore propriedades à venda e para alugar em José Ignacio e Punta del Este em nosso mapa interativo.",
+    "developments": "Empreendimentos"
   },
   "Zones": {
     "pueblo-jose-ignacio": "Pueblo José Ignacio",
@@ -27,7 +28,15 @@
     "salesTitle": "Propriedades à Venda por Zona",
     "featuredTitle": "Propriedades em destaque",
     "featuredSubtitle": "Selecionamos as melhores propriedades para você",
-    "featuredViewAll": "Ver todas"
+    "featuredViewAll": "Ver todas",
+    "developmentsTitle": "Empreendimentos",
+    "developmentsSubtitle": "Projetos exclusivos em José Ignacio e arredores",
+    "developmentsViewAll": "Ver todos",
+    "mapTitle": "Explore o mapa",
+    "mapSubtitle": "Propriedades, empreendimentos e bairros privados em um só lugar",
+    "mapOpen": "Abrir mapa interativo",
+    "mapLoading": "Carregando mapa…",
+    "mapFull": "Abrir mapa completo"
   },
   "Footer": {
     "addressLine": "Los Teros 9000, 20000 Faro de José Ignacio, Departamento de Maldonado,",
@@ -158,5 +167,35 @@
     "text": "O link pode estar quebrado, ou o imóvel pode não estar mais disponível. Convidamos você a continuar explorando.",
     "ctaProperties": "Ver Propriedades",
     "ctaHome": "Voltar para o início"
+  },
+  "Developments": {
+    "title": "Empreendimentos",
+    "metaDescription": "Empreendimentos e loteamentos em José Ignacio e Punta del Este: bairros privados com serviços e amenities, da Victoria Fones Real Estate.",
+    "intro": "Conheça os projetos que desenvolvemos em José Ignacio e arredores.",
+    "empty": "Em breve novos empreendimentos por aqui.",
+    "project": "Conheça o projeto",
+    "amenities": "Serviços e Amenities",
+    "masterplan": "Masterplan",
+    "location": "Localização",
+    "contactHeading": "Consulte sobre este empreendimento",
+    "back": "Ver todos os empreendimentos",
+    "related": "Outros empreendimentos",
+    "lots": "Lotes",
+    "lot": "Lote",
+    "area": "Área",
+    "price": "Preço",
+    "status": "Status",
+    "available": "Disponível",
+    "reserved": "Reservado",
+    "sold": "Vendido",
+    "checkAvailability": "Consultar disponibilidade",
+    "surfaces": "Superfícies",
+    "amenitiesGeneral": "Serviços"
+  },
+  "Map": {
+    "development": "empreendimento",
+    "developments": "empreendimentos",
+    "inThisArea": "nesta área",
+    "lotsPopup": "Ver empreendimento"
   }
 }

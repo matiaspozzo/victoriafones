@@ -84,6 +84,15 @@ export const routing = defineRouting({
       en: '/map',
       pt: '/mapa',
     },
+    // New (2026-11): developments / loteos. No legacy WordPress URLs to preserve.
+    '/desarrollos': {
+      en: '/developments',
+      pt: '/empreendimentos',
+    },
+    '/desarrollos/[slug]': {
+      en: '/developments/[slug]',
+      pt: '/empreendimentos/[slug]',
+    },
   },
 });
 

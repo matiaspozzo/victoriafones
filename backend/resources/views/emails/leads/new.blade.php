@@ -17,6 +17,12 @@
                     </p>
                 @endif
 
+                @if ($lead->development)
+                    <p style="margin: 0 0 16px;">
+                        <strong>Desarrollo:</strong> {{ $lead->development->getTranslation('title', 'es') }}
+                    </p>
+                @endif
+
                 <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
                     <tr>
                         <td style="padding: 4px 0; color: #454444; width: 100px;">Nombre</td>

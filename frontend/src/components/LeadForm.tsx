@@ -9,11 +9,13 @@ const WHATSAPP_PHONE = "59893985888";
 
 export default function LeadForm({
   propertyId,
+  developmentId,
   defaultSubject,
   variant = "light",
   whatsapp = false,
 }: {
   propertyId?: number;
+  developmentId?: number;
   defaultSubject?: string;
   variant?: "light" | "onDark" | "underline";
   whatsapp?: boolean;
@@ -43,6 +45,7 @@ export default function LeadForm({
         body: JSON.stringify({
           type: "form",
           property_id: propertyId ?? null,
+          development_id: developmentId ?? null,
           name: form.get("name"),
           email: form.get("email"),
           message: `${form.get("subject") ? `[${form.get("subject")}] ` : ""}${form.get("message") ?? ""}`,
@@ -55,7 +58,8 @@ export default function LeadForm({
       if (res.ok) {
         trackEvent("lead_form_submit", {
           property_id: propertyId ?? null,
-          form_location: propertyId ? "property_detail" : "contact_page",
+          development_id: developmentId ?? null,
+          form_location: propertyId ? "property_detail" : developmentId ? "development_detail" : "contact_page",
         });
       }
     } catch {
@@ -78,6 +82,7 @@ export default function LeadForm({
     trackEvent("whatsapp_click", {
       source: "lead_form",
       property_id: propertyId ?? null,
+      development_id: developmentId ?? null,
     });
 
     window.open(

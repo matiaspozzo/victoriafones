@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\LeadResource\Pages;
+use App\Models\Development;
 use App\Models\Lead;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -46,6 +47,11 @@ class LeadResource extends Resource
                     ->label('Propiedad')
                     ->relationship('property', 'code')
                     ->disabled(),
+                Forms\Components\Select::make('development_id')
+                    ->label('Desarrollo')
+                    ->relationship('development', 'id')
+                    ->getOptionLabelFromRecordUsing(fn (Development $record) => $record->getTranslation('title', 'es'))
+                    ->disabled(),
                 Forms\Components\Select::make('type')
                     ->label('Tipo')
                     ->options(self::TYPE_LABELS)
@@ -84,6 +90,9 @@ class LeadResource extends Resource
                     ->color(fn (string $state): string => self::TYPE_COLORS[$state] ?? 'gray'),
                 Tables\Columns\TextColumn::make('property.code')
                     ->label('Propiedad'),
+                Tables\Columns\TextColumn::make('development.title')
+                    ->label('Desarrollo')
+                    ->placeholder('—'),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nombre')
                     ->searchable(),
@@ -101,6 +110,11 @@ class LeadResource extends Resource
                 Tables\Filters\SelectFilter::make('type')
                     ->label('Tipo')
                     ->options(self::TYPE_LABELS),
+                Tables\Filters\SelectFilter::make('development_id')
+                    ->label('Desarrollo')
+                    ->options(fn () => Development::query()->orderBy('order')->get()
+                        ->mapWithKeys(fn (Development $d) => [$d->id => $d->getTranslation('title', 'es')])
+                        ->all()),
                 Tables\Filters\TernaryFilter::make('read_at')
                     ->label('Leído')
                     ->queries(

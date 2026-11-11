@@ -41,7 +41,12 @@ type Paginated<T> = {
   price_bounds?: { min: number; max: number };
 };
 
-async function apiFetch<T>(path: string, locale: string, searchParams?: Record<string, string | undefined>): Promise<T> {
+async function apiFetch<T>(
+  path: string,
+  locale: string,
+  searchParams?: Record<string, string | undefined>,
+  tags: string[] = ["properties"],
+): Promise<T> {
   const url = new URL(`/api${path}`, API_URL);
   url.searchParams.set("locale", locale);
 
@@ -49,7 +54,7 @@ async function apiFetch<T>(path: string, locale: string, searchParams?: Record<s
     if (value) url.searchParams.set(key, value);
   }
 
-  const res = await fetch(url.toString(), { next: { revalidate: 3600, tags: ["properties"] } });
+  const res = await fetch(url.toString(), { next: { revalidate: 3600, tags } });
 
   if (!res.ok) {
     throw new Error(`API request failed: ${url.toString()} (${res.status})`);
@@ -149,4 +154,52 @@ export function findNeighborhoodBySlug(tree: Neighborhood[], slug: string): Neig
   }
 
   return null;
+}
+
+export type DevelopmentSummary = {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  neighborhood: { id: number; slug: string; name: string } | null;
+  lots_count: number | null;
+  area_min_m2: number | null;
+  area_max_m2: number | null;
+  price_from_usd: number | null;
+  cover_image: string | null;
+  lat: string | null;
+  lng: string | null;
+};
+
+export type DevelopmentDetail = Omit<DevelopmentSummary, "cover_image"> & {
+  description: string | null;
+  seo_title: string | null;
+  seo_description: string | null;
+  images: Array<{ thumb: string; card: string; full: string }>;
+  masterplan: { thumb: string; card: string; full: string } | null;
+  amenities: Array<{ id: number; slug: string; icon: string | null; name: string }>;
+  amenity_groups: Array<{ title: string; items: string[] }>;
+  surfaces: Array<{ label: string; m2: number; is_total: boolean }>;
+  masterplan_caption: string | null;
+  location_text: string | null;
+  lots: DevelopmentLot[];
+  updated_at: string | null;
+};
+
+export type DevelopmentLot = {
+  id: number;
+  label: string | null;
+  area_m2: number;
+  price_usd: number | null;
+  status: "available" | "reserved" | "sold";
+};
+
+const DEVELOPMENT_TAGS = ["developments"];
+
+export async function getDevelopments(locale: string, params?: { limit?: string }) {
+  return apiFetch<{ data: DevelopmentSummary[] }>("/developments", locale, params, DEVELOPMENT_TAGS);
+}
+
+export async function getDevelopment(locale: string, slug: string) {
+  return apiFetch<{ data: DevelopmentDetail }>(`/developments/${slug}`, locale, undefined, DEVELOPMENT_TAGS);
 }

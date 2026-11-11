@@ -16,6 +16,6 @@ sleep 3
 SECRET=$(grep '^REVALIDATE_SECRET=' .env.local | cut -d= -f2-)
 curl -sf -X POST http://127.0.0.1:3001/api/revalidate \
   -H 'Content-Type: application/json' \
-  -d "{\"secret\":\"$SECRET\",\"tags\":[\"properties\"]}"
+  -d "{\"secret\":\"$SECRET\",\"tags\":[\"properties\",\"developments\"]}"
 echo
 echo "Deploy complete and revalidated."
