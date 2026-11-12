@@ -161,6 +161,7 @@ export default async function DevelopmentPage({ params }: Props) {
             nextLabel={tProperty("next")}
             previousLabel={tProperty("previous")}
             closeLabel={tProperty("close")}
+            columns={3}
           />
         </section>
       ) : null}

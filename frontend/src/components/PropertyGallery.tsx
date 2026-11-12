@@ -7,18 +7,30 @@ type GalleryImage = { thumb: string; card: string; full: string };
 
 const PAGE_SIZE = 6;
 
+// Full class names so Tailwind can see them (no string interpolation).
+const GRID_CLASS = {
+  2: "grid grid-cols-1 gap-4 sm:grid-cols-2",
+  3: "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3",
+} as const;
+const IMAGE_SIZES = {
+  2: "(min-width: 640px) 50vw, 100vw",
+  3: "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw",
+} as const;
+
 export default function PropertyGallery({
   images,
   title,
   nextLabel,
   previousLabel,
   closeLabel,
+  columns = 2,
 }: {
   images: GalleryImage[];
   title: string;
   nextLabel: string;
   previousLabel: string;
   closeLabel: string;
+  columns?: 2 | 3;
 }) {
   const [page, setPage] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -58,7 +70,7 @@ export default function PropertyGallery({
 
   return (
     <div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className={GRID_CLASS[columns]}>
         {visible.map((image, i) => {
           const index = page * PAGE_SIZE + i;
 
@@ -74,7 +86,7 @@ export default function PropertyGallery({
                 alt={`${title} ${index + 1}`}
                 fill
                 className="object-cover"
-                sizes="(min-width: 640px) 50vw, 100vw"
+                sizes={IMAGE_SIZES[columns]}
                 priority={page === 0 && i < 2}
               />
             </button>
