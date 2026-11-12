@@ -1,12 +1,12 @@
 {{--
-    Create/edit record pages: keep the header (breadcrumbs, title, language switcher,
-    delete) pinned under the topbar, and the save bar pinned to the bottom of the
-    viewport — so it's always visible even while scrolling through relation managers
-    (e.g. Lotes), which render below the form.
+    Every admin page: keep the page header (breadcrumbs, title, language switcher,
+    action buttons) pinned under the topbar while scrolling.
+    Create/edit pages also pin the save bar to the bottom of the viewport, so it's
+    always visible even while scrolling through relation managers (e.g. Lotes),
+    which render below the form.
 --}}
 <style>
-    .fi-resource-edit-record-page .fi-header,
-    .fi-resource-create-record-page .fi-header {
+    .fi-page > section > .fi-header {
         position: sticky;
         top: 4rem; /* below the topbar (h-16) */
         z-index: 15;
@@ -51,8 +51,7 @@
         }
     }
 
-    .dark .fi-resource-edit-record-page .fi-header,
-    .dark .fi-resource-create-record-page .fi-header {
+    .dark .fi-page > section > .fi-header {
         background: rgb(var(--gray-950));
         box-shadow: 0 0 0 100vmax rgb(var(--gray-950));
     }
