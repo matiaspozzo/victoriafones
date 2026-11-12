@@ -30,17 +30,24 @@ function groupBySubzone(
   properties: PropertySummary[],
   subzones: { slug: string; name: string }[],
   otherLabel: string,
+  // When the listing is sorted by price, order the groups by where their first
+  // (best-ranked) property appears, so the sort shows across the whole page and
+  // not only inside each group. Otherwise keep the configured sub-zone order.
+  orderByAppearance: boolean,
 ) {
   const bySlug = new Map(
     subzones.map((s) => [s.slug, [] as PropertySummary[]]),
   );
+  const firstSeen = new Map<string, number>();
   const other: PropertySummary[] = [];
 
-  for (const property of properties) {
+  properties.forEach((property, index) => {
     const slug = property.neighborhood?.slug;
     const bucket = slug ? bySlug.get(slug) : undefined;
     (bucket ?? other).push(property);
-  }
+    const key = bucket && slug ? slug : "__other";
+    if (!firstSeen.has(key)) firstSeen.set(key, index);
+  });
 
   const groups = subzones
     .map((s) => ({
@@ -52,6 +59,12 @@ function groupBySubzone(
 
   if (other.length > 0) {
     groups.push({ key: "__other", name: otherLabel, properties: other });
+  }
+
+  if (orderByAppearance) {
+    groups.sort(
+      (a, b) => (firstSeen.get(a.key) ?? 0) - (firstSeen.get(b.key) ?? 0),
+    );
   }
 
   return groups;
@@ -122,8 +135,8 @@ export default async function PropertyListingPage({
       : "grid grid-cols-1 gap-20 sm:grid-cols-2";
   const view =
     params.view === "list" || params.view === "map" ? params.view : "cards";
-  // Zone pages list cheapest first by default; the general listings keep "newest first".
-  const sort = params.sort ?? (neighborhood ? "price_asc" : undefined);
+  // Zone pages list the most expensive first by default; the general listings keep "newest first".
+  const sort = params.sort ?? (neighborhood ? "price_desc" : undefined);
 
   const [listing, header] = await Promise.all([
     getProperties(locale, {
@@ -352,7 +365,7 @@ export default async function PropertyListingPage({
           currentSubzone={selectedSubzone}
           subzones={subzones}
           currentSort={params.sort}
-          priceAscByDefault={Boolean(neighborhood)}
+          priceDescByDefault={Boolean(neighborhood)}
           currentView={view}
           currentPriceMin={params.price_min}
           currentPriceMax={params.price_max}
@@ -429,20 +442,23 @@ export default async function PropertyListingPage({
           </ul>
         ) : subzones && subzones.length > 0 && !selectedSubzone ? (
           <div className="mt-10 flex flex-col gap-16">
-            {groupBySubzone(properties, subzones, t("otherProperties")).map(
-              (group) => (
-                <section key={group.key}>
-                  <h2 className="mb-6 font-heading text-2xl font-bold text-brand-primary">
-                    {group.name}
-                  </h2>
-                  <div className={cardGridClass(group.properties.length)}>
-                    {group.properties.map((property) => (
-                      <PropertyCard key={property.id} property={property} />
-                    ))}
-                  </div>
-                </section>
-              ),
-            )}
+            {groupBySubzone(
+              properties,
+              subzones,
+              t("otherProperties"),
+              sort === "price_asc" || sort === "price_desc",
+            ).map((group) => (
+              <section key={group.key}>
+                <h2 className="mb-6 font-heading text-2xl font-bold text-brand-primary">
+                  {group.name}
+                </h2>
+                <div className={cardGridClass(group.properties.length)}>
+                  {group.properties.map((property) => (
+                    <PropertyCard key={property.id} property={property} />
+                  ))}
+                </div>
+              </section>
+            ))}
           </div>
         ) : (
           <div className={`mt-10 ${cardGridClass(properties.length)}`}>

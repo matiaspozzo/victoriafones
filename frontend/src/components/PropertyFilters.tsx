@@ -83,7 +83,7 @@ export default function PropertyFilters({
   showView = true,
   showPrice = true,
   compact = false,
-  priceAscByDefault = false,
+  priceDescByDefault = false,
 }: {
   currentType?: string;
   currentBedrooms?: string;
@@ -104,9 +104,9 @@ export default function PropertyFilters({
   showView?: boolean;
   showPrice?: boolean;
   compact?: boolean;
-  /** Zone pages: "price low→high" is the default (first) sort and "newest" becomes
+  /** Zone pages: "price high→low" is the default (first) sort and "newest" becomes
       the explicit last option (?sort=newest). The listing page applies the same default. */
-  priceAscByDefault?: boolean;
+  priceDescByDefault?: boolean;
 }) {
   const t = useTranslations("Listing");
   const tZones = useTranslations("Zones");
@@ -425,10 +425,10 @@ export default function PropertyFilters({
                     }
                     className={selectClass}
                   >
-                    {priceAscByDefault ? (
+                    {priceDescByDefault ? (
                       <>
-                        <option value="">{t("sortPriceAsc")}</option>
-                        <option value="price_desc">{t("sortPriceDesc")}</option>
+                        <option value="">{t("sortPriceDesc")}</option>
+                        <option value="price_asc">{t("sortPriceAsc")}</option>
                         <option value="newest">{t("sortNewest")}</option>
                       </>
                     ) : (
