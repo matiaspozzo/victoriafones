@@ -19,6 +19,7 @@ export default function PropertyLocationMap({
   className = "h-80",
   popupTitle,
   popupSubtitle,
+  zoom = 14,
 }: {
   lat: number;
   lng: number;
@@ -26,6 +27,7 @@ export default function PropertyLocationMap({
   className?: string;
   popupTitle?: string;
   popupSubtitle?: string;
+  zoom?: number;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -39,7 +41,7 @@ export default function PropertyLocationMap({
         container: containerRef.current,
         style: STYLE_URL,
         center: [lng, lat],
-        zoom: 14,
+        zoom,
         attributionControl: false,
       });
       map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
@@ -78,7 +80,7 @@ export default function PropertyLocationMap({
       map.remove();
       mapRef.current = null;
     };
-  }, [lat, lng, popupTitle, popupSubtitle]);
+  }, [lat, lng, popupTitle, popupSubtitle, zoom]);
 
   return <div ref={containerRef} aria-label={title} className={`w-full bg-brand-accent ${className}`} />;
 }

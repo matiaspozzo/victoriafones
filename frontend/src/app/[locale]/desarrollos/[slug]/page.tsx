@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { developmentHeadline } from "@/components/DevelopmentCard";
 import LeadForm from "@/components/LeadForm";
 import OfficeInfo from "@/components/OfficeInfo";
+import PropertyGallery from "@/components/PropertyGallery";
 import PropertyHero from "@/components/PropertyHero";
 import PropertyLocationMap from "@/components/PropertyLocationMap";
 import { getDevelopment } from "@/lib/api";
@@ -51,6 +52,7 @@ export default async function DevelopmentPage({ params }: Props) {
   const { locale, slug } = await params;
   const t = await getTranslations({ locale, namespace: "Developments" });
   const tNav = await getTranslations({ locale, namespace: "Nav" });
+  const tProperty = await getTranslations({ locale, namespace: "Property" });
 
   let development;
 
@@ -63,6 +65,8 @@ export default async function DevelopmentPage({ params }: Props) {
   const url = canonicalFor(locale, { pathname: "/desarrollos/[slug]", params: { slug: development.slug } });
   const lotsLine = developmentLotsLine(development, locale);
   const hasLocation = Boolean(development.lat && development.lng);
+  // Same split as properties: PropertyHero shows the first 3, the gallery holds the rest.
+  const galleryImages = development.images.slice(3);
 
   const breadcrumbs = [
     { name: tNav("home"), url: canonicalFor(locale, "/") },
@@ -147,6 +151,19 @@ export default async function DevelopmentPage({ params }: Props) {
           />
         </div>
       </section>
+
+      {/* Galería: el hero muestra las primeras 3 fotos, acá va el resto */}
+      {galleryImages.length > 0 ? (
+        <section className="mx-auto max-w-7xl px-6 pb-8">
+          <PropertyGallery
+            images={galleryImages}
+            title={development.title}
+            nextLabel={tProperty("next")}
+            previousLabel={tProperty("previous")}
+            closeLabel={tProperty("close")}
+          />
+        </section>
+      ) : null}
 
       {/* Servicios y Amenities */}
       {development.amenities.length > 0 || development.amenity_groups.length > 0 ? (
@@ -284,6 +301,7 @@ export default async function DevelopmentPage({ params }: Props) {
               lng={Number(development.lng)}
               title={development.title}
               className="h-[540px]"
+              zoom={13}
               popupTitle={development.title}
               popupSubtitle={development.neighborhood?.name}
             />
