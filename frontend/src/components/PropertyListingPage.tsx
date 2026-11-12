@@ -114,10 +114,10 @@ export default async function PropertyListingPage({
   const effectiveNeighborhood = neighborhood
     ? (selectedSubzone ?? neighborhood)
     : params.zona;
-  // Zone pages show 3 cards per row on desktop when a grid has more than two cards
-  // (with one or two they keep the wider 2-column layout); general listings keep 2.
+  // Listings show 3 cards per row on desktop when a grid has more than two cards
+  // (with one or two they keep the wider 2-column layout).
   const cardGridClass = (count: number) =>
-    neighborhood && count > 2
+    count > 2
       ? "grid grid-cols-1 gap-20 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-10 lg:gap-y-16"
       : "grid grid-cols-1 gap-20 sm:grid-cols-2";
   const view =
