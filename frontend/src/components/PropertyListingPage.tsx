@@ -135,8 +135,8 @@ export default async function PropertyListingPage({
       : "grid grid-cols-1 gap-20 sm:grid-cols-2";
   const view =
     params.view === "list" || params.view === "map" ? params.view : "cards";
-  // Zone pages list the most expensive first by default; the general listings keep "newest first".
-  const sort = params.sort ?? (neighborhood ? "price_desc" : undefined);
+  // Every listing starts with the most expensive first; "newest" is an explicit option (?sort=newest).
+  const sort = params.sort ?? "price_desc";
 
   const [listing, header] = await Promise.all([
     getProperties(locale, {
@@ -365,7 +365,6 @@ export default async function PropertyListingPage({
           currentSubzone={selectedSubzone}
           subzones={subzones}
           currentSort={params.sort}
-          priceDescByDefault={Boolean(neighborhood)}
           currentView={view}
           currentPriceMin={params.price_min}
           currentPriceMax={params.price_max}
