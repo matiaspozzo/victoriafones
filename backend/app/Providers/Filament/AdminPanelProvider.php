@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Auth\Login;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -9,8 +10,10 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\SpatieLaravelTranslatablePlugin;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\MaxWidth;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -27,7 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login(\App\Filament\Auth\Login::class)
+            ->login(Login::class)
             ->brandName('Victoria Fones Real Estate')
             ->brandLogo(asset('brand/logo-azul@2x.webp'))
             ->darkModeBrandLogo(asset('brand/logo@2x.webp'))
@@ -43,6 +46,8 @@ class AdminPanelProvider extends PanelProvider
                 'secondary' => Color::hex('#eecab3'),
                 'gray' => Color::hex('#454444'),
             ])
+            // Pinned header + save bar on create/edit pages (see the view for details).
+            ->renderHook(PanelsRenderHook::HEAD_END, fn (): string => view('filament.sticky-edit-styles')->render())
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -54,7 +59,7 @@ class AdminPanelProvider extends PanelProvider
                 Widgets\FilamentInfoWidget::class,
             ])
             ->plugins([
-                \Filament\SpatieLaravelTranslatablePlugin::make()
+                SpatieLaravelTranslatablePlugin::make()
                     ->defaultLocales(['es', 'en', 'pt']),
             ])
             ->middleware([
