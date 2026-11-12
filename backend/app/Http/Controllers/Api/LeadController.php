@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Mail\NewLeadReceived;
 use App\Models\Lead;
+use App\Support\MathCaptcha;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 
 class LeadController extends Controller
 {
@@ -23,7 +25,15 @@ class LeadController extends Controller
             'message' => ['nullable', 'string', 'max:5000'],
             'locale' => ['nullable', 'in:es,en,pt'],
             'source_url' => ['nullable', 'url', 'max:2048'],
+            'captcha_token' => ['required', 'string'],
+            'captcha_answer' => ['required'],
         ]);
+
+        if (! MathCaptcha::verify($data['captcha_token'], $data['captcha_answer'])) {
+            throw ValidationException::withMessages(['captcha_answer' => 'invalid_captcha']);
+        }
+
+        unset($data['captcha_token'], $data['captcha_answer']);
 
         $lead = Lead::create($data + ['locale' => $data['locale'] ?? 'es']);
 

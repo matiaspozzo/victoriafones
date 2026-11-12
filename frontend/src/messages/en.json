@@ -58,6 +58,8 @@
     "message": "Message",
     "submit": "Send",
     "submitWhatsApp": "Send via WhatsApp",
+    "captchaQuestion": "Verification: what is {a} + {b}?",
+    "captchaError": "The verification answer is wrong, please try the new one.",
     "metaDescription": "Get in touch with Victoria Fones Real Estate for real estate advisory in José Ignacio and Punta del Este. We'll help you find the right property."
   },
   "Listing": {

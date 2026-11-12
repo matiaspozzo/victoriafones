@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useId, useState } from "react";
+import { useCallback, useEffect, useId, useState } from "react";
 import { trackEvent } from "@/lib/analytics";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
@@ -24,6 +24,22 @@ export default function LeadForm({
   const locale = useLocale();
   const id = useId();
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [captcha, setCaptcha] = useState<{ a: number; b: number; token: string } | null>(null);
+  const [captchaAnswer, setCaptchaAnswer] = useState("");
+  const [captchaWrong, setCaptchaWrong] = useState(false);
+
+  const loadCaptcha = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/captcha`, { cache: "no-store" });
+      if (res.ok) setCaptcha(await res.json());
+    } catch {
+      setCaptcha(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadCaptcha();
+  }, [loadCaptcha]);
   const onDark = variant === "onDark";
   const inputClass =
     variant === "onDark"
@@ -35,13 +51,14 @@ export default function LeadForm({
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("sending");
+    setCaptchaWrong(false);
 
     const form = new FormData(e.currentTarget);
 
     try {
       const res = await fetch(`${API_URL}/api/leads`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
           type: "form",
           property_id: propertyId ?? null,
@@ -51,10 +68,22 @@ export default function LeadForm({
           message: `${form.get("subject") ? `[${form.get("subject")}] ` : ""}${form.get("message") ?? ""}`,
           locale,
           source_url: typeof window !== "undefined" ? window.location.href : undefined,
+          captcha_token: captcha?.token ?? "",
+          captcha_answer: captchaAnswer,
         }),
       });
 
       setStatus(res.ok ? "sent" : "error");
+      if (!res.ok) {
+        // Each challenge is single-use: always fetch a fresh one after a failed attempt.
+        if (res.status === 422) {
+          const body = await res.json().catch(() => null);
+          setCaptchaWrong(Boolean(body?.errors?.captcha_answer || body?.errors?.captcha_token));
+        }
+        setCaptcha(null);
+        setCaptchaAnswer("");
+        loadCaptcha();
+      }
       if (res.ok) {
         trackEvent("lead_form_submit", {
           property_id: propertyId ?? null,
@@ -64,6 +93,9 @@ export default function LeadForm({
       }
     } catch {
       setStatus("error");
+      setCaptcha(null);
+      setCaptchaAnswer("");
+      loadCaptcha();
     }
   }
 
@@ -125,10 +157,28 @@ export default function LeadForm({
         <label htmlFor={`${id}-message`} className={labelClass}>{t("message")}</label>
         <textarea id={`${id}-message`} name="message" rows={5} placeholder={onDark ? t("message") : undefined} className={inputClass} />
       </div>
+      <div>
+        <label htmlFor={`${id}-captcha`} className={labelClass}>
+          {captcha ? t("captchaQuestion", { a: captcha.a, b: captcha.b }) : "…"}
+        </label>
+        <input
+          id={`${id}-captcha`}
+          name="captcha"
+          value={captchaAnswer}
+          onChange={(e) => setCaptchaAnswer(e.target.value)}
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          autoComplete="off"
+          required
+          placeholder={onDark && captcha ? t("captchaQuestion", { a: captcha.a, b: captcha.b }) : undefined}
+          className={inputClass}
+        />
+      </div>
       <div className="flex flex-wrap gap-3">
         <button
           type="submit"
-          disabled={status === "sending"}
+          disabled={status === "sending" || !captcha}
           className={
             onDark
               ? "border border-white px-8 py-3 text-sm font-medium uppercase tracking-wide text-white hover:bg-white hover:text-brand-primary disabled:opacity-50"
@@ -153,7 +203,7 @@ export default function LeadForm({
       </div>
       {status === "error" ? (
         <p className={onDark ? "text-sm text-red-200" : "text-sm text-red-600"}>
-          {locale === "en" ? "Something went wrong, please try again." : locale === "pt" ? "Algo deu errado, tente novamente." : "Ocurrió un error, intentá de nuevo."}
+          {captchaWrong ? t("captchaError") : locale === "en" ? "Something went wrong, please try again." : locale === "pt" ? "Algo deu errado, tente novamente." : "Ocurrió un error, intentá de nuevo."}
         </p>
       ) : null}
     </form>

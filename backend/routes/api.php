@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AmenityController;
+use App\Http\Controllers\Api\CaptchaController;
 use App\Http\Controllers\Api\DevelopmentController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\LeadController;
@@ -23,4 +24,5 @@ Route::get('/amenities', [AmenityController::class, 'index']);
 Route::get('/pages', [PageController::class, 'index']);
 Route::get('/home', [HomeController::class, 'index']);
 Route::get('/site-settings', [SiteSettingController::class, 'index']);
-Route::post('/leads', [LeadController::class, 'store']);
+Route::get('/captcha', [CaptchaController::class, 'show'])->middleware('throttle:30,1');
+Route::post('/leads', [LeadController::class, 'store'])->middleware('throttle:10,1');
