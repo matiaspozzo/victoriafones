@@ -83,6 +83,7 @@ export default function PropertyFilters({
   showView = true,
   showPrice = true,
   compact = false,
+  priceAscByDefault = false,
 }: {
   currentType?: string;
   currentBedrooms?: string;
@@ -103,6 +104,9 @@ export default function PropertyFilters({
   showView?: boolean;
   showPrice?: boolean;
   compact?: boolean;
+  /** Zone pages: "price low→high" is the default (first) sort and "newest" becomes
+      the explicit last option (?sort=newest). The listing page applies the same default. */
+  priceAscByDefault?: boolean;
 }) {
   const t = useTranslations("Listing");
   const tZones = useTranslations("Zones");
@@ -163,6 +167,7 @@ export default function PropertyFilters({
 
   function applyFilters(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setOpen(false);
     const form = new FormData(e.currentTarget);
     pushWith({
       zona: (form.get("zona") as string) || undefined,
@@ -190,201 +195,284 @@ export default function PropertyFilters({
         : "border-brand-text/30 bg-white text-brand-text hover:bg-brand-accent"
     }`;
 
-  return (
-    <div className={compact ? "" : "mb-10"}>
-      <div
-        className={`relative ${compact ? "" : "border-b border-brand-text/10 pb-8 sm:pb-14"}`}
-      >
-        <form
-          onSubmit={applyFilters}
-          className="flex w-full flex-wrap items-end gap-2.5"
+  const hasSubzones = Boolean(subzones && subzones.length > 0);
+
+  // Below lg the filters collapse behind a button (the stacked form is too tall to pin).
+  const [open, setOpen] = useState(false);
+  const activeCount = [
+    currentType,
+    currentBedrooms,
+    currentBathrooms,
+    showZone ? currentZone : undefined,
+    currentPriceMin || currentPriceMax,
+  ].filter(Boolean).length;
+
+  const viewButtons = (iconsOnly: boolean) =>
+    VIEWS.map((v) => {
+      const label = t(
+        v === "cards" ? "viewCards" : v === "list" ? "viewList" : "viewMap",
+      );
+      return (
+        <button
+          key={v}
+          type="button"
+          onClick={() => pushWith({ view: v === "cards" ? undefined : v })}
+          aria-pressed={currentView === v}
+          aria-label={iconsOnly ? label : undefined}
+          title={iconsOnly ? label : undefined}
+          className={`flex flex-1 items-center justify-center gap-1.5 px-3 py-2 text-sm capitalize transition-colors sm:flex-none ${
+            currentView === v
+              ? "bg-brand-primary text-white"
+              : "bg-white text-brand-text hover:bg-brand-accent"
+          }`}
         >
-          {/* On mobile the selects sit in an even 2-col grid; on desktop `contents`
-            dissolves the wrapper so they flow inline in the filter row. */}
-          <div className="grid w-full min-w-0 grid-cols-2 gap-2.5 sm:contents">
-            {showZone ? (
-              <label className={fieldClass}>
-                <span className={labelClass}>{t("labelZone")}</span>
-                <select
-                  name="zona"
-                  defaultValue={currentZone ?? ""}
-                  className={selectClass}
+          {VIEW_ICONS[v]}
+          {iconsOnly ? null : label}
+        </button>
+      );
+    });
+
+  return (
+    <>
+      {/* The filter bar stays pinned under the fixed site header (h-20) while scrolling a
+          long listing. It sits directly in the page container (not nested with the sub-zone
+          pills) so it can stay stuck for the whole card grid. On desktop the pt/-mt pair
+          gives breathing room when stuck without moving the unstuck layout; below lg it's
+          a compact "Filtrar" row whose panel drops down over the listing. */}
+      <div
+        className={
+          compact
+            ? ""
+            : `sticky top-20 z-30 bg-white lg:-mt-4 lg:pt-4 ${hasSubzones ? "" : "mb-10"}`
+        }
+      >
+        <div
+          className={`relative ${compact ? "" : "border-b border-brand-text/10 pb-3 lg:pb-14"}`}
+        >
+          {compact ? null : (
+            <div className="flex items-center gap-2 pt-2 lg:hidden">
+              <button
+                type="button"
+                onClick={() => setOpen((o) => !o)}
+                aria-expanded={open}
+                className="flex flex-1 items-center justify-center gap-2 border border-brand-primary bg-brand-primary px-4 py-2 text-sm font-semibold uppercase tracking-wide text-white"
+              >
+                <svg
+                  className="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  aria-hidden
                 >
-                  <option value="">{t("allZones")}</option>
-                  {ZONES.map((zone) => (
-                    <option key={zone} value={zone}>
-                      {tZones(zone)}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            ) : null}
-
-            <label className={fieldClass}>
-              <span className={labelClass}>{t("labelType")}</span>
-              <select
-                name="type"
-                defaultValue={currentType ?? ""}
-                className={selectClass}
-              >
-                <option value="">{t("allTypes")}</option>
-                {TYPES.map((type) => (
-                  <option key={type} value={type}>
-                    {t(type)}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className={fieldClass}>
-              <span className={labelClass}>{t("bedrooms")}</span>
-              <select
-                name="bedrooms"
-                defaultValue={currentBedrooms ?? ""}
-                className={selectClass}
-              >
-                <option value="">{t("any")}</option>
-                {BEDROOMS.map((n) => (
-                  <option key={n} value={n}>
-                    {n === BEDROOMS[BEDROOMS.length - 1] ? `${n}+` : n}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className={fieldClass}>
-              <span className={labelClass}>{t("bathrooms")}</span>
-              <select
-                name="bathrooms"
-                defaultValue={currentBathrooms ?? ""}
-                className={selectClass}
-              >
-                <option value="">{t("any")}</option>
-                {BATHROOMS.map((n) => (
-                  <option key={n} value={n}>
-                    {n === BATHROOMS[BATHROOMS.length - 1] ? `${n}+` : n}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-
-          {showPrice ? (
-            <div className="flex w-full min-w-0 flex-col gap-1 sm:w-auto sm:min-w-[170px] sm:flex-[1.5]">
-              <span className={labelClass}>{t("priceRange")}</span>
-              <div className="flex items-center justify-between text-xs text-brand-text/80">
-                <span>{formatUsd(minPrice, "es")}</span>
-                <span>
-                  {formatUsd(maxPrice, "es")}
-                  {maxPrice >= ceil ? "+" : ""}
-                </span>
-              </div>
-              <div className="relative h-5">
-                <div className="absolute top-1/2 h-[3px] w-full -translate-y-1/2 rounded bg-brand-text/20" />
-                <div
-                  className="absolute top-1/2 h-[3px] -translate-y-1/2 rounded bg-brand-primary"
-                  style={{
-                    left: `${((minPrice - floor) / (ceil - floor)) * 100}%`,
-                    right: `${100 - ((maxPrice - floor) / (ceil - floor)) * 100}%`,
-                  }}
-                />
-                <input
-                  type="range"
-                  aria-label="min price"
-                  min={floor}
-                  max={ceil}
-                  step={STEP}
-                  value={minPrice}
-                  onChange={(e) =>
-                    setMinPrice(
-                      Math.min(Number(e.target.value), maxPrice - STEP),
-                    )
-                  }
-                  className="pointer-events-none absolute inset-0 h-5 w-full appearance-none bg-transparent [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:bg-brand-primary"
-                />
-                <input
-                  type="range"
-                  aria-label="max price"
-                  min={floor}
-                  max={ceil}
-                  step={STEP}
-                  value={maxPrice}
-                  onChange={(e) =>
-                    setMaxPrice(
-                      Math.max(Number(e.target.value), minPrice + STEP),
-                    )
-                  }
-                  className="pointer-events-none absolute inset-0 h-5 w-full appearance-none bg-transparent [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:bg-brand-primary"
-                />
-              </div>
+                  <path d="M4 6h16M7 12h10M10 18h4" />
+                </svg>
+                {t("filter")}
+                {activeCount > 0 ? (
+                  <span className="rounded-full bg-white px-2 text-xs font-bold text-brand-primary">
+                    {activeCount}
+                  </span>
+                ) : null}
+              </button>
+              {showView ? (
+                <div className="inline-flex overflow-hidden rounded border border-brand-text/30 bg-white">
+                  {viewButtons(true)}
+                </div>
+              ) : null}
             </div>
-          ) : null}
+          )}
 
-          {showSort ? (
-            <label className={fieldClass}>
-              <span className={labelClass}>{t("labelSort")}</span>
-              <select
-                value={currentSort ?? ""}
-                onChange={(e) =>
-                  pushWith({ sort: e.target.value || undefined })
-                }
-                className={selectClass}
-              >
-                <option value="">{t("sortNewest")}</option>
-                <option value="price_desc">{t("sortPriceDesc")}</option>
-                <option value="price_asc">{t("sortPriceAsc")}</option>
-              </select>
-            </label>
-          ) : null}
-
-          {/* Divider separating the filter inputs from the primary action. */}
-          <div className="hidden w-px self-stretch bg-brand-text/20 sm:block" />
-
-          <button
-            type="submit"
-            className="w-full border border-brand-primary bg-brand-primary px-6 py-2 text-sm font-semibold uppercase tracking-wide text-white hover:bg-brand-primary/90 sm:ml-1 sm:w-auto"
+          <div
+            className={
+              compact
+                ? ""
+                : `${open ? "block" : "hidden"} max-lg:absolute max-lg:inset-x-0 max-lg:top-full max-lg:z-30 max-lg:max-h-[calc(100dvh-9rem)] max-lg:overflow-y-auto max-lg:border max-lg:border-brand-text/10 max-lg:bg-white max-lg:p-4 max-lg:shadow-lg lg:block`
+            }
           >
-            {t("filter")}
-          </button>
-        </form>
+            <form
+              onSubmit={applyFilters}
+              className="flex w-full flex-wrap items-end gap-2.5"
+            >
+              {/* On mobile the selects sit in an even 2-col grid; on desktop `contents`
+            dissolves the wrapper so they flow inline in the filter row. */}
+              <div className="grid w-full min-w-0 grid-cols-2 gap-2.5 sm:contents">
+                {showZone ? (
+                  <label className={fieldClass}>
+                    <span className={labelClass}>{t("labelZone")}</span>
+                    <select
+                      name="zona"
+                      defaultValue={currentZone ?? ""}
+                      className={selectClass}
+                    >
+                      <option value="">{t("allZones")}</option>
+                      {ZONES.map((zone) => (
+                        <option key={zone} value={zone}>
+                          {tZones(zone)}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                ) : null}
 
-        {/* View toggle rides on the bottom divider line, right-aligned on desktop. */}
-        {showView ? (
-          <div className="mt-4 w-full sm:absolute sm:bottom-0 sm:right-0 sm:mt-0 sm:w-auto sm:translate-y-1/2">
-            <div className="flex w-full overflow-hidden rounded border border-brand-text/30 bg-white sm:inline-flex sm:w-auto">
-              {VIEWS.map((v) => (
-                <button
-                  key={v}
-                  type="button"
-                  onClick={() =>
-                    pushWith({ view: v === "cards" ? undefined : v })
-                  }
-                  aria-pressed={currentView === v}
-                  className={`flex flex-1 items-center justify-center gap-1.5 px-3 py-2 text-sm capitalize transition-colors sm:flex-none ${
-                    currentView === v
-                      ? "bg-brand-primary text-white"
-                      : "bg-white text-brand-text hover:bg-brand-accent"
-                  }`}
-                >
-                  {VIEW_ICONS[v]}
-                  {t(
-                    v === "cards"
-                      ? "viewCards"
-                      : v === "list"
-                        ? "viewList"
-                        : "viewMap",
-                  )}
-                </button>
-              ))}
-            </div>
+                <label className={fieldClass}>
+                  <span className={labelClass}>{t("labelType")}</span>
+                  <select
+                    name="type"
+                    defaultValue={currentType ?? ""}
+                    className={selectClass}
+                  >
+                    <option value="">{t("allTypes")}</option>
+                    {TYPES.map((type) => (
+                      <option key={type} value={type}>
+                        {t(type)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className={fieldClass}>
+                  <span className={labelClass}>{t("bedrooms")}</span>
+                  <select
+                    name="bedrooms"
+                    defaultValue={currentBedrooms ?? ""}
+                    className={selectClass}
+                  >
+                    <option value="">{t("any")}</option>
+                    {BEDROOMS.map((n) => (
+                      <option key={n} value={n}>
+                        {n === BEDROOMS[BEDROOMS.length - 1] ? `${n}+` : n}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className={fieldClass}>
+                  <span className={labelClass}>{t("bathrooms")}</span>
+                  <select
+                    name="bathrooms"
+                    defaultValue={currentBathrooms ?? ""}
+                    className={selectClass}
+                  >
+                    <option value="">{t("any")}</option>
+                    {BATHROOMS.map((n) => (
+                      <option key={n} value={n}>
+                        {n === BATHROOMS[BATHROOMS.length - 1] ? `${n}+` : n}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+
+              {showPrice ? (
+                <div className="flex w-full min-w-0 flex-col gap-1 sm:w-auto sm:min-w-[170px] sm:flex-[1.5]">
+                  <span className={labelClass}>{t("priceRange")}</span>
+                  <div className="flex items-center justify-between text-xs text-brand-text/80">
+                    <span>{formatUsd(minPrice, "es")}</span>
+                    <span>
+                      {formatUsd(maxPrice, "es")}
+                      {maxPrice >= ceil ? "+" : ""}
+                    </span>
+                  </div>
+                  <div className="relative h-5">
+                    <div className="absolute top-1/2 h-[3px] w-full -translate-y-1/2 rounded bg-brand-text/20" />
+                    <div
+                      className="absolute top-1/2 h-[3px] -translate-y-1/2 rounded bg-brand-primary"
+                      style={{
+                        left: `${((minPrice - floor) / (ceil - floor)) * 100}%`,
+                        right: `${100 - ((maxPrice - floor) / (ceil - floor)) * 100}%`,
+                      }}
+                    />
+                    <input
+                      type="range"
+                      aria-label="min price"
+                      min={floor}
+                      max={ceil}
+                      step={STEP}
+                      value={minPrice}
+                      onChange={(e) =>
+                        setMinPrice(
+                          Math.min(Number(e.target.value), maxPrice - STEP),
+                        )
+                      }
+                      className="pointer-events-none absolute inset-0 h-5 w-full appearance-none bg-transparent [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:bg-brand-primary"
+                    />
+                    <input
+                      type="range"
+                      aria-label="max price"
+                      min={floor}
+                      max={ceil}
+                      step={STEP}
+                      value={maxPrice}
+                      onChange={(e) =>
+                        setMaxPrice(
+                          Math.max(Number(e.target.value), minPrice + STEP),
+                        )
+                      }
+                      className="pointer-events-none absolute inset-0 h-5 w-full appearance-none bg-transparent [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:bg-brand-primary"
+                    />
+                  </div>
+                </div>
+              ) : null}
+
+              {showSort ? (
+                <label className={fieldClass}>
+                  <span className={labelClass}>{t("labelSort")}</span>
+                  <select
+                    value={currentSort ?? ""}
+                    onChange={(e) =>
+                      pushWith({ sort: e.target.value || undefined })
+                    }
+                    className={selectClass}
+                  >
+                    {priceAscByDefault ? (
+                      <>
+                        <option value="">{t("sortPriceAsc")}</option>
+                        <option value="price_desc">{t("sortPriceDesc")}</option>
+                        <option value="newest">{t("sortNewest")}</option>
+                      </>
+                    ) : (
+                      <>
+                        <option value="">{t("sortNewest")}</option>
+                        <option value="price_desc">{t("sortPriceDesc")}</option>
+                        <option value="price_asc">{t("sortPriceAsc")}</option>
+                      </>
+                    )}
+                  </select>
+                </label>
+              ) : null}
+
+              {/* Divider separating the filter inputs from the primary action. */}
+              <div className="hidden w-px self-stretch bg-brand-text/20 sm:block" />
+
+              <button
+                type="submit"
+                className="w-full border border-brand-primary bg-brand-primary px-6 py-2 text-sm font-semibold uppercase tracking-wide text-white hover:bg-brand-primary/90 sm:ml-1 sm:w-auto"
+              >
+                {t("filter")}
+              </button>
+            </form>
           </div>
-        ) : null}
+
+          {/* View toggle rides on the bottom divider line, right-aligned on desktop. */}
+          {showView ? (
+            <div
+              className={`${compact ? "" : "max-lg:hidden"} mt-4 w-full sm:absolute sm:bottom-0 sm:right-0 sm:mt-0 sm:w-auto sm:translate-y-1/2`}
+            >
+              <div className="flex w-full overflow-hidden rounded border border-brand-text/30 bg-white sm:inline-flex sm:w-auto">
+                {viewButtons(false)}
+              </div>
+            </div>
+          ) : null}
+        </div>
       </div>
 
       {/* Sub-zone pills — below the Tarjetas/Lista/Mapa toggle, not a select,
           so picking one is a single click that filters live. */}
       {subzones && subzones.length > 0 ? (
-        <div className="mt-10 flex flex-wrap gap-x-2.5 gap-y-3 sm:mt-12">
+        <div
+          className={`mt-10 flex flex-wrap gap-x-2.5 gap-y-3 sm:mt-12 ${compact ? "" : "mb-10"}`}
+        >
           <button
             type="button"
             onClick={() =>
@@ -421,6 +509,6 @@ export default function PropertyFilters({
           ))}
         </div>
       ) : null}
-    </div>
+    </>
   );
 }

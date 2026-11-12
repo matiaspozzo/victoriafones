@@ -3,13 +3,21 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import FaqSection from "@/components/FaqSection";
 import LeadForm from "@/components/LeadForm";
-import { SetNavbarStyle, type NavbarStyle } from "@/components/NavbarStyleContext";
+import {
+  SetNavbarStyle,
+  type NavbarStyle,
+} from "@/components/NavbarStyleContext";
 import PageHeader from "@/components/PageHeader";
 import Pagination from "@/components/Pagination";
 import PropertyCard from "@/components/PropertyCard";
 import PropertyFilters from "@/components/PropertyFilters";
 import PropertyMap from "@/components/PropertyMap";
-import { iconArea, iconBath, iconBed, iconCalendar } from "@/components/PropertyStats";
+import {
+  iconArea,
+  iconBath,
+  iconBed,
+  iconCalendar,
+} from "@/components/PropertyStats";
 import ResponsiveHero from "@/components/ResponsiveHero";
 import { getPageHeader, getProperties, type PropertySummary } from "@/lib/api";
 import { formatUsd, propertyMetaTitle } from "@/lib/format";
@@ -23,7 +31,9 @@ function groupBySubzone(
   subzones: { slug: string; name: string }[],
   otherLabel: string,
 ) {
-  const bySlug = new Map(subzones.map((s) => [s.slug, [] as PropertySummary[]]));
+  const bySlug = new Map(
+    subzones.map((s) => [s.slug, [] as PropertySummary[]]),
+  );
   const other: PropertySummary[] = [];
 
   for (const property of properties) {
@@ -33,7 +43,11 @@ function groupBySubzone(
   }
 
   const groups = subzones
-    .map((s) => ({ key: s.slug, name: s.name, properties: bySlug.get(s.slug) ?? [] }))
+    .map((s) => ({
+      key: s.slug,
+      name: s.name,
+      properties: bySlug.get(s.slug) ?? [],
+    }))
     .filter((g) => g.properties.length > 0);
 
   if (other.length > 0) {
@@ -94,9 +108,22 @@ export default async function PropertyListingPage({
   // listings let the user pick a zone via the filter (?zona=). On a fixed
   // zone page with sub-zones (e.g. Alrededores), ?subzona= narrows further
   // to one specific sub-zone instead.
-  const selectedSubzone = subzones?.find((s) => s.slug === params.subzona)?.slug;
-  const effectiveNeighborhood = neighborhood ? (selectedSubzone ?? neighborhood) : params.zona;
-  const view = params.view === "list" || params.view === "map" ? params.view : "cards";
+  const selectedSubzone = subzones?.find(
+    (s) => s.slug === params.subzona,
+  )?.slug;
+  const effectiveNeighborhood = neighborhood
+    ? (selectedSubzone ?? neighborhood)
+    : params.zona;
+  // Zone pages show 3 cards per row on desktop when a grid has more than two cards
+  // (with one or two they keep the wider 2-column layout); general listings keep 2.
+  const cardGridClass = (count: number) =>
+    neighborhood && count > 2
+      ? "grid grid-cols-1 gap-20 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-10 lg:gap-y-16"
+      : "grid grid-cols-1 gap-20 sm:grid-cols-2";
+  const view =
+    params.view === "list" || params.view === "map" ? params.view : "cards";
+  // Zone pages list cheapest first by default; the general listings keep "newest first".
+  const sort = params.sort ?? (neighborhood ? "price_asc" : undefined);
 
   const [listing, header] = await Promise.all([
     getProperties(locale, {
@@ -107,7 +134,7 @@ export default async function PropertyListingPage({
       bathrooms: params.bathrooms,
       price_min: params.price_min,
       price_max: params.price_max,
-      sort: params.sort,
+      sort,
       per_page: "48",
       page: params.page,
     }),
@@ -116,17 +143,29 @@ export default async function PropertyListingPage({
   const properties = listing.data;
 
   const fallbackTitle =
-    operation === "rent" ? t("rentTitle") : operation === "sale" ? t("saleTitle") : t("allTitle");
+    operation === "rent"
+      ? t("rentTitle")
+      : operation === "sale"
+        ? t("saleTitle")
+        : t("allTitle");
   const title = titleOverride ?? header?.hero_title ?? fallbackTitle;
   const subtitle = subtitleOverride ?? header?.hero_subtitle ?? undefined;
-  const heroDesktop = heroImageOverride?.desktop ?? header?.hero_image.desktop ?? heroImage;
-  const heroMobile = heroImageOverride?.mobile ?? header?.hero_image.mobile ?? heroImage;
+  const heroDesktop =
+    heroImageOverride?.desktop ?? header?.hero_image.desktop ?? heroImage;
+  const heroMobile =
+    heroImageOverride?.mobile ?? header?.hero_image.mobile ?? heroImage;
   const navbarStyle = navbarStyleOverride ?? header?.navbar_style ?? "white";
   const cta = await getTranslations({ locale, namespace: "SearchCta" });
 
   const searchCtaSection = (
     <section className="relative text-brand-primary">
-      <Image src="/brand/search-cta.jpg" alt="" fill className="object-cover grayscale" sizes="100vw" />
+      <Image
+        src="/brand/search-cta.jpg"
+        alt=""
+        fill
+        className="object-cover grayscale"
+        sizes="100vw"
+      />
       <div className="absolute inset-0 bg-[#eeeeec]/90" />
       <div className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-6 py-16 md:grid-cols-2 lg:gap-16 lg:px-12">
         <div>
@@ -153,7 +192,9 @@ export default async function PropertyListingPage({
         <ResponsiveHero desktop={heroDesktop} mobile={heroMobile} />
         <PageHeader title={title} subtitle={subtitle} />
         <div className="mx-auto max-w-3xl px-6 py-16">
-          <p className="whitespace-pre-line text-brand-text">{header.rental_disabled_message}</p>
+          <p className="whitespace-pre-line text-brand-text">
+            {header.rental_disabled_message}
+          </p>
         </div>
         {searchCtaSection}
       </main>
@@ -166,7 +207,9 @@ export default async function PropertyListingPage({
   // Price range across this page's own results (not the whole zone/site) —
   // lets an AI answer engine answer "price range in X" straight from
   // structured data instead of having to read every card's text.
-  const pricedProperties = properties.filter((p): p is typeof p & { price_usd: number } => p.price_usd != null);
+  const pricedProperties = properties.filter(
+    (p): p is typeof p & { price_usd: number } => p.price_usd != null,
+  );
   const aggregateOffer =
     pricedProperties.length > 0
       ? {
@@ -195,7 +238,10 @@ export default async function PropertyListingPage({
               // see propertyMetaTitle's own comment for why not the raw
               // property.title.
               name: propertyMetaTitle(property, locale),
-              url: canonicalFor(locale, { pathname: "/propiedades/[slug]", params: { slug: property.slug } }),
+              url: canonicalFor(locale, {
+                pathname: "/propiedades/[slug]",
+                params: { slug: property.slug },
+              }),
               image: property.cover_image ?? undefined,
               sku: property.code,
               ...(property.price_usd
@@ -217,14 +263,24 @@ export default async function PropertyListingPage({
   // on a fixed [barrio] page, which is the only case `neighborhood` is set —
   // "nuestras-propiedades" never passes it, so there's no third pathname
   // variant to branch on here).
-  const zoneName = neighborhood && tZones.has(neighborhood) ? tZones(neighborhood) : undefined;
+  const zoneName =
+    neighborhood && tZones.has(neighborhood) ? tZones(neighborhood) : undefined;
   const breadcrumbCrumbs = [
     { name: tNav("home"), url: canonicalFor(locale, "/") },
     {
-      name: pageKey === "alquiler" ? t("rentTitle") : pageKey === "venta" ? t("saleTitle") : t("allTitle"),
+      name:
+        pageKey === "alquiler"
+          ? t("rentTitle")
+          : pageKey === "venta"
+            ? t("saleTitle")
+            : t("allTitle"),
       url: canonicalFor(
         locale,
-        pageKey === "alquiler" ? "/propiedades-en-alquiler" : pageKey === "venta" ? "/propiedades-en-venta" : "/nuestras-propiedades",
+        pageKey === "alquiler"
+          ? "/propiedades-en-alquiler"
+          : pageKey === "venta"
+            ? "/propiedades-en-venta"
+            : "/nuestras-propiedades",
       ),
     },
     ...(neighborhood && zoneName
@@ -234,20 +290,28 @@ export default async function PropertyListingPage({
             url: canonicalFor(
               locale,
               pageKey === "alquiler"
-                ? { pathname: "/propiedades-en-alquiler/[barrio]" as const, params: { barrio: neighborhood } }
-                : { pathname: "/propiedades-en-venta/[barrio]" as const, params: { barrio: neighborhood } },
+                ? {
+                    pathname: "/propiedades-en-alquiler/[barrio]" as const,
+                    params: { barrio: neighborhood },
+                  }
+                : {
+                    pathname: "/propiedades-en-venta/[barrio]" as const,
+                    params: { barrio: neighborhood },
+                  },
             ),
           },
         ]
       : []),
   ];
 
-  const faqPageJsonLdData = faqs && faqs.length > 0 ? faqPageJsonLd(faqs) : null;
+  const faqPageJsonLdData =
+    faqs && faqs.length > 0 ? faqPageJsonLd(faqs) : null;
 
   // GeoJSON query for the map view (same filters as the list).
   const mapParams = new URLSearchParams();
   if (operation) mapParams.set("operation", operation);
-  if (effectiveNeighborhood) mapParams.set("neighborhood", effectiveNeighborhood);
+  if (effectiveNeighborhood)
+    mapParams.set("neighborhood", effectiveNeighborhood);
   if (params.type) mapParams.set("type", params.type);
   if (params.bedrooms) mapParams.set("bedrooms", params.bedrooms);
   if (params.bathrooms) mapParams.set("bathrooms", params.bathrooms);
@@ -265,13 +329,21 @@ export default async function PropertyListingPage({
       ) : null}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd(breadcrumbCrumbs)) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd(breadcrumbCrumbs)),
+        }}
       />
       <ResponsiveHero desktop={heroDesktop} mobile={heroMobile} />
 
-      <PageHeader title={title} subtitle={subtitle} description={neighborhoodDescription} />
+      <PageHeader
+        title={title}
+        subtitle={subtitle}
+        description={neighborhoodDescription}
+      />
 
-      <div className={`mx-auto max-w-7xl px-6 pt-12 ${view === "map" ? "pb-4" : "pb-12"}`}>
+      <div
+        className={`mx-auto max-w-7xl px-6 pt-12 ${view === "map" ? "pb-4" : "pb-12"}`}
+      >
         <PropertyFilters
           currentType={params.type}
           currentBedrooms={params.bedrooms}
@@ -280,6 +352,7 @@ export default async function PropertyListingPage({
           currentSubzone={selectedSubzone}
           subzones={subzones}
           currentSort={params.sort}
+          priceAscByDefault={Boolean(neighborhood)}
           currentView={view}
           currentPriceMin={params.price_min}
           currentPriceMax={params.price_max}
@@ -297,7 +370,10 @@ export default async function PropertyListingPage({
               return (
                 <li key={property.id}>
                   <Link
-                    href={{ pathname: "/propiedades/[slug]", params: { slug: property.slug } }}
+                    href={{
+                      pathname: "/propiedades/[slug]",
+                      params: { slug: property.slug },
+                    }}
                     className="group flex items-center gap-4 py-3 text-sm text-brand-text/80 transition-colors hover:bg-brand-accent/40"
                   >
                     <div className="relative h-14 w-20 shrink-0 overflow-hidden bg-brand-gray">
@@ -317,19 +393,33 @@ export default async function PropertyListingPage({
                         {property.title}
                       </h3>
                       {property.bedrooms ? (
-                        <span className={`hidden sm:flex ${cell}`}>{iconBed}{property.bedrooms}</span>
+                        <span className={`hidden sm:flex ${cell}`}>
+                          {iconBed}
+                          {property.bedrooms}
+                        </span>
                       ) : null}
                       {property.bathrooms ? (
-                        <span className={`hidden sm:flex ${cell}`}>{iconBath}{property.bathrooms}</span>
+                        <span className={`hidden sm:flex ${cell}`}>
+                          {iconBath}
+                          {property.bathrooms}
+                        </span>
                       ) : null}
                       {area ? (
-                        <span className={`hidden md:flex ${cell}`}>{iconArea}{area}</span>
+                        <span className={`hidden md:flex ${cell}`}>
+                          {iconArea}
+                          {area}
+                        </span>
                       ) : null}
                       {property.year_built ? (
-                        <span className={`hidden md:flex ${cell}`}>{iconCalendar}{property.year_built}</span>
+                        <span className={`hidden md:flex ${cell}`}>
+                          {iconCalendar}
+                          {property.year_built}
+                        </span>
                       ) : null}
                       <span className="px-4 pr-0 text-right font-price text-sm font-bold tracking-wide text-brand-primary">
-                        {property.price_usd ? formatUsd(property.price_usd, locale) : "Consultar"}
+                        {property.price_usd
+                          ? formatUsd(property.price_usd, locale)
+                          : "Consultar"}
                       </span>
                     </div>
                   </Link>
@@ -339,19 +429,23 @@ export default async function PropertyListingPage({
           </ul>
         ) : subzones && subzones.length > 0 && !selectedSubzone ? (
           <div className="mt-10 flex flex-col gap-16">
-            {groupBySubzone(properties, subzones, t("otherProperties")).map((group) => (
-              <section key={group.key}>
-                <h2 className="mb-6 font-heading text-2xl font-bold text-brand-primary">{group.name}</h2>
-                <div className="grid grid-cols-1 gap-20 sm:grid-cols-2">
-                  {group.properties.map((property) => (
-                    <PropertyCard key={property.id} property={property} />
-                  ))}
-                </div>
-              </section>
-            ))}
+            {groupBySubzone(properties, subzones, t("otherProperties")).map(
+              (group) => (
+                <section key={group.key}>
+                  <h2 className="mb-6 font-heading text-2xl font-bold text-brand-primary">
+                    {group.name}
+                  </h2>
+                  <div className={cardGridClass(group.properties.length)}>
+                    {group.properties.map((property) => (
+                      <PropertyCard key={property.id} property={property} />
+                    ))}
+                  </div>
+                </section>
+              ),
+            )}
           </div>
         ) : (
-          <div className="mt-10 grid grid-cols-1 gap-20 sm:grid-cols-2">
+          <div className={`mt-10 ${cardGridClass(properties.length)}`}>
             {properties.map((property) => (
               <PropertyCard key={property.id} property={property} />
             ))}
@@ -377,7 +471,9 @@ export default async function PropertyListingPage({
       {faqPageJsonLdData ? (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqPageJsonLdData) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(faqPageJsonLdData),
+          }}
         />
       ) : null}
       <FaqSection title={t("faqTitle")} faqs={faqs ?? []} />
