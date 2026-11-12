@@ -63,11 +63,29 @@ class DevelopmentDetailResource extends JsonResource
         return collect(is_array($groups) ? $groups : [])
             ->map(fn ($group) => [
                 'title' => (string) ($group['title'] ?? ''),
-                'items' => collect($group['items'] ?? [])->filter()->values()->all(),
+                'items' => collect($group['items'] ?? [])
+                    ->map(fn ($item) => $this->itemText($item))
+                    ->filter()
+                    ->values()
+                    ->all(),
             ])
             ->filter(fn ($group) => $group['title'] !== '' || $group['items'] !== [])
             ->values()
             ->all();
+    }
+
+    /**
+     * Filament's simple Repeater can persist items wrapped as {"item": "text"}
+     * (even {"item": {"item": "text"}}) instead of plain strings. The frontend
+     * renders each item as a React child, so always hand it a string.
+     */
+    private function itemText(mixed $item): string
+    {
+        while (is_array($item)) {
+            $item = $item['item'] ?? ($item === [] ? '' : reset($item));
+        }
+
+        return trim((string) $item);
     }
 
     /** @return array<int, array{label: string, m2: int, is_total: bool}> */
