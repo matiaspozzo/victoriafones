@@ -56,6 +56,19 @@ class Development extends Model implements HasMedia
         'lng' => 'decimal:7',
     ];
 
+    /**
+     * Filament's simple Repeater can persist list items wrapped as {"item": "text"}
+     * (even {"item": {"item": "text"}}) instead of plain strings. Always return the text.
+     */
+    public static function itemText(mixed $item): string
+    {
+        while (is_array($item)) {
+            $item = $item['item'] ?? ($item === [] ? '' : reset($item));
+        }
+
+        return trim((string) $item);
+    }
+
     public function neighborhood(): BelongsTo
     {
         return $this->belongsTo(Neighborhood::class);

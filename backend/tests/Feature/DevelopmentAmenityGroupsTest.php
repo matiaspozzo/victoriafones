@@ -66,4 +66,20 @@ class DevelopmentAmenityGroupsTest extends TestCase
 
         $this->assertSame(['Cancha de pádel', 'Cancha de fútbol'], $stored[0]['items']);
     }
+
+    public function test_filament_shows_wrapped_items_as_text_and_saves_them_clean(): void
+    {
+        $development = $this->development([
+            ['title' => 'Deportes', 'items' => [['item' => ['item' => 'Cancha de pádel']], ['item' => 'Fogones']]],
+        ]);
+
+        $this->actingAs(User::factory()->create());
+
+        $component = Livewire::test(EditDevelopment::class, ['record' => $development->getRouteKey()]);
+
+        $component->call('save')->assertHasNoFormErrors();
+
+        $stored = $development->fresh()->getTranslation('amenity_groups', 'es');
+        $this->assertSame(['Cancha de pádel', 'Fogones'], $stored[0]['items']);
+    }
 }

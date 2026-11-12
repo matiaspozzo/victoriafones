@@ -145,6 +145,12 @@ class DevelopmentResource extends Resource
                                 Forms\Components\Repeater::make('items')
                                     ->label('Ítems')
                                     ->simple(Forms\Components\TextInput::make('item')->required())
+                                    // Runs after the repeater wraps each value as ['item' => value]. Older rows were
+                                    // stored already wrapped ({"item": "text"}), which ends up double-wrapped and
+                                    // shows as [object Object]; unwrap to the text but keep the item keys.
+                                    ->formatStateUsing(fn ($state) => collect($state ?? [])
+                                        ->map(fn ($row) => ['item' => Development::itemText($row)])
+                                        ->all())
                                     ->addActionLabel('Agregar ítem')
                                     ->reorderable(),
                             ])
