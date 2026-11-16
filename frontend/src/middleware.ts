@@ -24,6 +24,11 @@ export const config = {
   // Second entry re-includes .htm/.html paths (excluded by the first, along
   // with every other static-asset extension) purely so the spam URLs above
   // — the only .htm/.html paths this site has ever had — can be matched;
-  // there are no real .htm/.html files in public/ for it to catch instead.
-  matcher: ['/((?!api|trpc|_next|_vercel|.*\\..*).*)', '/((?!api|trpc|_next|_vercel).*\\.html?)'],
+  // there are no real .htm/.html files in public/ for it to catch instead —
+  // except Google Search Console's verification file (googleXXXX.html), which
+  // must be left to the static file server.
+  matcher: [
+    '/((?!api|trpc|_next|_vercel|.*\\..*).*)',
+    '/((?!api|trpc|_next|_vercel|google[0-9a-f]+\\.html).*\\.html?)',
+  ],
 };
