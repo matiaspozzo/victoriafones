@@ -112,6 +112,51 @@ export default function PropertyMap({
     const areaLabelMarkers: maplibregl.Marker[] = [];
     const developmentMarkers: maplibregl.Marker[] = [];
 
+    // MapLibre picks the popup's side from the pin position alone (it ignores the
+    // popup's size), so on a short map the card opens below a pin and gets cut off.
+    // Open it on the side with room instead: below, above, or beside the pin.
+    // (Panning the map to fit isn't an option: the pin would slide out from under
+    // the cursor, fire mouseleave and close the popup.)
+    type PopupAnchor = "center" | "top" | "top-left" | "top-right" | "bottom" | "bottom-left" | "bottom-right" | "left" | "right";
+    const showHoverPopup = (coords: [number, number], html: string, markerEl: HTMLElement) => {
+      const GAP = 18;
+      const BELOW = 26; // the pin's tip is at `coords`; this was the original offset
+      const mw = markerEl.offsetWidth;
+      const mh = markerEl.offsetHeight;
+      const offset: Record<PopupAnchor, [number, number]> = {
+        center: [0, 0],
+        top: [0, BELOW],
+        "top-left": [0, BELOW],
+        "top-right": [0, BELOW],
+        bottom: [0, -(mh + GAP)],
+        "bottom-left": [0, -(mh + GAP)],
+        "bottom-right": [0, -(mh + GAP)],
+        left: [mw / 2 + GAP, -mh / 2],
+        right: [-(mw / 2 + GAP), -mh / 2],
+      };
+
+      // Render below first to measure the real card, then move it if it doesn't fit.
+      hoverPopup.options.anchor = "top";
+      hoverPopup.setOffset(offset);
+      hoverPopup.setLngLat(coords).setHTML(html).addTo(map);
+
+      const el = hoverPopup.getElement();
+      const popupH = el.offsetHeight;
+      const popupW = el.offsetWidth;
+      const pt = map.project(coords);
+      const { clientHeight: H, clientWidth: W } = map.getContainer();
+
+      let anchor: PopupAnchor;
+      if (H - pt.y - BELOW >= popupH) anchor = "top";
+      else if (pt.y - mh - GAP >= popupH) anchor = "bottom";
+      else anchor = W - pt.x >= popupW + mw / 2 + GAP ? "left" : "right";
+
+      if (anchor !== "top") {
+        hoverPopup.options.anchor = anchor;
+        hoverPopup.setOffset(offset);
+      }
+    };
+
     const markers: Record<string, maplibregl.Marker> = {};
     let markersOnScreen: Record<string, maplibregl.Marker> = {};
 
@@ -193,7 +238,7 @@ export default function PropertyMap({
           router.push({ pathname: "/desarrollos/[slug]", params: { slug: props.slug } });
         });
         el.addEventListener("mouseenter", () => {
-          hoverPopup.setLngLat(coords).setHTML(developmentPopupHTML(props, uiLocale)).addTo(map);
+          showHoverPopup(coords, developmentPopupHTML(props, uiLocale), el);
         });
         el.addEventListener("mouseleave", () => hoverPopup.remove());
         const marker = new maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat(coords);
@@ -252,7 +297,7 @@ export default function PropertyMap({
                 router.push({ pathname: "/propiedades/[slug]", params: { slug: String(props.slug) } });
               });
               el.addEventListener("mouseenter", () => {
-                hoverPopup.setLngLat(coords).setHTML(cardPopupHTML(props)).addTo(map);
+                showHoverPopup(coords, cardPopupHTML(props), el);
               });
               el.addEventListener("mouseleave", () => hoverPopup.remove());
               markers[id] = new maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat(coords);
