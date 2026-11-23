@@ -230,7 +230,8 @@ export default function PropertyFilters({
 
   return (
     <>
-      {/* The filter bar stays pinned under the fixed site header (h-20) while scrolling a
+      {/* The filter bar stays pinned under the fixed site header (h-20) — plus the compact
+          title bar (StickyListingTitle) when that is showing — while scrolling a
           long listing. It sits directly in the page container (not nested with the sub-zone
           pills) so it can stay stuck for the whole card grid. On desktop the pt/-mt pair
           gives breathing room when stuck without moving the unstuck layout; below lg it's
@@ -239,7 +240,7 @@ export default function PropertyFilters({
         className={
           compact
             ? ""
-            : `sticky top-20 z-30 bg-white lg:-mt-4 lg:pt-4 ${hasSubzones ? "" : "mb-10"}`
+            : `sticky top-[calc(5rem+var(--listing-title-h,0px))] z-30 bg-white lg:-mt-4 lg:pt-4 ${hasSubzones ? "" : "mb-10"}`
         }
       >
         <div

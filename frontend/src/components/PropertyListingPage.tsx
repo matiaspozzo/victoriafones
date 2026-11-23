@@ -9,6 +9,7 @@ import {
 } from "@/components/NavbarStyleContext";
 import PageHeader from "@/components/PageHeader";
 import Pagination from "@/components/Pagination";
+import StickyListingTitle from "@/components/StickyListingTitle";
 import PropertyCard from "@/components/PropertyCard";
 import PropertyFilters from "@/components/PropertyFilters";
 import PropertyMap from "@/components/PropertyMap";
@@ -21,6 +22,7 @@ import {
 import ResponsiveHero from "@/components/ResponsiveHero";
 import { getPageHeader, getProperties, type PropertySummary } from "@/lib/api";
 import { formatUsd, propertyMetaTitle } from "@/lib/format";
+import { renderRich } from "@/lib/richText";
 import { breadcrumbJsonLd, canonicalFor, faqPageJsonLd } from "@/lib/seo";
 
 // Splits properties into one group per sub-zone (in the given order), plus a
@@ -353,6 +355,7 @@ export default async function PropertyListingPage({
         subtitle={subtitle}
         description={neighborhoodDescription}
       />
+      <StickyListingTitle>{renderRich(title)}</StickyListingTitle>
 
       <div
         className={`mx-auto max-w-7xl px-6 pt-12 ${view === "map" ? "pb-4" : "pb-12"}`}
