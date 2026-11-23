@@ -98,6 +98,21 @@ export default async function AboutPage({
           </div>
         </div>
       </section>
+
+      <section className="mx-auto max-w-7xl px-6 pb-16">
+        <h2 className="font-heading text-lg font-semibold uppercase tracking-wide text-brand-primary">
+          {t("teamTitle")}
+        </h2>
+        <div className="relative mt-6 aspect-[3/2] w-full overflow-hidden bg-brand-gray">
+          <Image
+            src="/brand/team.webp"
+            alt={t("teamPhotoAlt")}
+            fill
+            className="object-cover"
+            sizes="(min-width: 1280px) 1232px, calc(100vw - 48px)"
+          />
+        </div>
+      </section>
     </main>
   );
 }
