@@ -45,7 +45,7 @@ function ZoneCardLink({
 
 export default function NeighborhoodGrid({ cards }: { cards: HomeZoneCard[] }) {
   return (
-    <div className="grid grid-cols-1 gap-1 sm:grid-cols-2 sm:gap-20">
+    <div className="grid grid-cols-1 gap-1 sm:grid-cols-2 sm:gap-20 lg:grid-cols-3 lg:gap-10">
       {cards.map((card, i) => (
         <ZoneCardLink key={`${card.link}-${i}`} href={card.link} className="group block">
           <div className="relative aspect-video overflow-hidden bg-brand-gray">
@@ -55,7 +55,7 @@ export default function NeighborhoodGrid({ cards }: { cards: HomeZoneCard[] }) {
                 alt={card.label}
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
-                sizes="50vw"
+                sizes="(min-width: 1024px) 33vw, 50vw"
               />
             ) : null}
           </div>

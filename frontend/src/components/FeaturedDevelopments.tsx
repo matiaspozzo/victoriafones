@@ -20,28 +20,31 @@ function Card({ development, hero = false }: { development: DevelopmentSummary; 
   return (
     <Link
       href={{ pathname: "/desarrollos/[slug]", params: { slug: development.slug } }}
-      className={`group relative block overflow-hidden bg-brand-gray ${
-        hero ? "aspect-[4/3] lg:aspect-auto lg:h-full" : "aspect-[4/3]"
+      className={`group block pb-4 sm:relative sm:overflow-hidden sm:bg-brand-gray sm:pb-0 ${
+        hero ? "sm:aspect-[4/3] lg:aspect-auto lg:h-full" : "sm:aspect-[4/3]"
       }`}
     >
-      {development.cover_image ? (
-        <Image
-          src={development.cover_image}
-          alt={development.title}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-          sizes={hero ? "(min-width: 1024px) 50vw, 100vw" : "(min-width: 1024px) 25vw, 50vw"}
-        />
-      ) : null}
+      {/* Mobile: image on top, text below. sm+: image fills the card, text overlays it. */}
+      <div className="relative aspect-video overflow-hidden bg-brand-gray sm:absolute sm:inset-0 sm:aspect-auto">
+        {development.cover_image ? (
+          <Image
+            src={development.cover_image}
+            alt={development.title}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes={hero ? "(min-width: 1024px) 50vw, 100vw" : "(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"}
+          />
+        ) : null}
 
-      <div className="absolute inset-0 bg-gradient-to-t from-brand-primary/90 via-brand-primary/10 to-transparent" />
+        <div className="absolute inset-0 hidden bg-gradient-to-t from-brand-primary/90 via-brand-primary/10 to-transparent sm:block" />
+      </div>
 
-      <div className="absolute bottom-4 left-4 right-4 text-white">
-        <p className={`font-heading font-medium ${hero ? "text-2xl sm:text-3xl" : "text-base sm:text-lg"}`}>
+      <div className="pt-3 text-brand-primary sm:absolute sm:bottom-4 sm:left-4 sm:right-4 sm:pt-0 sm:text-white">
+        <p className={`font-heading text-xl font-medium ${hero ? "sm:text-3xl" : "sm:text-lg"}`}>
           {developmentHeadline(development)}
         </p>
         {lotsLine ? (
-          <p className={`mt-1 font-price font-bold ${hero ? "text-xl" : "text-sm"}`}>{lotsLine}</p>
+          <p className={`mt-1 font-price text-base font-bold ${hero ? "sm:text-xl" : "sm:text-sm"}`}>{lotsLine}</p>
         ) : null}
       </div>
     </Link>
@@ -56,7 +59,7 @@ function Masonry({ developments }: { developments: DevelopmentSummary[] }) {
   return (
     <div className="grid grid-cols-1 gap-x-4 gap-y-2 lg:grid-cols-2">
       <Card development={hero} hero />
-      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+      <div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
         {rest.map((development) => (
           <Card key={development.id} development={development} />
         ))}
@@ -91,12 +94,12 @@ function Slider({ developments }: { developments: DevelopmentSummary[] }) {
       </div>
 
       {hasMultiple ? (
-        <>
+        <div className="pointer-events-none absolute inset-x-0 top-0 aspect-video sm:inset-0 sm:aspect-auto">
           <button
             type="button"
             onClick={() => scrollByCards(-1)}
             aria-label="Previous"
-            className="absolute left-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-white/90 text-2xl text-brand-primary shadow-md hover:bg-white"
+            className="pointer-events-auto absolute left-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-white/90 text-2xl text-brand-primary shadow-md hover:bg-white"
           >
             ‹
           </button>
@@ -104,11 +107,11 @@ function Slider({ developments }: { developments: DevelopmentSummary[] }) {
             type="button"
             onClick={() => scrollByCards(1)}
             aria-label="Next"
-            className="absolute right-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-white/90 text-2xl text-brand-primary shadow-md hover:bg-white"
+            className="pointer-events-auto absolute right-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-white/90 text-2xl text-brand-primary shadow-md hover:bg-white"
           >
             ›
           </button>
-        </>
+        </div>
       ) : null}
     </div>
   );

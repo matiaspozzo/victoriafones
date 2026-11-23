@@ -11,7 +11,7 @@ import { Link } from "@/i18n/navigation";
 // presses the button. `ssr: false` because it needs WebGL / the DOM.
 const PropertyMap = dynamic(() => import("@/components/PropertyMap"), {
   ssr: false,
-  loading: () => <div className="h-[480px] w-full animate-pulse bg-brand-accent lg:h-[620px]" aria-hidden />,
+  loading: () => <div className="aspect-video w-full animate-pulse bg-brand-accent sm:aspect-auto sm:h-[480px] lg:h-[620px]" aria-hidden />,
 });
 
 /** Home block with the interactive map, loaded on demand. */
@@ -25,7 +25,7 @@ export default function HomeMapSection() {
       {active ? (
         <PropertyMap locale={locale} embedded />
       ) : (
-        <div className="relative h-[480px] w-full overflow-hidden bg-brand-accent lg:h-[620px]">
+        <div className="relative aspect-video w-full overflow-hidden bg-brand-accent sm:aspect-auto sm:h-[480px] lg:h-[620px]">
           <Image
             src="/brand/map-preview.webp"
             alt=""

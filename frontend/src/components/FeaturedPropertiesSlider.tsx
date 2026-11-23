@@ -40,32 +40,35 @@ export default function FeaturedPropertiesSlider({ properties }: { properties: P
             <Link
               key={property.id}
               href={{ pathname: "/propiedades/[slug]", params: { slug: property.slug } }}
-              className="group relative aspect-[4/3] w-full flex-shrink-0 snap-start overflow-hidden bg-brand-gray sm:aspect-auto sm:h-[520px]"
+              className="group block w-full flex-shrink-0 snap-start pb-2 sm:relative sm:h-[520px] sm:overflow-hidden sm:bg-brand-gray sm:pb-0"
             >
-              {property.cover_image ? (
-                <Image
-                  src={property.cover_image}
-                  alt={property.title}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  sizes="(min-width: 1280px) 1216px, 100vw"
-                />
-              ) : null}
+              {/* Mobile: image on top, text below. sm+: image fills the slide, text overlays it. */}
+              <div className="relative aspect-video overflow-hidden bg-brand-gray sm:absolute sm:inset-0 sm:aspect-auto">
+                {property.cover_image ? (
+                  <Image
+                    src={property.cover_image}
+                    alt={property.title}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="(min-width: 1280px) 1216px, 100vw"
+                  />
+                ) : null}
 
-              {operation ? (
-                <span className="absolute left-5 top-5 bg-brand-primary px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
-                  {operation}
-                </span>
-              ) : null}
+                {operation ? (
+                  <span className="pointer-events-auto absolute left-3 top-3 bg-brand-primary px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white sm:left-5 sm:top-5">
+                    {operation}
+                  </span>
+                ) : null}
 
-              <div className="absolute inset-0 bg-gradient-to-t from-brand-primary/90 via-brand-primary/10 to-transparent" />
+                <div className="absolute inset-0 hidden bg-gradient-to-t from-brand-primary/90 via-brand-primary/10 to-transparent sm:block" />
+              </div>
 
-              <div className="absolute bottom-6 left-6 right-6 text-white">
-                <p className="font-heading text-2xl font-medium sm:text-3xl">{title}</p>
-                <p className="mt-1 font-price text-xl">
+              <div className="pt-3 text-brand-primary sm:absolute sm:bottom-6 sm:left-6 sm:right-6 sm:pt-0 sm:text-white">
+                <p className="font-heading text-xl font-medium sm:text-3xl">{title}</p>
+                <p className="mt-1 font-price text-lg sm:text-xl">
                   <span className="font-bold">{formatUsd(property.price_usd, locale)}</span>
                   {property.code ? (
-                    <span className="ml-3 text-base font-light text-white/70">{property.code}</span>
+                    <span className="ml-3 text-base font-light text-brand-text/60 sm:text-white/70">{property.code}</span>
                   ) : null}
                 </p>
               </div>
@@ -75,12 +78,12 @@ export default function FeaturedPropertiesSlider({ properties }: { properties: P
       </div>
 
       {hasMultiple ? (
-        <>
+        <div className="pointer-events-none absolute inset-x-0 top-0 aspect-video sm:inset-0 sm:aspect-auto">
           <button
             type="button"
             onClick={() => scrollByCards(-1)}
             aria-label="Previous"
-            className="absolute left-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-white/90 text-2xl text-brand-primary shadow-md hover:bg-white"
+            className="pointer-events-auto absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center bg-white/90 text-xl sm:left-4 sm:h-11 sm:w-11 text-brand-primary sm:text-2xl shadow-md hover:bg-white"
           >
             ‹
           </button>
@@ -88,11 +91,11 @@ export default function FeaturedPropertiesSlider({ properties }: { properties: P
             type="button"
             onClick={() => scrollByCards(1)}
             aria-label="Next"
-            className="absolute right-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-white/90 text-2xl text-brand-primary shadow-md hover:bg-white"
+            className="pointer-events-auto absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center bg-white/90 text-xl sm:right-4 sm:h-11 sm:w-11 text-brand-primary sm:text-2xl shadow-md hover:bg-white"
           >
             ›
           </button>
-        </>
+        </div>
       ) : null}
     </div>
   );

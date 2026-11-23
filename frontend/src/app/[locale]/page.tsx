@@ -67,7 +67,7 @@ export default async function Home({
     () => ({ data: [], meta: { current_page: 1, last_page: 1, total: 0 } })
   );
 
-  // Developments are their own block, shown right above the featured properties.
+  // Developments are their own block, shown right below the featured properties.
   const { data: developments } = await getDevelopments(locale, { limit: "6" }).catch(() => ({
     data: [],
   }));
@@ -76,7 +76,7 @@ export default async function Home({
     <main>
       <HeroVideo />
 
-      <section className="mx-auto max-w-7xl px-6 py-16">
+      <section className="mx-auto max-w-7xl px-6 py-10 sm:py-16">
         <div className="md:w-1/2">
           <h1 className="font-heading text-[32px] font-light leading-[1.2] tracking-[1.2px] text-brand-primary">
             {renderRich(aboutTitle)}
@@ -88,38 +88,15 @@ export default async function Home({
             {t("heroCta")}
           </Link>
         </div>
-        <div className="mt-10 space-y-4 text-brand-text md:ml-auto md:w-1/2">
+        <div className="mt-6 space-y-4 text-brand-text sm:mt-10 md:ml-auto md:w-1/2">
           <p>{renderRich(aboutBody)}</p>
         </div>
       </section>
 
-      {developments.length > 0 ? (
-        <section className="px-6 py-14">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-8 flex items-end justify-between gap-4">
-              <div>
-                <h2 className="font-heading text-2xl font-light tracking-[0.8px] text-brand-primary sm:text-[2rem]">
-                  {t("developmentsTitle")}
-                </h2>
-                <p className="mt-1 text-brand-text/80">{t("developmentsSubtitle")}</p>
-              </div>
-              <Link
-                href="/desarrollos"
-                className="hidden flex-shrink-0 items-center gap-1 text-sm font-medium text-brand-primary hover:text-brand-secondary sm:flex"
-              >
-                {t("developmentsViewAll")} ›
-              </Link>
-            </div>
-
-            <FeaturedDevelopments developments={developments} />
-          </div>
-        </section>
-      ) : null}
-
       {featured.data.length > 0 ? (
-        <section className="px-6 py-14">
+        <section className="px-6 py-6 sm:py-14">
           <div className="mx-auto max-w-7xl">
-            <div className="mb-8 flex items-end justify-between gap-4">
+            <div className="mb-5 flex items-end justify-between gap-4 sm:mb-8">
               <div>
                 <h2 className="font-heading text-2xl font-light tracking-[0.8px] text-brand-primary sm:text-[2rem]">
                   {t("featuredTitle")}
@@ -143,29 +120,52 @@ export default async function Home({
         </section>
       ) : null}
 
-      <section className="px-6 py-14">
-        <div className="mx-auto max-w-7xl">
-          <h2 className="font-heading text-2xl font-light tracking-[0.8px] text-brand-primary sm:text-[2rem]">
-            {t("mapTitle")}
-          </h2>
-          <p className="mb-8 mt-1 text-brand-text/80">{t("mapSubtitle")}</p>
-          <HomeMapSection />
-        </div>
-      </section>
+      {developments.length > 0 ? (
+        <section className="px-6 py-6 sm:py-14">
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-5 flex items-end justify-between gap-4 sm:mb-8">
+              <div>
+                <h2 className="font-heading text-2xl font-light tracking-[0.8px] text-brand-primary sm:text-[2rem]">
+                  {t("developmentsTitle")}
+                </h2>
+                <p className="mt-1 text-brand-text/80">{t("developmentsSubtitle")}</p>
+              </div>
+              <Link
+                href="/desarrollos"
+                className="hidden flex-shrink-0 items-center gap-1 text-sm font-medium text-brand-primary hover:text-brand-secondary sm:flex"
+              >
+                {t("developmentsViewAll")} ›
+              </Link>
+            </div>
+
+            <FeaturedDevelopments developments={developments} />
+          </div>
+        </section>
+      ) : null}
 
       {cards.length > 0 ? (
-        <section className="px-6 py-16">
+        <section className="px-6 py-6 sm:py-16">
           <div className="mx-auto max-w-7xl">
             <h2 className="font-heading text-2xl font-light tracking-[0.8px] text-brand-primary sm:text-[2rem]">
               {zonesTitle}
             </h2>
 
-            <div className="mt-10">
+            <div className="mt-5 sm:mt-10">
               <NeighborhoodGrid cards={cards} />
             </div>
           </div>
         </section>
       ) : null}
+
+      <section className="px-6 py-6 sm:py-14">
+        <div className="mx-auto max-w-7xl">
+          <h2 className="font-heading text-2xl font-light tracking-[0.8px] text-brand-primary sm:text-[2rem]">
+            {t("mapTitle")}
+          </h2>
+          <p className="mb-5 mt-1 text-brand-text/80 sm:mb-8">{t("mapSubtitle")}</p>
+          <HomeMapSection />
+        </div>
+      </section>
     </main>
   );
 }
