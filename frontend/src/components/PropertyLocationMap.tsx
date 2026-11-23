@@ -3,6 +3,7 @@
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef } from "react";
+import { addCompactAttribution } from "@/lib/mapAttribution";
 
 // Grey/monochrome basemap — no API key required (OpenFreeMap / OSM).
 const STYLE_URL = "https://tiles.openfreemap.org/styles/positron";
@@ -45,7 +46,7 @@ export default function PropertyLocationMap({
         attributionControl: false,
       });
       map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
-      map.addControl(new maplibregl.AttributionControl({ compact: true }));
+      addCompactAttribution(map);
       map.scrollZoom.disable(); // don't hijack page scroll
 
       const el = document.createElement("div");

@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { PropertyStatRow } from "@/components/PropertyStats";
 import { developmentLotsLine, formatUsd } from "@/lib/format";
+import { addCompactAttribution } from "@/lib/mapAttribution";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
@@ -97,7 +98,7 @@ export default function PropertyMap({
       return;
     }
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "bottom-right");
-    map.addControl(new maplibregl.AttributionControl({ compact: true }));
+    addCompactAttribution(map);
     mapRef.current = map;
 
     // Floating card shown on marker hover (styled like the listing cards).
@@ -320,7 +321,7 @@ export default function PropertyMap({
         : "No hay propiedades en el área visible. Alejá el mapa o movételo.";
 
   if (embedded) {
-    return <div ref={containerRef} className="relative h-[480px] w-full bg-brand-accent lg:h-[620px]" />;
+    return <div ref={containerRef} className="relative aspect-video w-full bg-brand-accent sm:aspect-auto sm:h-[480px] lg:h-[620px]" />;
   }
 
   return (
