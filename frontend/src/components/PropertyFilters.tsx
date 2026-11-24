@@ -204,7 +204,11 @@ export default function PropertyFilters({
   // one-row, horizontally scrollable copy is shown right below it instead.
   const filtersRef = useRef<HTMLDivElement>(null);
   const pillsRef = useRef<HTMLDivElement>(null);
+  const stuckRowRef = useRef<HTMLDivElement>(null);
   const [pillsStuck, setPillsStuck] = useState(false);
+  // Scroll-spy: on the grouped "Todas" view, the sub-zone whose group is currently
+  // under the sticky stack (null = none yet, e.g. above the first group).
+  const [spySlug, setSpySlug] = useState<string | null>(null);
 
   useEffect(() => {
     if (compact) return;
@@ -232,6 +236,20 @@ export default function PropertyFilters({
 
       const pills = pillsRef.current;
       if (pills) setPillsStuck(pills.getBoundingClientRect().bottom < stackTop + height);
+
+      // A group counts as "current" once its heading is about to slide under the
+      // stack (header + title + filters + the compact pills row).
+      const rowH = stuckRowRef.current?.offsetHeight ?? 0;
+      const line = stackTop + height + rowH + 40;
+      let current: string | null = null;
+      document.querySelectorAll<HTMLElement>("[data-subzone]").forEach((el) => {
+        if (el.getBoundingClientRect().top <= line) {
+          // "Otras propiedades" (the catch-all group) has no pill of its own.
+          const slug = el.dataset.subzone;
+          current = slug && slug !== "__other" ? slug : null;
+        }
+      });
+      setSpySlug(current);
     };
 
     update();
@@ -247,9 +265,22 @@ export default function PropertyFilters({
     };
   }, [compact, hasSubzones]);
 
+  // Keep the highlighted pill of the compact row centered as the active group changes.
+  const activeStuckSlug = currentSubzone ?? spySlug ?? "";
+  useEffect(() => {
+    const row = stuckRowRef.current;
+    if (!row || !pillsStuck) return;
+    const pill = row.querySelector<HTMLElement>(`[data-slug="${activeStuckSlug}"]`);
+    if (!pill) return;
+    row.scrollTo({
+      left: pill.offsetLeft - (row.clientWidth - pill.offsetWidth) / 2,
+      behavior: "smooth",
+    });
+  }, [activeStuckSlug, pillsStuck]);
+
   // The pill buttons are rendered twice (in flow + the compact stuck row), so they
   // live in a helper. `extra` lets the compact row keep each pill on one line.
-  const subzonePills = (extra: string, tabIndex?: number) =>
+  const subzonePills = (extra: string, tabIndex?: number, activeSlug: string | undefined = currentSubzone) =>
     subzones && subzones.length > 0 ? (
       <>
         <button
@@ -265,8 +296,9 @@ export default function PropertyFilters({
               price_max: undefined,
             })
           }
-          aria-pressed={!currentSubzone}
-          className={`${pillClass(!currentSubzone)} ${extra}`}
+          aria-pressed={!activeSlug}
+          data-slug=""
+          className={`${pillClass(!activeSlug)} ${extra}`}
         >
           {t("allSubzones")}
         </button>
@@ -282,8 +314,9 @@ export default function PropertyFilters({
                 price_max: undefined,
               })
             }
-            aria-pressed={currentSubzone === subzone.slug}
-            className={`${pillClass(currentSubzone === subzone.slug)} ${extra}`}
+            aria-pressed={activeSlug === subzone.slug}
+            data-slug={subzone.slug}
+            className={`${pillClass(activeSlug === subzone.slug)} ${extra}`}
           >
             {subzone.name}
           </button>
@@ -573,8 +606,11 @@ export default function PropertyFilters({
                 pillsStuck ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"
               }`}
             >
-              <div className="mx-auto flex max-w-7xl gap-2.5 overflow-x-auto px-6 py-2.5 [scrollbar-width:none] lg:pt-7 [&::-webkit-scrollbar]:hidden">
-                {subzonePills("shrink-0 whitespace-nowrap", -1)}
+              <div
+                ref={stuckRowRef}
+                className="relative mx-auto flex max-w-7xl gap-2.5 overflow-x-auto px-6 py-2.5 [scrollbar-width:none] lg:pt-7 [&::-webkit-scrollbar]:hidden"
+              >
+                {subzonePills("shrink-0 whitespace-nowrap", -1, currentSubzone ?? spySlug ?? undefined)}
               </div>
             </div>
           )}

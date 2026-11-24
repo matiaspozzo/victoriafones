@@ -450,7 +450,7 @@ export default async function PropertyListingPage({
               t("otherProperties"),
               sort === "price_asc" || sort === "price_desc",
             ).map((group) => (
-              <section key={group.key}>
+              <section key={group.key} data-subzone={group.key}>
                 <h2 className="mb-6 font-heading text-2xl font-bold text-brand-primary">
                   {group.name}
                 </h2>
