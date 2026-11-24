@@ -4,6 +4,8 @@ import { useEffect, useState, type ReactNode } from "react";
 
 const HEIGHT_VAR = "--listing-title-h";
 const BAR_HEIGHT = 48; // px — keep in sync with `h-12` below
+/** Fired after the bar height changes so PropertyFilters can re-measure the stack. */
+export const STACK_EVENT = "vf:listing-stack";
 
 /**
  * Compact copy of the page title (e.g. the neighborhood name) pinned under the
@@ -32,6 +34,7 @@ export default function StickyListingTitle({ children }: { children: ReactNode }
 
   useEffect(() => {
     document.documentElement.style.setProperty(HEIGHT_VAR, visible ? `${BAR_HEIGHT}px` : "0px");
+    window.dispatchEvent(new Event(STACK_EVENT));
     return () => {
       document.documentElement.style.removeProperty(HEIGHT_VAR);
     };
@@ -41,7 +44,9 @@ export default function StickyListingTitle({ children }: { children: ReactNode }
     // Decorative duplicate of the <h1>, hidden from assistive tech.
     <div
       aria-hidden
-      className={`fixed inset-x-0 top-20 z-40 border-b border-brand-text/10 bg-white transition-all duration-200 ${
+      // The transform follows the filter bar when it is pushed up at the end of the listing.
+      style={{ transform: "translateY(var(--listing-stack-shift, 0px))" }}
+      className={`fixed inset-x-0 top-20 z-40 border-b border-brand-text/10 bg-white transition-[opacity,translate] duration-200 ${
         visible ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"
       }`}
     >

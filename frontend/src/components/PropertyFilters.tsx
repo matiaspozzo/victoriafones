@@ -6,7 +6,8 @@ import { useTranslations } from "next-intl";
 // navigates to a different (translatable) route, so it just needs the
 // real, already-localized browser pathname, not the canonical one.
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { STACK_EVENT } from "@/components/StickyListingTitle";
 import { formatUsd } from "@/lib/format";
 
 const TYPES = ["house", "apartment", "land", "chacra", "commercial"] as const;
@@ -193,6 +194,103 @@ export default function PropertyFilters({
 
   const hasSubzones = Boolean(subzones && subzones.length > 0);
 
+  // The filter bar is `sticky`, so it lets go once the listing ends — but the compact
+  // title bar and the compact pills row below are `fixed` copies and would stay
+  // pinned over the FAQ/CTA sections. This effect measures how far the real sticky
+  // bar has been pushed up (`--listing-stack-shift`, <= 0) so the copies leave with it.
+  //
+  // Sub-zone pills (e.g. Alrededores' 16 zones) wrap over several rows, which is too
+  // tall to pin. Once the in-flow pills scroll away under the sticky filter bar, a
+  // one-row, horizontally scrollable copy is shown right below it instead.
+  const filtersRef = useRef<HTMLDivElement>(null);
+  const pillsRef = useRef<HTMLDivElement>(null);
+  const [pillsStuck, setPillsStuck] = useState(false);
+
+  useEffect(() => {
+    if (compact) return;
+    const root = document.documentElement;
+    let lastShift = Number.NaN;
+    let lastHeight = Number.NaN;
+
+    const update = () => {
+      const filters = filtersRef.current;
+      if (!filters) return;
+      const titleH = parseFloat(getComputedStyle(root).getPropertyValue("--listing-title-h")) || 0;
+      // 80px = fixed site header
+      const stackTop = 80 + titleH;
+      const height = filters.offsetHeight;
+
+      const shift = Math.min(0, Math.round(filters.getBoundingClientRect().top - stackTop));
+      if (shift !== lastShift) {
+        lastShift = shift;
+        root.style.setProperty("--listing-stack-shift", `${shift}px`);
+      }
+      if (height !== lastHeight) {
+        lastHeight = height;
+        root.style.setProperty("--listing-filters-h", `${height}px`);
+      }
+
+      const pills = pillsRef.current;
+      if (pills) setPillsStuck(pills.getBoundingClientRect().bottom < stackTop + height);
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    window.addEventListener(STACK_EVENT, update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      window.removeEventListener(STACK_EVENT, update);
+      root.style.removeProperty("--listing-stack-shift");
+      root.style.removeProperty("--listing-filters-h");
+    };
+  }, [compact, hasSubzones]);
+
+  // The pill buttons are rendered twice (in flow + the compact stuck row), so they
+  // live in a helper. `extra` lets the compact row keep each pill on one line.
+  const subzonePills = (extra: string, tabIndex?: number) =>
+    subzones && subzones.length > 0 ? (
+      <>
+        <button
+          type="button"
+          tabIndex={tabIndex}
+          onClick={() =>
+            pushWith({
+              subzona: undefined,
+              // Clear any active price filter too — see the useEffect
+              // above resyncing minPrice/maxPrice for why a stale filter
+              // from a different sub-zone's price range breaks the slider.
+              price_min: undefined,
+              price_max: undefined,
+            })
+          }
+          aria-pressed={!currentSubzone}
+          className={`${pillClass(!currentSubzone)} ${extra}`}
+        >
+          {t("allSubzones")}
+        </button>
+        {subzones.map((subzone) => (
+          <button
+            key={subzone.slug}
+            type="button"
+            tabIndex={tabIndex}
+            onClick={() =>
+              pushWith({
+                subzona: subzone.slug,
+                price_min: undefined,
+                price_max: undefined,
+              })
+            }
+            aria-pressed={currentSubzone === subzone.slug}
+            className={`${pillClass(currentSubzone === subzone.slug)} ${extra}`}
+          >
+            {subzone.name}
+          </button>
+        ))}
+      </>
+    ) : null;
+
   // Below lg the filters collapse behind a button (the stacked form is too tall to pin).
   const [open, setOpen] = useState(false);
   const activeCount = [
@@ -237,6 +335,7 @@ export default function PropertyFilters({
           gives breathing room when stuck without moving the unstuck layout; below lg it's
           a compact "Filtrar" row whose panel drops down over the listing. */}
       <div
+        ref={filtersRef}
         className={
           compact
             ? ""
@@ -457,44 +556,29 @@ export default function PropertyFilters({
       {/* Sub-zone pills — below the Tarjetas/Lista/Mapa toggle, not a select,
           so picking one is a single click that filters live. */}
       {subzones && subzones.length > 0 ? (
-        <div
-          className={`mt-10 flex flex-wrap gap-x-2.5 gap-y-3 sm:mt-12 ${compact ? "" : "mb-10"}`}
-        >
-          <button
-            type="button"
-            onClick={() =>
-              pushWith({
-                subzona: undefined,
-                // Clear any active price filter too — see the useEffect
-                // above resyncing minPrice/maxPrice for why a stale filter
-                // from a different sub-zone's price range breaks the slider.
-                price_min: undefined,
-                price_max: undefined,
-              })
-            }
-            aria-pressed={!currentSubzone}
-            className={pillClass(!currentSubzone)}
+        <>
+          <div
+            ref={pillsRef}
+            className={`mt-10 flex flex-wrap gap-x-2.5 gap-y-3 sm:mt-12 ${compact ? "" : "mb-10"}`}
           >
-            {t("allSubzones")}
-          </button>
-          {subzones.map((subzone) => (
-            <button
-              key={subzone.slug}
-              type="button"
-              onClick={() =>
-                pushWith({
-                  subzona: subzone.slug,
-                  price_min: undefined,
-                  price_max: undefined,
-                })
-              }
-              aria-pressed={currentSubzone === subzone.slug}
-              className={pillClass(currentSubzone === subzone.slug)}
+            {subzonePills("")}
+          </div>
+
+          {compact ? null : (
+            // Compact stuck copy: hidden from assistive tech (the in-flow pills are the real ones).
+            <div
+              aria-hidden
+              style={{ transform: "translateY(var(--listing-stack-shift, 0px))" }}
+              className={`fixed inset-x-0 top-[calc(5rem+var(--listing-title-h,0px)+var(--listing-filters-h,0px))] z-20 border-b border-brand-text/10 bg-white transition-[opacity,translate] duration-200 ${
+                pillsStuck ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"
+              }`}
             >
-              {subzone.name}
-            </button>
-          ))}
-        </div>
+              <div className="mx-auto flex max-w-7xl gap-2.5 overflow-x-auto px-6 py-2.5 [scrollbar-width:none] lg:pt-7 [&::-webkit-scrollbar]:hidden">
+                {subzonePills("shrink-0 whitespace-nowrap", -1)}
+              </div>
+            </div>
+          )}
+        </>
       ) : null}
     </>
   );
