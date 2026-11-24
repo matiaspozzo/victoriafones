@@ -378,7 +378,7 @@ export default async function PropertyListingPage({
         {view === "map" ? null : properties.length === 0 ? (
           <p className="text-brand-text/80">{t("noResults")}</p>
         ) : view === "list" ? (
-          <ul className="divide-y divide-brand-text/10 border-y border-brand-text/10">
+          <ul data-listing-results className="divide-y divide-brand-text/10 border-y border-brand-text/10">
             {properties.map((property) => {
               const area = property.built_area_m2 ?? property.lot_area_m2;
               const cell = "flex items-center gap-1.5 whitespace-nowrap px-4";
@@ -443,7 +443,7 @@ export default async function PropertyListingPage({
             })}
           </ul>
         ) : subzones && subzones.length > 0 && !selectedSubzone ? (
-          <div className="mt-10 flex flex-col gap-16">
+          <div data-listing-results className="mt-10 flex flex-col gap-16">
             {groupBySubzone(
               properties,
               subzones,
@@ -463,7 +463,7 @@ export default async function PropertyListingPage({
             ))}
           </div>
         ) : (
-          <div className={`mt-10 ${cardGridClass(properties.length)}`}>
+          <div data-listing-results className={`mt-10 ${cardGridClass(properties.length)}`}>
             {properties.map((property) => (
               <PropertyCard key={property.id} property={property} />
             ))}

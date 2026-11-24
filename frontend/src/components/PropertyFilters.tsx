@@ -6,8 +6,8 @@ import { useTranslations } from "next-intl";
 // navigates to a different (translatable) route, so it just needs the
 // real, already-localized browser pathname, not the canonical one.
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { STACK_EVENT } from "@/components/StickyListingTitle";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { BAR_HEIGHT, STACK_EVENT } from "@/components/StickyListingTitle";
 import { formatUsd } from "@/lib/format";
 
 const TYPES = ["house", "apartment", "land", "chacra", "commercial"] as const;
@@ -145,6 +145,11 @@ export default function PropertyFilters({
 
   const priceTouched = minPrice > floor || maxPrice < ceil;
 
+  // Navigations run in a transition so we know when the new results have rendered
+  // (isPending goes true -> false) and can then scroll them clear of the sticky stack.
+  const [isPending, startTransition] = useTransition();
+  const scrollAfterNavRef = useRef(false);
+
   const pushWith = useMemo(
     () => (updates: Record<string, string | undefined>) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -157,9 +162,12 @@ export default function PropertyFilters({
       // user is already looking at the listing further down the page;
       // Next's default behavior of jumping back to the top on navigation
       // would otherwise throw them back up every time they pick one.
-      router.push(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+      scrollAfterNavRef.current = true;
+      startTransition(() => {
+        router.push(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+      });
     },
-    [pathname, router, searchParams],
+    [pathname, router, searchParams, startTransition],
   );
 
   function applyFilters(e: React.FormEvent<HTMLFormElement>) {
@@ -235,7 +243,9 @@ export default function PropertyFilters({
       }
 
       const pills = pillsRef.current;
-      if (pills) setPillsStuck(pills.getBoundingClientRect().bottom < stackTop + height);
+      // As soon as the in-flow pills start sliding under the stack, the compact row takes
+      // over (it sits exactly where they'd be cut off), so a half-hidden row never shows.
+      if (pills) setPillsStuck(pills.getBoundingClientRect().top < stackTop + height);
 
       // A group counts as "current" once its heading is about to slide under the
       // stack (header + title + filters + the compact pills row).
@@ -264,6 +274,28 @@ export default function PropertyFilters({
       root.style.removeProperty("--listing-filters-h");
     };
   }, [compact, hasSubzones]);
+
+  // After a filter/pill/sort change the results re-render under the sticky stack
+  // (title bar + filters + compact pills row), which can hide the first photos.
+  // Scroll smoothly so the results start just below that stack — only when they
+  // would otherwise be covered, so a visitor at the top of the page isn't moved.
+  useEffect(() => {
+    if (isPending || !scrollAfterNavRef.current) return;
+    scrollAfterNavRef.current = false;
+
+    const results = document.querySelector<HTMLElement>("[data-listing-results]");
+    if (!results) return;
+
+    const GAP = 16;
+    const header = 80; // fixed site header
+    const filtersH = filtersRef.current?.offsetHeight ?? 0;
+    const pillsRowH = hasSubzones ? (stuckRowRef.current?.offsetHeight ?? 0) : 0;
+    const clearance = header + BAR_HEIGHT + filtersH + pillsRowH + GAP;
+
+    const top = results.getBoundingClientRect().top;
+    if (top >= clearance) return;
+    window.scrollTo({ top: Math.max(0, window.scrollY + top - clearance), behavior: "smooth" });
+  }, [isPending, hasSubzones]);
 
   // Keep the highlighted pill of the compact row centered as the active group changes.
   const activeStuckSlug = currentSubzone ?? spySlug ?? "";

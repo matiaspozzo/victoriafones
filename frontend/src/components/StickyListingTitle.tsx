@@ -3,7 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 
 const HEIGHT_VAR = "--listing-title-h";
-const BAR_HEIGHT = 48; // px — keep in sync with `h-12` below
+export const BAR_HEIGHT = 48; // px — keep in sync with `h-12` below
 /** Fired after the bar height changes so PropertyFilters can re-measure the stack. */
 export const STACK_EVENT = "vf:listing-stack";
 
